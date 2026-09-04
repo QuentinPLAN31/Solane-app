@@ -51,14 +51,20 @@ Respond with ONLY a single JSON object, no markdown fences, no prose before or a
   "routineAM": ["<short step>", "<short step>", "<short step>"],
   "routinePM": ["<short step>", "<short step>", "<short step>", "<short step>"],
   "products": [
-    {"name": "<product type and key ingredient>", "desc": "<one short sentence>", "moment": "<morning label in ${languageName}>"},
-    {"name": "<product type and key ingredient>", "desc": "<one short sentence>", "moment": "<evening label in ${languageName}>"}
+    {"moment": "<morning label in ${languageName}>", "brand": "<a real, widely-available skincare brand, e.g. La Roche-Posay, CeraVe, Bioderma, Avène, The Ordinary, L'Oréal Paris, Paula's Choice>", "name": "<the real product line/name from that brand>", "ref": "<key active ingredient or product type, in ${languageName}>", "price": "<realistic price in euros, formatted like '16,50 €'>", "desc": "<one short sentence in ${languageName}>"},
+    {"moment": "<evening label in ${languageName}>", "brand": "<a real, widely-available skincare brand>", "name": "<the real product line/name from that brand>", "ref": "<key active ingredient or product type, in ${languageName}>", "price": "<realistic price in euros>", "desc": "<one short sentence in ${languageName}>"}
   ],
   "lifestyle": ["<short tip>", "<short tip>", "<short tip>"],
-  "mistakes": ["<short common mistake>", "<short common mistake>", "<short common mistake>"]
+  "mistakes": ["<short common mistake>", "<short common mistake>", "<short common mistake>"],
+  "nutritionPlan": {
+    "intro": "<1-2 sentences on how diet relates to this specific concern, in ${languageName}>",
+    "favor": ["<food/nutrient to favour>", "<food/nutrient to favour>", "<food/nutrient to favour>", "<food/nutrient to favour>"],
+    "avoid": ["<food/habit to limit>", "<food/habit to limit>", "<food/habit to limit>"],
+    "day": {"breakfast": "<example breakfast>", "lunch": "<example lunch>", "snack": "<example snack>", "dinner": "<example dinner>"}
+  }
 }
 
-For every score, higher means healthier for that indicator (100 = excellent, 0 = very poor). Vary the numbers realistically based on the photo instead of defaulting to a fixed pattern. Output nothing outside that single JSON object.`;
+Use only real, existing skincare products and brands you actually know (do not invent fictitious brand names), and give realistic, currently-plausible euro prices — this is informational, not a live store. For every score, higher means healthier for that indicator (100 = excellent, 0 = very poor). Vary the numbers realistically based on the photo instead of defaulting to a fixed pattern. Output nothing outside that single JSON object.`;
 
   try {
     const apiRes = await fetch('https://api.anthropic.com/v1/messages', {
@@ -70,7 +76,7 @@ For every score, higher means healthier for that indicator (100 = excellent, 0 =
       },
       body: JSON.stringify({
         model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-5',
-        max_tokens: 1400,
+        max_tokens: 2000,
         messages: [
           {
             role: 'user',
