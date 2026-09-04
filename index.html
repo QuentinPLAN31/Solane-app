@@ -499,6 +499,36 @@
   .drawer-acc .row{display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--ink-soft); margin-top:10px;}
   .status-pill{font-size:11px; padding:2px 9px; border-radius:999px; background:var(--surface-2); font-weight:600; color:var(--ink-soft);}
   .drawer-acc .upsell{color:var(--accent); font-weight:600; font-size:13px; margin-top:10px; display:block;}
+  .prod-tile.active{border-color:var(--accent); color:var(--accent); background:var(--accent-soft);}
+  .manual-form{border:1px solid var(--line); border-radius:13px; padding:16px; margin-bottom:15px; display:flex; flex-direction:column; gap:10px;}
+  .manual-form input{width:100%; border:1px solid var(--line); background:var(--surface); border-radius:10px; padding:10px 12px; font:inherit; font-size:13.5px; color:var(--ink);}
+  .manual-form .row{display:flex; gap:8px;}
+  .manual-form .row button{flex:1;}
+  .prod-list{display:flex; flex-direction:column; gap:9px; margin-bottom:15px;}
+  .prod-list-item{border:1px solid var(--line); border-radius:13px; padding:11px 13px; display:flex; align-items:center; gap:10px;}
+  .prod-list-item img{width:34px; height:34px; border-radius:9px; object-fit:cover; flex:none;}
+  .prod-list-item .ic{width:34px; height:34px; border-radius:9px; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; flex:none;}
+  .prod-list-item .info{flex:1; min-width:0;}
+  .prod-list-item .info .n{font-size:13px; font-weight:600; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .prod-list-item .info .b{font-size:11.5px; color:var(--ink-faint);}
+  .prod-list-item .rm{border:none; background:none; color:var(--ink-faint); cursor:pointer; font-size:11px; text-decoration:underline; flex:none;}
+  .history-list{display:flex; flex-direction:column; gap:9px; margin-bottom:22px;}
+  .history-item{border:1px solid var(--line); border-radius:13px; padding:12px 14px; display:flex; align-items:center; gap:12px;}
+  .history-item .sc{width:38px; height:38px; border-radius:50%; background:var(--accent-soft); color:var(--accent); font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; flex:none;}
+  .history-item .info{flex:1; min-width:0;}
+  .history-item .info .n{font-size:13px; font-weight:600; color:var(--ink);}
+  .history-item .info .d{font-size:11.5px; color:var(--ink-faint);}
+  /* ---------- Results gate (verification / login / paywall) ---------- */
+  .gate-box{text-align:center; max-width:440px; margin:0 auto;}
+  .gate-spinner{width:56px; height:56px; border-radius:50%; border:3px solid var(--line); border-top-color:var(--accent); margin:0 auto 22px; animation:spin 0.9s linear infinite;}
+  .gate-check{width:56px; height:56px; border-radius:50%; background:var(--good); color:#fff; display:flex; align-items:center; justify-content:center; margin:0 auto 22px;}
+  .gate-form{margin-top:22px; text-align:left; display:flex; flex-direction:column; gap:16px;}
+  .gate-note{font-size:12px; color:var(--ink-faint); text-align:center; margin-top:-4px;}
+  .gate-paywall-actions{display:flex; flex-direction:column; gap:12px; margin-top:26px;}
+  .price-card.oneshot{border-color:var(--line); margin-top:22px;}
+  .price-card.oneshot .price-ic{background:var(--surface-2); color:var(--ink-soft);}
+  .price-divider{display:flex; align-items:center; gap:12px; max-width:420px; margin:22px auto; color:var(--ink-faint); font-size:12.5px;}
+  .price-divider::before, .price-divider::after{content:""; flex:1; height:1px; background:var(--line);}
   .drawer-logout{ margin-top:22px; display:flex; align-items:center; gap:8px; color:var(--ink-faint); font-size:13.5px; background:none; border:none; cursor:pointer; }
   .drawer-logout:hover{color:var(--ink);}
 </style>
@@ -788,12 +818,16 @@
         <div class="sparkle-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2Z"/></svg></div>
         <h2 data-i18n="diag.readyTitle">Ton analyse est prête !</h2>
         <p data-i18n="diag.readyBody">Découvre ton score de peau, ta routine personnalisée et les produits recommandés par notre IA.</p>
-        <button class="btn btn-cream btn-block" onclick="showResults()">
+        <button class="btn btn-cream btn-block" onclick="startResultsGate()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
           <span data-i18n="diag.seeResults">Voir mon analyse</span>
         </button>
         <button class="btn btn-ghost btn-block" style="margin-top:10px;" onclick="showPage('home')" data-i18n="diag.backHome">Retour</button>
       </div>
+    </div>
+
+    <div id="diag-gate" style="display:none;">
+      <div class="gate-box" id="gateBoxContent"></div>
     </div>
 
     <div id="diag-results" style="display:none;">
@@ -837,7 +871,7 @@
         <div class="pt-price" id="ptPrice">9,90 €<small>/<span data-i18n="pricing.perMonth">mois</span></small></div>
         <div class="pt-save" id="ptSave" style="visibility:hidden;" data-i18n="pricing.save">Économise 39,80 € (33%)</div>
         <ul class="pt-list">
-          <li><span class="chk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg></span><span data-i18n="res.teaserLi1">Ta routine matin &amp; soir détaillée</span></li>
+          <li><span class="chk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg></span><span data-i18n="res.teaserLi1">Ta routine matin & soir détaillée</span></li>
           <li><span class="chk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg></span><span data-i18n="res.teaserLi2">Les produits recommandés pour ta peau</span></li>
           <li><span class="chk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg></span><span data-i18n="res.teaserLi3">Ton plan nutrition pour une peau nette</span></li>
           <li><span class="chk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg></span><span data-i18n="res.teaserLi4">Plan repas anti-imperfections personnalisé, 7 jours 🍽️</span></li>
@@ -854,9 +888,9 @@
         <div class="overview-item"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 16c-1.5-1.5-1.5-4 0-6 1-1.2 2.4-2 3-3.5.6 1.5 2 2.3 3 3.5 1.5 2 1.5 4.5 0 6a3.6 3.6 0 0 1-6 0Z"/><path d="M14 19c-1-1-1-2.6 0-3.8.7-.8 1.6-1.3 2-2.3.4 1 1.3 1.5 2 2.3 1 1.2 1 2.8 0 3.8a2.3 2.3 0 0 1-4 0Z"/></svg><span data-i18n="res.o3t">Routine personnalisée</span></div><div class="d" data-i18n="res.o3d">Les gestes quotidiens adaptés à ton type de peau spécifique.</div></div>
         <div class="overview-item"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 3h6v3.5c1.8.9 3 2.8 3 5V21H6v-9.5c0-2.2 1.2-4.1 3-5V3Z"/></svg><span data-i18n="res.o4t">Produits recommandés</span></div><div class="d" data-i18n="res.o4d">Une sélection de soins compatibles avec ta peau.</div></div>
         <div class="overview-item"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s-7-4.5-7-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-7 10-7 10Z"/></svg><span data-i18n="res.o5t">Hygiène de vie</span></div><div class="d" data-i18n="res.o5d">Conseils ciblés pour améliorer l'état de ta peau de l'intérieur.</div></div>
-        <div class="overview-item locked"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3c1.5 2 4 3 4 6.5A4 4 0 0 1 12 14a4 4 0 0 1-4-4.5C8 6 10.5 5 12 3Z"/><path d="M12 14v7"/></svg><span data-i18n="res.o6t">Nutrition &amp; alimentation</span></div><div class="d" data-i18n="res.o6d">Aliments à privilégier et à éviter pour une peau nette.</div></div>
+        <div class="overview-item locked"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3c1.5 2 4 3 4 6.5A4 4 0 0 1 12 14a4 4 0 0 1-4-4.5C8 6 10.5 5 12 3Z"/><path d="M12 14v7"/></svg><span data-i18n="res.o6t">Nutrition & alimentation</span></div><div class="d" data-i18n="res.o6d">Aliments à privilégier et à éviter pour une peau nette.</div></div>
         <div class="overview-item"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4M12 17h.01M10.3 3.9 2.7 17a2 2 0 0 0 1.7 3h15.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg><span data-i18n="res.o7t">Erreurs fréquentes</span></div><div class="d" data-i18n="res.o7d">Les mauvaises habitudes à éviter pour ne pas aggraver la situation.</div></div>
-        <div class="overview-item full"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 17l5-5 4 4 8-9"/></svg><span data-i18n="res.o8t">Évolution &amp; suivi</span></div><div class="d" data-i18n="res.o8d">Comprendre les phases d'amélioration et le suivi dans le temps.</div></div>
+        <div class="overview-item full"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 17l5-5 4 4 8-9"/></svg><span data-i18n="res.o8t">Évolution & suivi</span></div><div class="d" data-i18n="res.o8d">Comprendre les phases d'amélioration et le suivi dans le temps.</div></div>
       </div>
 
       <h3 class="section-title" data-i18n="res.noticedTitle">Ce qu'on a remarqué</h3>
@@ -892,7 +926,7 @@
           </div>
 
           <div class="detail-panel">
-            <div class="h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3c1.5 2 4 3 4 6.5A4 4 0 0 1 12 14a4 4 0 0 1-4-4.5C8 6 10.5 5 12 3Z"/></svg><span class="t" id="nutritionTitle2" data-i18n="res.o6t">Nutrition &amp; alimentation</span></div>
+            <div class="h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3c1.5 2 4 3 4 6.5A4 4 0 0 1 12 14a4 4 0 0 1-4-4.5C8 6 10.5 5 12 3Z"/></svg><span class="t" id="nutritionTitle2" data-i18n="res.o6t">Nutrition & alimentation</span></div>
             <p class="nutrition-intro" id="nutritionBody">Débloque ton plan alimentaire personnalisé.</p>
             <div class="nutrition-cols">
               <div class="nutrition-col favor">
@@ -923,7 +957,7 @@
           </div>
 
           <div class="detail-panel">
-            <div class="h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 17l5-5 4 4 8-9"/></svg><span class="t" id="evolutionTitle2" data-i18n="res.o8t">Évolution &amp; suivi</span></div>
+            <div class="h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 17l5-5 4 4 8-9"/></svg><span class="t" id="evolutionTitle2" data-i18n="res.o8t">Évolution & suivi</span></div>
             <ul class="routine-list" id="evolutionList" style="margin-bottom:18px;"></ul>
             <div class="floating-card" style="position:static;">
               <div class="lbl"><span id="progressLabel">Votre progression</span> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-5 4 4 8-9"/></svg></div>
@@ -988,15 +1022,30 @@
       <ul class="price-list">
         <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li1">Analyses illimitées de ta peau</span></li>
         <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li2">Score de santé cutanée + historique</span></li>
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li3">Routine personnalisée (matin &amp; soir)</span></li>
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li4">Produits recommandés avec prix &amp; liens</span></li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li3">Routine personnalisée (matin & soir)</span></li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li4">Produits recommandés avec prix & liens</span></li>
         <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li5">Suivi d'évolution dans le temps</span></li>
         <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li6">Chat IA avec conseillère skincare</span></li>
         <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li7">Plan repas anti-imperfections personnalisé, 7 jours 🍽️</span></li>
       </ul>
-      <button class="btn btn-primary btn-block" id="priceCta" onclick="alert('Ceci est une maquette de démonstration.')" data-i18n="pricing.ctaMonthly">Commencer — 9,90 €/mois</button>
+      <button class="btn btn-primary btn-block" id="priceCta" onclick="buyPremium()" data-i18n="pricing.ctaMonthly">Commencer — 9,90 €/mois</button>
     </div>
     <div class="price-under" id="priceUnder"></div>
+
+    <div class="price-divider"><span data-i18n="pricing.orDivider">ou</span></div>
+
+    <div class="price-card oneshot">
+      <div class="price-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+      <h3 data-i18n="pricing.oneshotPlan">Formule à l'unité</h3>
+      <span class="sub" data-i18n="pricing.oneshotSub">Idéal pour tester, sans engagement</span>
+      <div><span class="price-num" id="oneshotPriceNum" data-i18n="pricing.oneshotPrice">4,90 €</span><small>/<span data-i18n="pricing.oneshotUnit">analyse</span></small></div>
+      <ul class="price-list">
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.oneshotLi1">1 analyse complète par IA</span></li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.oneshotLi2">Routine, produits & nutrition détaillés</span></li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.oneshotLi3">Aucun engagement, aucun renouvellement</span></li>
+      </ul>
+      <button class="btn btn-ghost btn-block" id="oneshotCta" onclick="buyOneShot()" data-i18n="pricing.oneshotCta">Acheter 1 analyse — 4,90 €</button>
+    </div>
 
     <div class="price-faq">
       <h4 data-i18n="pricing.faqTitle">Questions fréquentes</h4>
@@ -1111,10 +1160,20 @@
 
     <div id="drawer-produits">
       <div class="prod-grid">
-        <div class="prod-tile"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13.5" r="3.2"/></svg><span data-i18n="drawer.scan">Scanner une photo</span></div>
-        <div class="prod-tile"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="drawer.addManual">Ajouter manuellement</span></div>
+        <div class="prod-tile" onclick="document.getElementById('drawerScanInput').click()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13.5" r="3.2"/></svg><span data-i18n="drawer.scan">Scanner une photo</span></div>
+        <div class="prod-tile" onclick="toggleManualAddForm()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="drawer.addManual">Ajouter manuellement</span></div>
       </div>
-      <div class="prod-empty">
+      <input type="file" accept="image/*" id="drawerScanInput" style="display:none;" onchange="onDrawerScanChosen(this)">
+      <div class="manual-form" id="manualAddForm" style="display:none;">
+        <input type="text" id="manualProdName" data-i18n-placeholder="drawer.manualNamePh" placeholder="Nom du produit">
+        <input type="text" id="manualProdBrand" data-i18n-placeholder="drawer.manualBrandPh" placeholder="Marque (optionnel)">
+        <div class="row">
+          <button class="btn btn-ghost" onclick="toggleManualAddForm()" data-i18n="drawer.manualCancel">Annuler</button>
+          <button class="btn btn-primary" onclick="submitManualProduct()" data-i18n="drawer.manualAdd">Ajouter</button>
+        </div>
+      </div>
+      <div class="prod-list" id="prodList"></div>
+      <div class="prod-empty" id="prodEmpty">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
         <span data-i18n="drawer.empty">Aucun produit enregistré. Ajoute tes produits pour qu'ils apparaissent dans ta routine.</span>
       </div>
@@ -1122,16 +1181,13 @@
 
     <div id="drawer-compte" style="display:none;">
       <h5 data-i18n="drawer.history">Mon historique</h5>
-      <div class="drawer-locked">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-        <span data-i18n="drawer.historyLocked">Historique disponible avec Premium</span>
-      </div>
+      <div id="historyContainer"></div>
       <button class="btn btn-primary btn-block" onclick="closeDrawer(); startDiagnostic();" style="margin-bottom:22px;"><span data-i18n="drawer.newAnalysis">Nouvelle analyse</span></button>
       <h5 data-i18n="drawer.tabAccount">Mon compte</h5>
       <div class="drawer-acc">
-        <div class="em">quentinplan.31@gmail.com</div>
-        <div class="row"><span data-i18n="drawer.status">Statut</span><span class="status-pill" data-i18n="drawer.standard">Standard</span></div>
-        <a class="upsell" href="#" onclick="closeDrawer(); showPage('tarifs'); return false;"><span data-i18n="drawer.upsell">Passer Premium — 9,90 €/mois →</span></a>
+        <div class="em" id="drawerEmail">quentinplan.31@gmail.com</div>
+        <div class="row"><span data-i18n="drawer.status">Statut</span><span class="status-pill" id="drawerStatusPill" data-i18n="drawer.standard">Standard</span></div>
+        <a class="upsell" href="#" id="drawerUpsell" onclick="closeDrawer(); showPage('tarifs'); return false;"><span data-i18n="drawer.upsell">Passer Premium — 9,90 €/mois →</span></a>
       </div>
     </div>
 
@@ -1223,9 +1279,9 @@ fr: {
     o3t:"Routine personnalisée", o3d:"Les gestes quotidiens adaptés à ton type de peau spécifique.",
     o4t:"Produits recommandés", o4d:"Une sélection de soins compatibles avec ta peau.",
     o5t:"Hygiène de vie", o5d:"Conseils ciblés pour améliorer l'état de ta peau de l'intérieur.",
-    o6t:"Nutrition &amp; alimentation", o6d:"Aliments à privilégier et à éviter pour une peau nette.",
+    o6t:"Nutrition & alimentation", o6d:"Aliments à privilégier et à éviter pour une peau nette.",
     o7t:"Erreurs fréquentes", o7d:"Les mauvaises habitudes à éviter pour ne pas aggraver la situation.",
-    o8t:"Évolution &amp; suivi", o8d:"Comprendre les phases d'amélioration et le suivi dans le temps.",
+    o8t:"Évolution & suivi", o8d:"Comprendre les phases d'amélioration et le suivi dans le temps.",
     noticedTitle:"Ce qu'on a remarqué", concernT:"Teint terne", concernD:"Un teint légèrement terne est visible, mais cela peut être amélioré.", concernPill:"Moyen",
     detail1:"Pour une peau mixte de 25 à 34 ans, on observe un teint légèrement terne sans imperfection marquée. La texture reste globalement lisse, mais un manque d'éclat est perceptible. Cela peut être amélioré avec des soins adaptés.",
     detail2:"Puisque tu observes cela depuis 6 à 12 mois, il est probable que le stress, l'alimentation ou des changements hormonaux contribuent à ce teint terne. Une routine de soins régulière peut aider à stabiliser l'état de ta peau.",
@@ -1246,13 +1302,17 @@ fr: {
     monthly:"Mensuel", yearly:"Annuel", popular:"Le plus populaire",
     plan:"Premium", planSub:"Pour celles qui veulent des résultats durables",
     perMonth:"mois", billedMonthly:"Facturé chaque mois", billedYearly:"Facturé 79 € par an", save:"Économise 39,80 € (33%)",
-    li1:"Analyses illimitées de ta peau", li2:"Score de santé cutanée + historique", li3:"Routine personnalisée (matin &amp; soir)",
-    li4:"Produits recommandés avec prix &amp; liens", li5:"Suivi d'évolution dans le temps", li6:"Chat IA avec conseillère skincare",
+    li1:"Analyses illimitées de ta peau", li2:"Score de santé cutanée + historique", li3:"Routine personnalisée (matin & soir)",
+    li4:"Produits recommandés avec prix & liens", li5:"Suivi d'évolution dans le temps", li6:"Chat IA avec conseillère skincare",
     li7:"Plan repas anti-imperfections personnalisé, 7 jours 🍽️",
     ctaMonthly:"Commencer — 9,90 €/mois", ctaYearly:"Commencer — 79 €/an",
     faqTitle:"Questions fréquentes",
     faq1q:"Puis-je annuler mon abonnement ?", faq1a:"Oui, tu peux annuler à tout moment depuis ton compte. L'accès Premium reste actif jusqu'à la fin de la période en cours.",
-    faq2q:"Que se passe-t-il après mon abonnement ?", faq2a:"Tu as accès à des analyses illimitées, ton historique complet, le chat IA et le plan repas personnalisé."
+    faq2q:"Que se passe-t-il après mon abonnement ?", faq2a:"Tu as accès à des analyses illimitées, ton historique complet, le chat IA et le plan repas personnalisé.",
+    orDivider:"ou", oneshotPlan:"Formule à l'unité", oneshotSub:"Idéal pour tester, sans engagement",
+    oneshotPrice:"4,90 €", oneshotUnit:"analyse", oneshotLi1:"1 analyse complète par IA", oneshotLi2:"Routine, produits & nutrition détaillés",
+    oneshotLi3:"Aucun engagement, aucun renouvellement", oneshotCta:"Acheter 1 analyse — 4,90 €",
+    oneshotBought:"Ta formule à l'unité est activée : 1 analyse disponible."
   },
   about:{
     eyebrow:"Notre approche", h1:"Une peau, ça s'écoute plus qu'on ne la corrige.",
@@ -1314,7 +1374,17 @@ fr: {
     tabProducts:"Mes produits", tabAccount:"Mon compte", scan:"Scanner une photo", addManual:"Ajouter manuellement",
     empty:"Aucun produit enregistré. Ajoute tes produits pour qu'ils apparaissent dans ta routine.",
     history:"Mon historique", historyLocked:"Historique disponible avec Premium", newAnalysis:"Nouvelle analyse",
-    status:"Statut", standard:"Standard", upsell:"Passer Premium — 9,90 €/mois →", logout:"Se déconnecter"
+    status:"Statut", standard:"Standard", upsell:"Passer Premium — 9,90 €/mois →", logout:"Se déconnecter",
+    manualNamePh:"Nom du produit", manualBrandPh:"Marque (optionnel)", manualAdd:"Ajouter", manualCancel:"Annuler",
+    historyEmpty:"Aucune analyse enregistrée pour le moment.", historyScoreOf:"Score", removeProduct:"Retirer",
+    planMonthly:"Premium (mensuel)", planYearly:"Premium (annuel)", planOneshot:"Formule à l'unité — {n} restante(s)"
+  },
+  gate:{
+    verifyTitle:"Vérification de sécurité", verifying:"Vérification en cours…", verified:"Vérifié",
+    loginTitle:"Connecte-toi pour voir ton analyse", loginDesc:"Ton analyse est prête. Connecte-toi pour y accéder.",
+    emailPh:"ton@email.com", passwordPh:"Mot de passe", loginBtn:"Se connecter", loginNote:"Démo : n'importe quel email/mot de passe fonctionne.",
+    paywallTitle:"Débloque ton analyse", paywallDesc:"Choisis une formule pour découvrir ton score, ta routine et tes recommandations complètes.",
+    goPremium:"Voir les offres Premium", goOneShot:"Formule à l'unité — 4,90 €", backHome:"Retour à l'accueil"
   }
 },
 
@@ -1397,9 +1467,9 @@ en: {
     o3t:"Personalised routine", o3d:"Daily steps suited to your specific skin type.",
     o4t:"Recommended products", o4d:"A selection of products compatible with your skin.",
     o5t:"Lifestyle", o5d:"Targeted advice to improve your skin from within.",
-    o6t:"Nutrition &amp; diet", o6d:"Foods to favour and avoid for clearer skin.",
+    o6t:"Nutrition & diet", o6d:"Foods to favour and avoid for clearer skin.",
     o7t:"Common mistakes", o7d:"Bad habits to avoid so you don't make things worse.",
-    o8t:"Progress &amp; tracking", o8d:"Understand the stages of improvement and how it's tracked over time.",
+    o8t:"Progress & tracking", o8d:"Understand the stages of improvement and how it's tracked over time.",
     noticedTitle:"What we noticed", concernT:"Dull complexion", concernD:"A slightly dull complexion is visible, but it can be improved.", concernPill:"Moderate",
     detail1:"For combination skin aged 25 to 34, we observe a slightly dull complexion with no marked blemishes. Texture stays largely smooth, but a lack of radiance is noticeable. This can be improved with the right care.",
     detail2:"Since you've noticed this for 6 to 12 months, stress, diet or hormonal changes are likely contributing to this dull complexion. A regular skincare routine can help stabilise your skin.",
@@ -1420,13 +1490,17 @@ en: {
     monthly:"Monthly", yearly:"Yearly", popular:"Most popular",
     plan:"Premium", planSub:"For those who want lasting results",
     perMonth:"mo", billedMonthly:"Billed monthly", billedYearly:"Billed €79 per year", save:"Save €39.80 (33%)",
-    li1:"Unlimited skin analyses", li2:"Skin health score + history", li3:"Personalised routine (morning &amp; evening)",
-    li4:"Recommended products with prices &amp; links", li5:"Progress tracking over time", li6:"AI chat with a skincare advisor",
+    li1:"Unlimited skin analyses", li2:"Skin health score + history", li3:"Personalised routine (morning & evening)",
+    li4:"Recommended products with prices & links", li5:"Progress tracking over time", li6:"AI chat with a skincare advisor",
     li7:"Personalised anti-blemish meal plan, 7 days 🍽️",
     ctaMonthly:"Get started — €9.90/mo", ctaYearly:"Get started — €79/yr",
     faqTitle:"Frequently asked questions",
     faq1q:"Can I cancel my subscription?", faq1a:"Yes, you can cancel any time from your account. Premium access stays active until the end of the current period.",
-    faq2q:"What happens after my subscription ends?", faq2a:"You get unlimited analyses, your full history, the AI chat and the personalised meal plan."
+    faq2q:"What happens after my subscription ends?", faq2a:"You get unlimited analyses, your full history, the AI chat and the personalised meal plan.",
+    orDivider:"or", oneshotPlan:"One-shot plan", oneshotSub:"Perfect for a first try, no commitment",
+    oneshotPrice:"€4.90", oneshotUnit:"analysis", oneshotLi1:"1 full AI-powered analysis", oneshotLi2:"Detailed routine, products & nutrition",
+    oneshotLi3:"No commitment, no renewal", oneshotCta:"Buy 1 analysis — €4.90",
+    oneshotBought:"Your one-shot plan is active: 1 analysis available."
   },
   about:{
     eyebrow:"Our approach", h1:"Skin needs listening to more than correcting.",
@@ -1488,7 +1562,17 @@ en: {
     tabProducts:"My products", tabAccount:"My account", scan:"Scan a photo", addManual:"Add manually",
     empty:"No products saved yet. Add your products so they appear in your routine.",
     history:"My history", historyLocked:"History available with Premium", newAnalysis:"New analysis",
-    status:"Status", standard:"Standard", upsell:"Upgrade to Premium — €9.90/mo →", logout:"Log out"
+    status:"Status", standard:"Standard", upsell:"Upgrade to Premium — €9.90/mo →", logout:"Log out",
+    manualNamePh:"Product name", manualBrandPh:"Brand (optional)", manualAdd:"Add", manualCancel:"Cancel",
+    historyEmpty:"No analysis recorded yet.", historyScoreOf:"Score", removeProduct:"Remove",
+    planMonthly:"Premium (monthly)", planYearly:"Premium (yearly)", planOneshot:"One-shot plan — {n} left"
+  },
+  gate:{
+    verifyTitle:"Security check", verifying:"Verifying…", verified:"Verified",
+    loginTitle:"Sign in to see your analysis", loginDesc:"Your analysis is ready. Sign in to access it.",
+    emailPh:"you@email.com", passwordPh:"Password", loginBtn:"Sign in", loginNote:"Demo: any email/password works.",
+    paywallTitle:"Unlock your analysis", paywallDesc:"Choose a plan to see your score, routine and full recommendations.",
+    goPremium:"See Premium plans", goOneShot:"One-shot plan — €4.90", backHome:"Back home"
   }
 },
 
@@ -1573,7 +1657,7 @@ de: {
     o5t:"Lebensstil", o5d:"Gezielte Tipps, um deine Haut von innen zu verbessern.",
     o6t:"Ernährung", o6d:"Lebensmittel, die du bevorzugen oder meiden solltest, für reinere Haut.",
     o7t:"Häufige Fehler", o7d:"Schlechte Gewohnheiten, die die Situation verschlimmern können.",
-    o8t:"Verlauf &amp; Nachverfolgung", o8d:"Verstehe die Verbesserungsphasen und wie sie über die Zeit verfolgt werden.",
+    o8t:"Verlauf & Nachverfolgung", o8d:"Verstehe die Verbesserungsphasen und wie sie über die Zeit verfolgt werden.",
     noticedTitle:"Was uns aufgefallen ist", concernT:"Fahler Teint", concernD:"Ein leicht fahler Teint ist sichtbar, kann aber verbessert werden.", concernPill:"Mittel",
     detail1:"Bei Mischhaut im Alter von 25 bis 34 Jahren zeigt sich ein leicht fahler Teint ohne ausgeprägte Unreinheiten. Die Textur bleibt weitgehend glatt, ein Mangel an Ausstrahlung ist jedoch spürbar. Mit passender Pflege lässt sich das verbessern.",
     detail2:"Da du das seit 6 bis 12 Monaten beobachtest, tragen wahrscheinlich Stress, Ernährung oder hormonelle Veränderungen zu diesem fahlen Teint bei. Eine regelmäßige Pflegeroutine kann helfen, deine Haut zu stabilisieren.",
@@ -1594,13 +1678,17 @@ de: {
     monthly:"Monatlich", yearly:"Jährlich", popular:"Am beliebtesten",
     plan:"Premium", planSub:"Für alle, die dauerhafte Ergebnisse wollen",
     perMonth:"Monat", billedMonthly:"Monatlich abgerechnet", billedYearly:"79 € jährlich abgerechnet", save:"Spare 39,80 € (33%)",
-    li1:"Unbegrenzte Hautanalysen", li2:"Hautgesundheits-Score + Verlauf", li3:"Persönliche Routine (morgens &amp; abends)",
-    li4:"Empfohlene Produkte mit Preisen &amp; Links", li5:"Fortschrittsverfolgung über die Zeit", li6:"KI-Chat mit Hautpflegeberatung",
+    li1:"Unbegrenzte Hautanalysen", li2:"Hautgesundheits-Score + Verlauf", li3:"Persönliche Routine (morgens & abends)",
+    li4:"Empfohlene Produkte mit Preisen & Links", li5:"Fortschrittsverfolgung über die Zeit", li6:"KI-Chat mit Hautpflegeberatung",
     li7:"Personalisierter Ernährungsplan gegen Unreinheiten, 7 Tage 🍽️",
     ctaMonthly:"Loslegen — 9,90 €/Monat", ctaYearly:"Loslegen — 79 €/Jahr",
     faqTitle:"Häufige Fragen",
     faq1q:"Kann ich mein Abo kündigen?", faq1a:"Ja, du kannst jederzeit über dein Konto kündigen. Der Premium-Zugang bleibt bis zum Ende des laufenden Zeitraums aktiv.",
-    faq2q:"Was passiert nach meinem Abo?", faq2a:"Du behältst Zugang zu unbegrenzten Analysen, deinem vollständigen Verlauf, dem KI-Chat und dem persönlichen Ernährungsplan."
+    faq2q:"Was passiert nach meinem Abo?", faq2a:"Du behältst Zugang zu unbegrenzten Analysen, deinem vollständigen Verlauf, dem KI-Chat und dem persönlichen Ernährungsplan.",
+    orDivider:"oder", oneshotPlan:"Einzelanalyse", oneshotSub:"Ideal zum Testen, ohne Abo",
+    oneshotPrice:"4,90 €", oneshotUnit:"Analyse", oneshotLi1:"1 vollständige KI-Analyse", oneshotLi2:"Detaillierte Routine, Produkte & Ernährung",
+    oneshotLi3:"Keine Verpflichtung, keine Verlängerung", oneshotCta:"1 Analyse kaufen — 4,90 €",
+    oneshotBought:"Deine Einzelanalyse ist aktiv: 1 Analyse verfügbar."
   },
   about:{
     eyebrow:"Unser Ansatz", h1:"Haut sollte man eher zuhören als sie zu korrigieren.",
@@ -1662,7 +1750,17 @@ de: {
     tabProducts:"Meine Produkte", tabAccount:"Mein Konto", scan:"Foto scannen", addManual:"Manuell hinzufügen",
     empty:"Noch keine Produkte gespeichert. Füge deine Produkte hinzu, damit sie in deiner Routine erscheinen.",
     history:"Mein Verlauf", historyLocked:"Verlauf verfügbar mit Premium", newAnalysis:"Neue Analyse",
-    status:"Status", standard:"Standard", upsell:"Zu Premium wechseln — 9,90 €/Monat →", logout:"Abmelden"
+    status:"Status", standard:"Standard", upsell:"Zu Premium wechseln — 9,90 €/Monat →", logout:"Abmelden",
+    manualNamePh:"Produktname", manualBrandPh:"Marke (optional)", manualAdd:"Hinzufügen", manualCancel:"Abbrechen",
+    historyEmpty:"Noch keine Analyse gespeichert.", historyScoreOf:"Score", removeProduct:"Entfernen",
+    planMonthly:"Premium (monatlich)", planYearly:"Premium (jährlich)", planOneshot:"Einzelanalyse — {n} übrig"
+  },
+  gate:{
+    verifyTitle:"Sicherheitsprüfung", verifying:"Überprüfung läuft…", verified:"Verifiziert",
+    loginTitle:"Melde dich an, um deine Analyse zu sehen", loginDesc:"Deine Analyse ist bereit. Melde dich an, um darauf zuzugreifen.",
+    emailPh:"deine@email.com", passwordPh:"Passwort", loginBtn:"Anmelden", loginNote:"Demo: jede E-Mail/jedes Passwort funktioniert.",
+    paywallTitle:"Schalte deine Analyse frei", paywallDesc:"Wähle einen Plan, um deinen Score, deine Routine und alle Empfehlungen zu sehen.",
+    goPremium:"Premium-Angebote ansehen", goOneShot:"Einzelanalyse — 4,90 €", backHome:"Zurück zur Startseite"
   }
 },
 
@@ -1745,9 +1843,9 @@ it: {
     o3t:"Routine personalizzata", o3d:"I gesti quotidiani adatti al tuo specifico tipo di pelle.",
     o4t:"Prodotti consigliati", o4d:"Una selezione di prodotti compatibili con la tua pelle.",
     o5t:"Stile di vita", o5d:"Consigli mirati per migliorare la tua pelle dall'interno.",
-    o6t:"Nutrizione &amp; alimentazione", o6d:"Alimenti da privilegiare ed evitare per una pelle più pulita.",
+    o6t:"Nutrizione & alimentazione", o6d:"Alimenti da privilegiare ed evitare per una pelle più pulita.",
     o7t:"Errori comuni", o7d:"Le cattive abitudini da evitare per non peggiorare la situazione.",
-    o8t:"Evoluzione &amp; monitoraggio", o8d:"Capisci le fasi di miglioramento e come vengono monitorate nel tempo.",
+    o8t:"Evoluzione & monitoraggio", o8d:"Capisci le fasi di miglioramento e come vengono monitorate nel tempo.",
     noticedTitle:"Cosa abbiamo notato", concernT:"Incarnato spento", concernD:"È visibile un incarnato leggermente spento, ma può essere migliorato.", concernPill:"Moderato",
     detail1:"Per una pelle mista tra i 25 e i 34 anni, si osserva un incarnato leggermente spento senza imperfezioni marcate. La texture resta generalmente liscia, ma si percepisce una mancanza di luminosità. Può essere migliorato con trattamenti adeguati.",
     detail2:"Dato che lo noti da 6-12 mesi, è probabile che stress, alimentazione o cambiamenti ormonali contribuiscano a questo incarnato spento. Una routine di cura regolare può aiutare a stabilizzare la tua pelle.",
@@ -1768,13 +1866,17 @@ it: {
     monthly:"Mensile", yearly:"Annuale", popular:"Il più scelto",
     plan:"Premium", planSub:"Per chi vuole risultati duraturi",
     perMonth:"mese", billedMonthly:"Fatturato ogni mese", billedYearly:"Fatturato 79 € all'anno", save:"Risparmia 39,80 € (33%)",
-    li1:"Analisi illimitate della tua pelle", li2:"Punteggio di salute cutanea + cronologia", li3:"Routine personalizzata (mattina &amp; sera)",
-    li4:"Prodotti consigliati con prezzi &amp; link", li5:"Monitoraggio dei progressi nel tempo", li6:"Chat IA con una consulente skincare",
+    li1:"Analisi illimitate della tua pelle", li2:"Punteggio di salute cutanea + cronologia", li3:"Routine personalizzata (mattina & sera)",
+    li4:"Prodotti consigliati con prezzi & link", li5:"Monitoraggio dei progressi nel tempo", li6:"Chat IA con una consulente skincare",
     li7:"Piano alimentare anti-imperfezioni personalizzato, 7 giorni 🍽️",
     ctaMonthly:"Inizia — 9,90 €/mese", ctaYearly:"Inizia — 79 €/anno",
     faqTitle:"Domande frequenti",
     faq1q:"Posso annullare il mio abbonamento?", faq1a:"Sì, puoi annullare in qualsiasi momento dal tuo account. L'accesso Premium resta attivo fino alla fine del periodo in corso.",
-    faq2q:"Cosa succede dopo il mio abbonamento?", faq2a:"Hai accesso ad analisi illimitate, alla cronologia completa, alla chat IA e al piano alimentare personalizzato."
+    faq2q:"Cosa succede dopo il mio abbonamento?", faq2a:"Hai accesso ad analisi illimitate, alla cronologia completa, alla chat IA e al piano alimentare personalizzato.",
+    orDivider:"o", oneshotPlan:"Formula singola", oneshotSub:"Ideale per provare, senza impegno",
+    oneshotPrice:"4,90 €", oneshotUnit:"analisi", oneshotLi1:"1 analisi completa via IA", oneshotLi2:"Routine, prodotti & nutrizione dettagliati",
+    oneshotLi3:"Nessun impegno, nessun rinnovo", oneshotCta:"Acquista 1 analisi — 4,90 €",
+    oneshotBought:"La tua formula singola è attiva: 1 analisi disponibile."
   },
   about:{
     eyebrow:"Il nostro approccio", h1:"La pelle va ascoltata più che corretta.",
@@ -1836,7 +1938,17 @@ it: {
     tabProducts:"I miei prodotti", tabAccount:"Il mio account", scan:"Scansiona una foto", addManual:"Aggiungi manualmente",
     empty:"Nessun prodotto salvato. Aggiungi i tuoi prodotti perché appaiano nella tua routine.",
     history:"La mia cronologia", historyLocked:"Cronologia disponibile con Premium", newAnalysis:"Nuova analisi",
-    status:"Stato", standard:"Standard", upsell:"Passa a Premium — 9,90 €/mese →", logout:"Disconnetti"
+    status:"Stato", standard:"Standard", upsell:"Passa a Premium — 9,90 €/mese →", logout:"Disconnetti",
+    manualNamePh:"Nome del prodotto", manualBrandPh:"Marca (opzionale)", manualAdd:"Aggiungi", manualCancel:"Annulla",
+    historyEmpty:"Nessuna analisi registrata per ora.", historyScoreOf:"Punteggio", removeProduct:"Rimuovi",
+    planMonthly:"Premium (mensile)", planYearly:"Premium (annuale)", planOneshot:"Formula singola — {n} rimanente/i"
+  },
+  gate:{
+    verifyTitle:"Verifica di sicurezza", verifying:"Verifica in corso…", verified:"Verificato",
+    loginTitle:"Accedi per vedere la tua analisi", loginDesc:"La tua analisi è pronta. Accedi per consultarla.",
+    emailPh:"tu@email.com", passwordPh:"Password", loginBtn:"Accedi", loginNote:"Demo: qualsiasi email/password funziona.",
+    paywallTitle:"Sblocca la tua analisi", paywallDesc:"Scegli una formula per vedere il tuo punteggio, la routine e tutti i consigli.",
+    goPremium:"Vedi le offerte Premium", goOneShot:"Formula singola — 4,90 €", backHome:"Torna alla home"
   }
 }
 };
@@ -2078,7 +2190,10 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
   function showResults(){
     document.getElementById('diag-ready').style.display='none';
+    document.getElementById('diag-gate').style.display='none';
     document.getElementById('diag-results').style.display='block';
+    const localReport = computeReport();
+    addHistoryEntry({ globalScore:localReport.globalScore, concernName:localReport.data.name, sevKey:localReport.sevKey });
     renderResults();
   }
 
@@ -2481,16 +2596,228 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     return false;
   }
 
+  /* ---------- Account / storage helpers ---------- */
+  function getAccount(){
+    try{
+      const raw = localStorage.getItem('solaneAccount');
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return { loggedIn:false, email:'', plan:'none', oneshotCredits:0 };
+  }
+  function saveAccount(acc){
+    try{ localStorage.setItem('solaneAccount', JSON.stringify(acc)); }catch(e){}
+  }
+  function getHistory(){
+    try{
+      const raw = localStorage.getItem('solaneHistory');
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return [];
+  }
+  function addHistoryEntry(entry){
+    const h = getHistory();
+    h.unshift({ date:new Date().toISOString(), globalScore:entry.globalScore, concernName:entry.concernName||'', sevKey:entry.sevKey||'' });
+    try{ localStorage.setItem('solaneHistory', JSON.stringify(h.slice(0,30))); }catch(e){}
+  }
+  function getProducts(){
+    try{
+      const raw = localStorage.getItem('solaneProducts');
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return [];
+  }
+  function saveProducts(list){
+    try{ localStorage.setItem('solaneProducts', JSON.stringify(list)); }catch(e){}
+  }
+
+  /* ---------- Pricing purchases ---------- */
+  function buyPremium(){
+    const acc = getAccount();
+    acc.plan = currentBilling==='y' ? 'yearly' : 'monthly';
+    if(!acc.loggedIn){ acc.loggedIn = true; }
+    saveAccount(acc);
+    renderAccountPanel();
+    alert(currentBilling==='y' ? t('pricing.ctaYearly') : t('pricing.ctaMonthly'));
+  }
+  function buyOneShot(){
+    const acc = getAccount();
+    acc.oneshotCredits = (acc.oneshotCredits||0) + 1;
+    if(!acc.loggedIn){ acc.loggedIn = true; }
+    saveAccount(acc);
+    renderAccountPanel();
+    alert(t('pricing.oneshotBought'));
+  }
+
   /* ---------- Account panel ---------- */
-  function openDrawer(){ document.getElementById('drawerOverlay').classList.add('show'); }
+  function openDrawer(){
+    document.getElementById('drawerOverlay').classList.add('show');
+    renderProductsList();
+    renderAccountPanel();
+  }
   function closeDrawer(){ document.getElementById('drawerOverlay').classList.remove('show'); }
   function drawerTab(which){
     document.getElementById('tabProduits').classList.toggle('on', which==='produits');
     document.getElementById('tabCompte').classList.toggle('on', which==='compte');
     document.getElementById('drawer-produits').style.display = which==='produits' ? 'block':'none';
     document.getElementById('drawer-compte').style.display = which==='compte' ? 'block':'none';
+    if(which==='compte') renderAccountPanel();
   }
   document.getElementById('drawerOverlay').addEventListener('click', e=>{ if(e.target.id==='drawerOverlay') closeDrawer(); });
+
+  function toggleManualAddForm(){
+    const f = document.getElementById('manualAddForm');
+    const showing = f.style.display !== 'none';
+    f.style.display = showing ? 'none' : 'flex';
+    if(!showing){ document.getElementById('manualProdName').value=''; document.getElementById('manualProdBrand').value=''; }
+  }
+  function submitManualProduct(){
+    const name = document.getElementById('manualProdName').value.trim();
+    const brand = document.getElementById('manualProdBrand').value.trim();
+    if(!name) return;
+    const list = getProducts();
+    list.unshift({ id:Date.now(), name, brand, img:null });
+    saveProducts(list);
+    toggleManualAddForm();
+    renderProductsList();
+  }
+  function onDrawerScanChosen(input){
+    const file = input.files && input.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const list = getProducts();
+      list.unshift({ id:Date.now(), name:file.name.replace(/\.[^.]+$/,'') || 'Produit scanné', brand:'', img:e.target.result });
+      saveProducts(list);
+      renderProductsList();
+      input.value = '';
+    };
+    reader.readAsDataURL(file);
+  }
+  function removeProduct(id){
+    saveProducts(getProducts().filter(p=>p.id!==id));
+    renderProductsList();
+  }
+  function renderProductsList(){
+    const listEl = document.getElementById('prodList'), emptyEl = document.getElementById('prodEmpty');
+    if(!listEl) return;
+    const list = getProducts();
+    if(!list.length){ listEl.innerHTML=''; emptyEl.style.display='block'; return; }
+    emptyEl.style.display='none';
+    listEl.innerHTML = list.map(p => `
+      <div class="prod-list-item">
+        ${p.img ? `<img src="${p.img}" alt="">` : `<div class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13.5" r="3.2"/></svg></div>`}
+        <div class="info"><div class="n">${esc(p.name)}</div>${p.brand?`<div class="b">${esc(p.brand)}</div>`:''}</div>
+        <button class="rm" onclick="removeProduct(${p.id})">${t('drawer.removeProduct')}</button>
+      </div>`).join('');
+  }
+  function renderAccountPanel(){
+    const acc = getAccount();
+    const emailEl = document.getElementById('drawerEmail'), pillEl = document.getElementById('drawerStatusPill'),
+          upsellEl = document.getElementById('drawerUpsell'), histEl = document.getElementById('historyContainer');
+    if(!emailEl) return;
+    emailEl.textContent = acc.email || 'quentinplan.31@gmail.com';
+    let planLabel = t('drawer.standard'), hasAccess = false;
+    if(acc.plan==='monthly'){ planLabel = t('drawer.planMonthly'); hasAccess = true; }
+    else if(acc.plan==='yearly'){ planLabel = t('drawer.planYearly'); hasAccess = true; }
+    else if((acc.oneshotCredits||0) > 0){ planLabel = t('drawer.planOneshot').replace('{n}', acc.oneshotCredits); hasAccess = true; }
+    pillEl.textContent = planLabel;
+    upsellEl.style.display = hasAccess ? 'none' : 'block';
+    const history = getHistory();
+    if(!hasAccess){
+      histEl.innerHTML = `<div class="drawer-locked">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        <span>${t('drawer.historyLocked')}</span>
+      </div>`;
+    } else if(!history.length){
+      histEl.innerHTML = `<div class="drawer-locked"><span>${t('drawer.historyEmpty')}</span></div>`;
+    } else {
+      histEl.innerHTML = `<div class="history-list">${history.map(h=>{
+        const d = new Date(h.date);
+        const dateStr = isNaN(d) ? '' : d.toLocaleDateString(currentLang);
+        return `<div class="history-item"><div class="sc">${h.globalScore}</div><div class="info"><div class="n">${esc(h.concernName || t('drawer.historyScoreOf'))}</div><div class="d">${dateStr}</div></div></div>`;
+      }).join('')}</div>`;
+    }
+  }
+
+  /* ---------- Results access gate (verification / login / paywall) ---------- */
+  function startResultsGate(){
+    document.getElementById('diag-ready').style.display='none';
+    document.getElementById('diag-gate').style.display='block';
+    renderGateVerifying();
+    setTimeout(renderGateVerified, 1200);
+    setTimeout(gateProceed, 1900);
+  }
+  function renderGateVerifying(){
+    document.getElementById('gateBoxContent').innerHTML = `
+      <div class="gate-spinner"></div>
+      <h2>${t('gate.verifyTitle')}</h2>
+      <p>${t('gate.verifying')}</p>`;
+  }
+  function renderGateVerified(){
+    const box = document.getElementById('gateBoxContent');
+    if(!box) return;
+    box.innerHTML = `
+      <div class="gate-check"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></div>
+      <h2>${t('gate.verifyTitle')}</h2>
+      <p>${t('gate.verified')}</p>`;
+  }
+  function gateProceed(){
+    const acc = getAccount();
+    if(!acc.loggedIn){ renderGateLogin(); return; }
+    gateCheckAccess();
+  }
+  function renderGateLogin(){
+    const box = document.getElementById('gateBoxContent');
+    if(!box) return;
+    box.innerHTML = `
+      <h2>${t('gate.loginTitle')}</h2>
+      <p>${t('gate.loginDesc')}</p>
+      <form class="gate-form" onsubmit="return submitGateLogin(event)">
+        <div class="field" style="margin-bottom:0;"><input type="email" id="gateEmail" placeholder="${t('gate.emailPh')}" required></div>
+        <div class="field" style="margin-bottom:0;"><input type="password" id="gatePassword" placeholder="${t('gate.passwordPh')}" required></div>
+        <button type="submit" class="btn btn-cream btn-block">${t('gate.loginBtn')}</button>
+      </form>
+      <div class="gate-note">${t('gate.loginNote')}</div>`;
+  }
+  function submitGateLogin(e){
+    e.preventDefault();
+    const email = document.getElementById('gateEmail').value.trim();
+    if(!email) return false;
+    const acc = getAccount();
+    acc.loggedIn = true; acc.email = email;
+    saveAccount(acc);
+    gateCheckAccess();
+    return false;
+  }
+  function gateCheckAccess(){
+    const acc = getAccount();
+    if(acc.plan==='monthly' || acc.plan==='yearly'){ grantResultsAccess(); return; }
+    if((acc.oneshotCredits||0) > 0){
+      acc.oneshotCredits -= 1;
+      saveAccount(acc);
+      grantResultsAccess();
+      return;
+    }
+    renderGatePaywall();
+  }
+  function renderGatePaywall(){
+    const box = document.getElementById('gateBoxContent');
+    if(!box) return;
+    box.innerHTML = `
+      <div class="sparkle-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2Z"/></svg></div>
+      <h2>${t('gate.paywallTitle')}</h2>
+      <p>${t('gate.paywallDesc')}</p>
+      <div class="gate-paywall-actions">
+        <button class="btn btn-cream btn-block" onclick="showPage('tarifs')">${t('gate.goPremium')}</button>
+        <button class="btn btn-ghost btn-block" onclick="buyOneShot(); gateCheckAccess();">${t('gate.goOneShot')}</button>
+        <button class="btn btn-ghost btn-block" onclick="showPage('home')">${t('gate.backHome')}</button>
+      </div>`;
+  }
+  function grantResultsAccess(){
+    document.getElementById('diag-gate').style.display='none';
+    showPage('diag');
+    showResults();
+  }
 
   /* ---------- Init ---------- */
   applyI18n();
