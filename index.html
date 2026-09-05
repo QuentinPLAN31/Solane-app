@@ -2367,18 +2367,34 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   function matchLen(arr, len){ return (Array.isArray(arr) && arr.length===len) ? arr : null; }
   function normalizeAI(json, fallback){
     try{
-      const useAIRoutineAM = Array.isArray(json.routineAM) && json.routineAM.length;
-      const useAIRoutinePM = Array.isArray(json.routinePM) && json.routinePM.length;
-      const useAILifestyle = Array.isArray(json.lifestyle) && json.lifestyle.length;
-      const useAIMistakes = Array.isArray(json.mistakes) && json.mistakes.length;
-      const useAIProducts = Array.isArray(json.products) && json.products.length && json.products.every(p=>p.brand && p.price);
+      /* Every section is only ever taken from the AI as a matched (content + "why explanation")
+         PAIR. If the AI's explanation array doesn't line up exactly with its own content array,
+         we don't show half a section (content with no explanation) — we discard the AI's content
+         for that section too and use the local, fully-authored, concern-specific fallback instead.
+         This guarantees every section always has real explanations, for every user. */
+      const aiRoutineAMWhy = matchLen(json.routineAMWhy, Array.isArray(json.routineAM) ? json.routineAM.length : -1);
+      const useAIRoutineAM = Array.isArray(json.routineAM) && json.routineAM.length>0 && !!aiRoutineAMWhy;
+      const aiRoutinePMWhy = matchLen(json.routinePMWhy, Array.isArray(json.routinePM) ? json.routinePM.length : -1);
+      const useAIRoutinePM = Array.isArray(json.routinePM) && json.routinePM.length>0 && !!aiRoutinePMWhy;
+      const aiLifestyleWhy = matchLen(json.lifestyleWhy, Array.isArray(json.lifestyle) ? json.lifestyle.length : -1);
+      const useAILifestyle = Array.isArray(json.lifestyle) && json.lifestyle.length>0 && !!aiLifestyleWhy;
+      const aiMistakesWhy = matchLen(json.mistakesWhy, Array.isArray(json.mistakes) ? json.mistakes.length : -1);
+      const useAIMistakes = Array.isArray(json.mistakes) && json.mistakes.length>0 && !!aiMistakesWhy;
+      /* Products must arrive as exactly 4 fully-detailed items (brand, price AND an "effect"
+         explanation) — anything less (fewer products, or missing effect text) falls back to the
+         local, complete 4-product list instead of showing an incomplete set. */
+      const useAIProducts = Array.isArray(json.products) && json.products.length === (fallback.products||[]).length
+        && json.products.every(p=>p.brand && p.price && p.effect);
       const useAINutrition = json.nutritionPlan && json.nutritionPlan.favor && json.nutritionPlan.day;
-      let nutritionPlan = useAINutrition ? Object.assign({}, json.nutritionPlan) : fallback.nutritionPlan;
+      let nutritionPlan = fallback.nutritionPlan;
       if(useAINutrition){
-        nutritionPlan.favorWhy = matchLen(json.nutritionPlan.favorWhy, (json.nutritionPlan.favor||[]).length);
-        nutritionPlan.avoidWhy = matchLen(json.nutritionPlan.avoidWhy, (json.nutritionPlan.avoid||[]).length);
+        const aiFavorWhy = matchLen(json.nutritionPlan.favorWhy, (json.nutritionPlan.favor||[]).length);
+        const aiAvoidWhy = matchLen(json.nutritionPlan.avoidWhy, (json.nutritionPlan.avoid||[]).length);
+        if(aiFavorWhy && aiAvoidWhy){
+          nutritionPlan = Object.assign({}, json.nutritionPlan, { favorWhy: aiFavorWhy, avoidWhy: aiAvoidWhy });
+        }
       }
-      const useAIEvolution = Array.isArray(json.evolution) && json.evolution.length===3;
+      const useAIEvolution = Array.isArray(json.evolution) && json.evolution.length===3 && !!matchLen(json.evolutionWhy, 3);
       return {
         scores: json.scores || fallback.scores,
         globalScore: Number.isFinite(json.globalScore) ? json.globalScore : fallback.globalScore,
@@ -2393,13 +2409,12 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
         mistakes: useAIMistakes ? json.mistakes : fallback.mistakes,
         bonusProduct: fallback.bonusProduct,
         nutritionPlan: nutritionPlan,
-        /* "why" explanations are only meaningful when paired with the exact text they were written for */
-        routineAMWhy: matchLen(json.routineAMWhy, useAIRoutineAM ? json.routineAM.length : -1) || (useAIRoutineAM ? null : fallback.routineAMWhy),
-        routinePMWhy: matchLen(json.routinePMWhy, useAIRoutinePM ? json.routinePM.length : -1) || (useAIRoutinePM ? null : fallback.routinePMWhy),
-        lifestyleWhy: matchLen(json.lifestyleWhy, useAILifestyle ? json.lifestyle.length : -1) || (useAILifestyle ? null : fallback.lifestyleWhy),
-        mistakesWhy: matchLen(json.mistakesWhy, useAIMistakes ? json.mistakes.length : -1) || (useAIMistakes ? null : fallback.mistakesWhy),
-        evolution: useAIEvolution ? json.evolution : null,
-        evolutionWhy: useAIEvolution ? matchLen(json.evolutionWhy, 3) : null
+        routineAMWhy: useAIRoutineAM ? aiRoutineAMWhy : fallback.routineAMWhy,
+        routinePMWhy: useAIRoutinePM ? aiRoutinePMWhy : fallback.routinePMWhy,
+        lifestyleWhy: useAILifestyle ? aiLifestyleWhy : fallback.lifestyleWhy,
+        mistakesWhy: useAIMistakes ? aiMistakesWhy : fallback.mistakesWhy,
+        evolution: useAIEvolution ? json.evolution : fallback.evolution,
+        evolutionWhy: useAIEvolution ? json.evolutionWhy : fallback.evolutionWhy
       };
     }catch(e){ return null; }
   }
