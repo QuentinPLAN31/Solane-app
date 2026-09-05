@@ -1,5 +1,6 @@
 <title>Solane</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340..600;1,9..144,400..500&family=Work+Sans:wght@400;500;600&display=swap">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   :root{
     --bg:#171310; --surface:#1e1914; --surface-2:#2a231c;
@@ -261,6 +262,7 @@
   .ready-avatar-wrap{position:relative; width:fit-content; margin:0 auto 28px;}
   .ready-avatar{width:104px; height:104px; border-radius:50%; overflow:hidden; position:relative; background:linear-gradient(160deg,#5b3d29,#20160f);}
   .ready-avatar svg{position:absolute; inset:0; width:100%; height:100%;}
+  .scan-avatar .inner img, .ready-avatar img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
   .sparkle-ic{ width:58px;height:58px;border-radius:50%; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; margin:0 auto 22px; }
   .ready-box h2{font-size:27px; margin-bottom:13px; color:var(--ink);}
   .ready-box p{color:var(--ink-soft); font-size:15px; margin-bottom:28px; font-family:var(--serif-sub);}
@@ -394,9 +396,9 @@
   .pt-secure{font-size:12px; color:var(--ink-faint); margin-top:14px;}
 
   .locked-wrap{position:relative;}
-  /* TEST PHASE: floutage désactivé temporairement pour tout voir sans flou */
-  .locked-wrap .locked-inner{filter:none; user-select:auto; pointer-events:auto;}
-  .locked-wrap .premium-overlay{display:none;}
+  .locked-wrap .locked-inner{filter:blur(6px); user-select:none; pointer-events:none;}
+  .locked-wrap.unlocked .locked-inner{filter:none; user-select:auto; pointer-events:auto;}
+  .locked-wrap.unlocked .premium-overlay{display:none;}
 
   /* ---------- Pricing ---------- */
   .pricing-shell{padding:60px 0 100px; text-align:center;}
@@ -499,6 +501,14 @@
   .drawer-acc .row{display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--ink-soft); margin-top:10px;}
   .status-pill{font-size:11px; padding:2px 9px; border-radius:999px; background:var(--surface-2); font-weight:600; color:var(--ink-soft);}
   .drawer-acc .upsell{color:var(--accent); font-weight:600; font-size:13px; margin-top:10px; display:block;}
+  .drawer-acc .who{display:flex; align-items:center; gap:11px; margin-bottom:12px;}
+  .drawer-acc .who img{width:38px; height:38px; border-radius:50%; object-fit:cover; flex:none;}
+  .drawer-acc .who .ic-fallback{width:38px; height:38px; border-radius:50%; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; flex:none;}
+  .drawer-acc .who .name{font-size:13.5px; font-weight:700; color:var(--ink);}
+  .avatar img{width:100%; height:100%; border-radius:50%; object-fit:cover;}
+  .gsi-wrap{display:flex; justify-content:center; margin:2px 0;}
+  .gate-or{display:flex; align-items:center; gap:10px; color:var(--ink-faint); font-size:12px; margin:2px 0;}
+  .gate-or::before, .gate-or::after{content:""; flex:1; height:1px; background:var(--line);}
   .prod-tile.active{border-color:var(--accent); color:var(--accent); background:var(--accent-soft);}
   .manual-form{border:1px solid var(--line); border-radius:13px; padding:16px; margin-bottom:15px; display:flex; flex-direction:column; gap:10px;}
   .manual-form input{width:100%; border:1px solid var(--line); background:var(--surface); border-radius:10px; padding:10px 12px; font:inherit; font-size:13.5px; color:var(--ink);}
@@ -560,7 +570,7 @@
           <button onclick="setLang('it')" data-lang-btn="it">🇮🇹 Italiano</button>
         </div>
       </div>
-      <button class="avatar" onclick="openDrawer()" aria-label="account">
+      <button class="avatar" id="navAvatarBtn" onclick="openDrawer()" aria-label="account">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.4-4 4.2-6 7.5-6s6.1 2 7.5 6"/></svg>
       </button>
     </div>
@@ -787,7 +797,7 @@
     <div id="diag-analyzing" style="display:none;">
       <div class="analyzing">
         <div class="scan-avatar-wrap" style="position:relative; width:fit-content; margin:0 auto;">
-          <div class="scan-avatar"><div class="inner">
+          <div class="scan-avatar"><div class="inner" id="scanAvatarInner">
             <svg viewBox="0 0 200 200"><ellipse cx="100" cy="86" rx="46" ry="56" fill="#c98a5c"/><path d="M60 130 Q100 168 140 130 L140 200 L60 200 Z" fill="#2a2015"/></svg>
           </div></div>
           <div class="ready-pill" id="readyPill"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="diag.readyBadge">Analyse prête</span></div>
@@ -813,7 +823,7 @@
     <div id="diag-ready" style="display:none;">
       <div class="ready-box">
         <div class="ready-avatar-wrap">
-          <div class="ready-avatar"><svg viewBox="0 0 200 200"><ellipse cx="100" cy="86" rx="46" ry="56" fill="#c98a5c"/><path d="M60 130 Q100 168 140 130 L140 200 L60 200 Z" fill="#2a2015"/></svg></div>
+          <div class="ready-avatar" id="readyAvatarInner"><svg viewBox="0 0 200 200"><ellipse cx="100" cy="86" rx="46" ry="56" fill="#c98a5c"/><path d="M60 130 Q100 168 140 130 L140 200 L60 200 Z" fill="#2a2015"/></svg></div>
         </div>
         <div class="sparkle-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2Z"/></svg></div>
         <h2 data-i18n="diag.readyTitle">Ton analyse est prête !</h2>
@@ -1185,13 +1195,17 @@
       <button class="btn btn-primary btn-block" onclick="closeDrawer(); startDiagnostic();" style="margin-bottom:22px;"><span data-i18n="drawer.newAnalysis">Nouvelle analyse</span></button>
       <h5 data-i18n="drawer.tabAccount">Mon compte</h5>
       <div class="drawer-acc">
+        <div class="who" id="drawerWho">
+          <div class="ic-fallback"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.4-4 4.2-6 7.5-6s6.1 2 7.5 6"/></svg></div>
+          <div class="name" id="drawerName" style="display:none;"></div>
+        </div>
         <div class="em" id="drawerEmail">quentinplan.31@gmail.com</div>
         <div class="row"><span data-i18n="drawer.status">Statut</span><span class="status-pill" id="drawerStatusPill" data-i18n="drawer.standard">Standard</span></div>
         <a class="upsell" href="#" id="drawerUpsell" onclick="closeDrawer(); showPage('tarifs'); return false;"><span data-i18n="drawer.upsell">Passer Premium — 9,90 €/mois →</span></a>
       </div>
     </div>
 
-    <button class="drawer-logout" onclick="closeDrawer()">
+    <button class="drawer-logout" onclick="doLogout()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
       <span data-i18n="drawer.logout">Se déconnecter</span>
     </button>
@@ -1384,7 +1398,9 @@ fr: {
     loginTitle:"Connecte-toi pour voir ton analyse", loginDesc:"Ton analyse est prête. Connecte-toi pour y accéder.",
     emailPh:"ton@email.com", passwordPh:"Mot de passe", loginBtn:"Se connecter", loginNote:"Démo : n'importe quel email/mot de passe fonctionne.",
     paywallTitle:"Débloque ton analyse", paywallDesc:"Choisis une formule pour découvrir ton score, ta routine et tes recommandations complètes.",
-    goPremium:"Voir les offres Premium", goOneShot:"Formule à l'unité — 4,90 €", backHome:"Retour à l'accueil"
+    goPremium:"Voir les offres Premium", goOneShot:"Formule à l'unité — 4,90 €", backHome:"Retour à l'accueil",
+    orEmail:"ou continuer avec un email", continueFree:"Continuer avec l'aperçu gratuit",
+    freeNote:"Version gratuite : score général et conseils de base. L'analyse détaillée par IA est réservée aux comptes Premium et à l'unité."
   }
 },
 
@@ -1572,7 +1588,9 @@ en: {
     loginTitle:"Sign in to see your analysis", loginDesc:"Your analysis is ready. Sign in to access it.",
     emailPh:"you@email.com", passwordPh:"Password", loginBtn:"Sign in", loginNote:"Demo: any email/password works.",
     paywallTitle:"Unlock your analysis", paywallDesc:"Choose a plan to see your score, routine and full recommendations.",
-    goPremium:"See Premium plans", goOneShot:"One-shot plan — €4.90", backHome:"Back home"
+    goPremium:"See Premium plans", goOneShot:"One-shot plan — €4.90", backHome:"Back home",
+    orEmail:"or continue with email", continueFree:"Continue with the free preview",
+    freeNote:"Free version: overall score and basic advice. The detailed AI analysis is reserved for Premium and one-shot accounts."
   }
 },
 
@@ -1760,7 +1778,9 @@ de: {
     loginTitle:"Melde dich an, um deine Analyse zu sehen", loginDesc:"Deine Analyse ist bereit. Melde dich an, um darauf zuzugreifen.",
     emailPh:"deine@email.com", passwordPh:"Passwort", loginBtn:"Anmelden", loginNote:"Demo: jede E-Mail/jedes Passwort funktioniert.",
     paywallTitle:"Schalte deine Analyse frei", paywallDesc:"Wähle einen Plan, um deinen Score, deine Routine und alle Empfehlungen zu sehen.",
-    goPremium:"Premium-Angebote ansehen", goOneShot:"Einzelanalyse — 4,90 €", backHome:"Zurück zur Startseite"
+    goPremium:"Premium-Angebote ansehen", goOneShot:"Einzelanalyse — 4,90 €", backHome:"Zurück zur Startseite",
+    orEmail:"oder mit E-Mail fortfahren", continueFree:"Mit der kostenlosen Vorschau fortfahren",
+    freeNote:"Kostenlose Version: Gesamt-Score und Basistipps. Die detaillierte KI-Analyse ist Premium- und Einzelanalyse-Konten vorbehalten."
   }
 },
 
@@ -1948,7 +1968,9 @@ it: {
     loginTitle:"Accedi per vedere la tua analisi", loginDesc:"La tua analisi è pronta. Accedi per consultarla.",
     emailPh:"tu@email.com", passwordPh:"Password", loginBtn:"Accedi", loginNote:"Demo: qualsiasi email/password funziona.",
     paywallTitle:"Sblocca la tua analisi", paywallDesc:"Scegli una formula per vedere il tuo punteggio, la routine e tutti i consigli.",
-    goPremium:"Vedi le offerte Premium", goOneShot:"Formula singola — 4,90 €", backHome:"Torna alla home"
+    goPremium:"Vedi le offerte Premium", goOneShot:"Formula singola — 4,90 €", backHome:"Torna alla home",
+    orEmail:"oppure continua con un'email", continueFree:"Continua con l'anteprima gratuita",
+    freeNote:"Versione gratuita: punteggio generale e consigli di base. L'analisi dettagliata via IA è riservata agli account Premium e a quelli con formula singola."
   }
 }
 };
@@ -2103,7 +2125,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   function startDiagnostic(){
     document.getElementById('splash').classList.add('show');
     setTimeout(()=>{
-      diagIndex = 0; diagAnswers = {};
+      diagIndex = 0; diagAnswers = {}; analysisAIAllowed = false;
       showPage('diag');
       document.getElementById('diag-quiz').style.display='block';
       document.getElementById('diag-analyzing').style.display='none';
@@ -2178,9 +2200,20 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
   function diagPrev(){ if(diagIndex>0){ diagIndex--; renderDiag(); } }
 
+  function injectCapturedPhoto(elId){
+    const el = document.getElementById(elId);
+    if(!el) return;
+    if(capturedPhotoDataUrl){
+      el.innerHTML = `<img src="${capturedPhotoDataUrl}" alt="">`;
+    } else {
+      el.innerHTML = `<svg viewBox="0 0 200 200"><ellipse cx="100" cy="86" rx="46" ry="56" fill="#c98a5c"/><path d="M60 130 Q100 168 140 130 L140 200 L60 200 Z" fill="#2a2015"/></svg>`;
+    }
+  }
   function runAnalysis(){
     document.getElementById('diag-quiz').style.display='none';
     document.getElementById('diag-analyzing').style.display='block';
+    injectCapturedPhoto('scanAvatarInner');
+    injectCapturedPhoto('readyAvatarInner');
     document.getElementById('readyPill').classList.remove('show');
     setTimeout(()=>{ document.getElementById('readyPill').classList.add('show'); }, 2600);
     setTimeout(()=>{
@@ -2286,6 +2319,8 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     const res = I18N[currentLang].res;
     const badge = document.getElementById('analysisBadge');
     if(badge){ badge.textContent = BADGE_TXT[currentLang][source]; badge.className = 'analysis-badge ' + source; }
+    const lockedWrap = document.getElementById('lockedResultsWrap');
+    if(lockedWrap){ lockedWrap.classList.toggle('unlocked', !!analysisAIAllowed); }
 
     document.getElementById('concernName').textContent = r.concernName;
     document.getElementById('concernDesc').textContent = (r.causes||'').split('.')[0] + '.';
@@ -2502,6 +2537,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     const localReport = normalizeLocal(computeReport());
     applyReportToDOM(localReport, 'local');
 
+    if(!analysisAIAllowed) return;
     const ai = await fetchAIReport();
     if(ai){
       const merged = normalizeAI(ai, localReport);
@@ -2602,7 +2638,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       const raw = localStorage.getItem('solaneAccount');
       if(raw) return JSON.parse(raw);
     }catch(e){}
-    return { loggedIn:false, email:'', plan:'none', oneshotCredits:0 };
+    return { loggedIn:false, email:'', name:'', picture:'', authProvider:'', plan:'none', oneshotCredits:0 };
   }
   function saveAccount(acc){
     try{ localStorage.setItem('solaneAccount', JSON.stringify(acc)); }catch(e){}
@@ -2710,12 +2746,41 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
         <button class="rm" onclick="removeProduct(${p.id})">${t('drawer.removeProduct')}</button>
       </div>`).join('');
   }
+  function updateNavAvatar(){
+    const acc = getAccount();
+    const btn = document.getElementById('navAvatarBtn');
+    if(!btn) return;
+    if(acc.loggedIn && acc.picture){
+      btn.innerHTML = `<img src="${acc.picture}" alt="">`;
+    } else {
+      btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.4-4 4.2-6 7.5-6s6.1 2 7.5 6"/></svg>`;
+    }
+  }
+  function doLogout(){
+    const acc = getAccount();
+    acc.loggedIn = false; acc.email=''; acc.name=''; acc.picture=''; acc.authProvider='';
+    saveAccount(acc);
+    updateNavAvatar();
+    renderAccountPanel();
+    closeDrawer();
+  }
   function renderAccountPanel(){
     const acc = getAccount();
     const emailEl = document.getElementById('drawerEmail'), pillEl = document.getElementById('drawerStatusPill'),
-          upsellEl = document.getElementById('drawerUpsell'), histEl = document.getElementById('historyContainer');
+          upsellEl = document.getElementById('drawerUpsell'), histEl = document.getElementById('historyContainer'),
+          whoEl = document.getElementById('drawerWho'), nameEl = document.getElementById('drawerName');
     if(!emailEl) return;
     emailEl.textContent = acc.email || 'quentinplan.31@gmail.com';
+    const iconHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.4-4 4.2-6 7.5-6s6.1 2 7.5 6"/></svg>`;
+    if(whoEl){
+      whoEl.innerHTML = (acc.loggedIn && acc.picture)
+        ? `<img src="${acc.picture}" alt="">`
+        : `<div class="ic-fallback">${iconHTML}</div>`;
+      if(acc.loggedIn && acc.name){
+        whoEl.innerHTML += `<div class="name" id="drawerName">${esc(acc.name)}</div>`;
+      }
+    }
+    updateNavAvatar();
     let planLabel = t('drawer.standard'), hasAccess = false;
     if(acc.plan==='monthly'){ planLabel = t('drawer.planMonthly'); hasAccess = true; }
     else if(acc.plan==='yearly'){ planLabel = t('drawer.planYearly'); hasAccess = true; }
@@ -2740,6 +2805,39 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
 
   /* ---------- Results access gate (verification / login / paywall) ---------- */
+  /* Google Identity Services — replace with your own OAuth Client ID from
+     https://console.cloud.google.com/apis/credentials (Web application, with your
+     Vercel domain added under "Authorized JavaScript origins"). This ID is public
+     by design (unlike an API key) and is safe to ship in client code. */
+  const GOOGLE_CLIENT_ID = "REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
+  let googleReady = false;
+  function initGoogleAuth(){
+    if(typeof google === 'undefined' || !google.accounts || !google.accounts.id) return;
+    if(GOOGLE_CLIENT_ID.indexOf('REPLACE_WITH') === 0) return;
+    try{
+      google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleGoogleCredentialResponse });
+      googleReady = true;
+    }catch(e){}
+  }
+  function base64UrlDecode(str){
+    str = str.replace(/-/g,'+').replace(/_/g,'/');
+    while(str.length % 4) str += '=';
+    return decodeURIComponent(atob(str).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+  }
+  function handleGoogleCredentialResponse(response){
+    try{
+      const payload = JSON.parse(base64UrlDecode(response.credential.split('.')[1]));
+      const acc = getAccount();
+      acc.loggedIn = true; acc.email = payload.email || acc.email; acc.name = payload.name || '';
+      acc.picture = payload.picture || ''; acc.authProvider = 'google';
+      saveAccount(acc);
+      updateNavAvatar();
+      gateCheckAccess();
+    }catch(e){}
+  }
+  window.addEventListener('load', ()=>{ setTimeout(initGoogleAuth, 300); });
+
+  let analysisAIAllowed = false;
   function startResultsGate(){
     document.getElementById('diag-ready').style.display='none';
     document.getElementById('diag-gate').style.display='block';
@@ -2772,12 +2870,25 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     box.innerHTML = `
       <h2>${t('gate.loginTitle')}</h2>
       <p>${t('gate.loginDesc')}</p>
+      <div class="gsi-wrap" id="gsiButtonWrap"></div>
+      <div class="gate-or" id="gateOrDivider">${t('gate.orEmail')}</div>
       <form class="gate-form" onsubmit="return submitGateLogin(event)">
         <div class="field" style="margin-bottom:0;"><input type="email" id="gateEmail" placeholder="${t('gate.emailPh')}" required></div>
         <div class="field" style="margin-bottom:0;"><input type="password" id="gatePassword" placeholder="${t('gate.passwordPh')}" required></div>
         <button type="submit" class="btn btn-cream btn-block">${t('gate.loginBtn')}</button>
       </form>
       <div class="gate-note">${t('gate.loginNote')}</div>`;
+    renderGoogleButton();
+  }
+  function renderGoogleButton(){
+    const el = document.getElementById('gsiButtonWrap'), divider = document.getElementById('gateOrDivider');
+    if(!el) return;
+    if(!googleReady) initGoogleAuth();
+    if(googleReady){
+      try{ google.accounts.id.renderButton(el, { theme:'outline', size:'large', shape:'pill', width:280, locale:currentLang }); return; }catch(e){}
+    }
+    el.style.display = 'none';
+    if(divider) divider.style.display = 'none';
   }
   function submitGateLogin(e){
     e.preventDefault();
@@ -2791,10 +2902,11 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
   function gateCheckAccess(){
     const acc = getAccount();
-    if(acc.plan==='monthly' || acc.plan==='yearly'){ grantResultsAccess(); return; }
+    if(acc.plan==='monthly' || acc.plan==='yearly'){ analysisAIAllowed = true; grantResultsAccess(); return; }
     if((acc.oneshotCredits||0) > 0){
       acc.oneshotCredits -= 1;
       saveAccount(acc);
+      analysisAIAllowed = true;
       grantResultsAccess();
       return;
     }
@@ -2810,8 +2922,13 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       <div class="gate-paywall-actions">
         <button class="btn btn-cream btn-block" onclick="showPage('tarifs')">${t('gate.goPremium')}</button>
         <button class="btn btn-ghost btn-block" onclick="buyOneShot(); gateCheckAccess();">${t('gate.goOneShot')}</button>
-        <button class="btn btn-ghost btn-block" onclick="showPage('home')">${t('gate.backHome')}</button>
-      </div>`;
+        <button class="btn btn-ghost btn-block" onclick="continueFreePreview()">${t('gate.continueFree')}</button>
+      </div>
+      <div class="gate-note">${t('gate.freeNote')}</div>`;
+  }
+  function continueFreePreview(){
+    analysisAIAllowed = false;
+    grantResultsAccess();
   }
   function grantResultsAccess(){
     document.getElementById('diag-gate').style.display='none';
@@ -2821,4 +2938,5 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
 
   /* ---------- Init ---------- */
   applyI18n();
+  updateNavAvatar();
 </script>
