@@ -3205,30 +3205,35 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     }
   }
   function doLogout(){
+    console.log('[Solane] doLogout() called, sb configured:', !!sb);
+    /* Close the drawer FIRST, unconditionally, before anything else that could
+       possibly throw — so the click always visibly does something even if a
+       later step fails. Every following step is individually wrapped so one
+       failure can never block the rest (or make the button look "dead"). */
+    try{ closeDrawer(); }catch(e){ console.error('[Solane] closeDrawer failed:', e); }
     if(sb){
-      /* Update the UI immediately rather than waiting on the network — signOut()
-         can hang (e.g. a stuck browser lock, a slow/blocked connection to Supabase),
-         and the person should never feel like the button "does nothing". The actual
-         server-side sign-out call runs in the background regardless of how long it
-         takes; if it fails we simply log it, since the local session is already gone. */
       currentProfile = null; historyCache = []; evolutionCache = [];
-      updateNavAvatar();
-      renderAccountPanel();
-      closeDrawer();
+      try{ updateNavAvatar(); }catch(e){ console.error('[Solane] updateNavAvatar failed:', e); }
+      try{ renderAccountPanel(); }catch(e){ console.error('[Solane] renderAccountPanel failed:', e); }
+      /* The actual server-side sign-out runs in the background — the UI above is
+         already updated, so a slow or hanging network call can no longer make the
+         button look like it did nothing. */
       try{
         Promise.race([
           sb.auth.signOut(),
           new Promise((_,reject)=> setTimeout(()=> reject(new Error('signOut timeout')), 5000))
-        ]).catch(e => console.error('Supabase signOut failed or timed out:', e));
-      }catch(e){ console.error('Supabase signOut failed:', e); }
+        ]).then(()=> console.log('[Solane] Supabase signOut settled OK'))
+          .catch(e => console.error('[Solane] Supabase signOut failed or timed out:', e));
+      }catch(e){ console.error('[Solane] Supabase signOut call threw:', e); }
       return;
     }
-    const acc = getAccount();
-    acc.loggedIn = false; acc.email=''; acc.name=''; acc.picture=''; acc.authProvider='';
-    saveAccount(acc);
-    updateNavAvatar();
-    renderAccountPanel();
-    closeDrawer();
+    try{
+      const acc = getAccount();
+      acc.loggedIn = false; acc.email=''; acc.name=''; acc.picture=''; acc.authProvider='';
+      saveAccount(acc);
+      updateNavAvatar();
+      renderAccountPanel();
+    }catch(e){ console.error('[Solane] doLogout (local mode) failed:', e); }
   }
   function renderAccountPanel(){
     const acc = getAccount();
