@@ -1,7 +1,7 @@
 <title>Solane</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C8 7 5 10.5 5 14.5A7 7 0 0 0 19 14.5C19 10.5 16 7 12 2Z' fill='%23c9743f'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340..600;1,9..144,400..500&family=Work+Sans:wght@400;500;600&display=swap">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
     --bg:#171310; --surface:#1e1914; --surface-2:#2a231c;
@@ -329,8 +329,10 @@
   .locked-wrap.unlocked .prod-locked .prod-info{filter:none; user-select:auto;}
   .evo-compare-wrap{margin-top:16px;}
   .evo-compare{display:flex; align-items:center; gap:12px;}
-  .evo-shot{flex:1; text-align:center;}
+  .evo-shot{flex:1; text-align:center; position:relative;}
   .evo-shot img{width:100%; aspect-ratio:1; object-fit:cover; border-radius:13px; border:1px solid var(--line); display:block;}
+  .evo-del-btn{position:absolute; top:6px; right:6px; width:22px; height:22px; border-radius:50%; border:none; background:rgba(0,0,0,.55); color:#fff; font-size:12px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0;}
+  .evo-del-btn:hover{background:rgba(0,0,0,.75);}
   .evo-shot span{display:block; margin-top:6px; font-size:11.5px; color:var(--ink-faint);}
   .evo-arrow{color:var(--accent); flex:none; font-size:18px;}
   .evo-compare-prompt{font-size:12.5px; color:var(--ink-faint); margin-top:12px;}
@@ -566,7 +568,11 @@
   .gate-spinner{width:56px; height:56px; border-radius:50%; border:3px solid var(--line); border-top-color:var(--accent); margin:0 auto 22px; animation:spin 0.9s linear infinite;}
   .gate-check{width:56px; height:56px; border-radius:50%; background:var(--good); color:#fff; display:flex; align-items:center; justify-content:center; margin:0 auto 22px;}
   .gate-form{margin-top:22px; text-align:left; display:flex; flex-direction:column; gap:16px;}
-  .gate-note{font-size:12px; color:var(--ink-faint); text-align:center; margin-top:-4px;}
+  .gate-note{font-size:12px; color:var(--ink-faint); text-align:center; margin-top:-4px; min-height:14px;}
+  .gate-toggle{font-size:13px; text-align:center; margin-top:14px;}
+  .gate-toggle a{color:var(--accent); text-decoration:none;}
+  .gate-toggle a:hover{text-decoration:underline;}
+  .gate-google-btn{display:flex; align-items:center; justify-content:center;}
   .gate-paywall-actions{display:flex; flex-direction:column; gap:12px; margin-top:26px;}
   .price-card.oneshot{border-color:var(--line); margin-top:22px;}
   .price-card.oneshot .price-ic{background:var(--surface-2); color:var(--ink-soft);}
@@ -1434,11 +1440,17 @@ fr: {
   gate:{
     verifyTitle:"Vérification de sécurité", verifying:"Vérification en cours…", verified:"Vérifié",
     loginTitle:"Connecte-toi pour voir ton analyse", loginDesc:"Ton analyse est prête. Connecte-toi pour y accéder.",
-    emailPh:"ton@email.com", passwordPh:"Mot de passe", loginBtn:"Se connecter", loginNote:"Démo : n'importe quel email/mot de passe fonctionne.",
+    emailPh:"ton@email.com", passwordPh:"Mot de passe", loginBtn:"Se connecter", loginNote:"Connecte-toi ou crée un compte gratuitement pour accéder à ton analyse.",
     paywallTitle:"Débloque ton analyse", paywallDesc:"Choisis une formule pour découvrir ton score, ta routine et tes recommandations complètes.",
     goPremium:"Voir les offres Premium", goOneShot:"Formule à l'unité — 4,90 €", backHome:"Retour à l'accueil",
     orEmail:"ou continuer avec un email", continueFree:"Continuer avec l'aperçu gratuit",
-    freeNote:"Version gratuite : score général et conseils de base. L'analyse détaillée par IA est réservée aux comptes Premium et à l'unité."
+    freeNote:"Version gratuite : score général et conseils de base. L'analyse détaillée par IA est réservée aux comptes Premium et à l'unité.",
+    googleBtn:"Continuer avec Google", signupTitle:"Crée ton compte", signupDesc:"Crée un compte gratuit pour accéder à ton analyse.",
+    signupBtn:"Créer mon compte", toggleToSignup:"Pas encore de compte ? Inscris-toi", toggleToLogin:"Déjà un compte ? Connecte-toi",
+    forgotPassword:"Mot de passe oublié ?", resetTitle:"Réinitialiser le mot de passe", resetDesc:"Indique ton email, tu recevras un lien pour choisir un nouveau mot de passe.",
+    resetBtn:"Envoyer le lien", resetSent:"Email envoyé ! Vérifie ta boîte de réception.", backToLogin:"Retour à la connexion",
+    signupSent:"Compte créé ! Vérifie ton email pour confirmer ton adresse, puis connecte-toi.", authError:"Une erreur est survenue. Vérifie tes informations et réessaie.",
+    nameLoginPh:"Ton prénom"
   }
 },
 
@@ -1624,11 +1636,17 @@ en: {
   gate:{
     verifyTitle:"Security check", verifying:"Verifying…", verified:"Verified",
     loginTitle:"Sign in to see your analysis", loginDesc:"Your analysis is ready. Sign in to access it.",
-    emailPh:"you@email.com", passwordPh:"Password", loginBtn:"Sign in", loginNote:"Demo: any email/password works.",
+    emailPh:"you@email.com", passwordPh:"Password", loginBtn:"Sign in", loginNote:"Sign in or create a free account to access your analysis.",
     paywallTitle:"Unlock your analysis", paywallDesc:"Choose a plan to see your score, routine and full recommendations.",
     goPremium:"See Premium plans", goOneShot:"One-shot plan — €4.90", backHome:"Back home",
     orEmail:"or continue with email", continueFree:"Continue with the free preview",
-    freeNote:"Free version: overall score and basic advice. The detailed AI analysis is reserved for Premium and one-shot accounts."
+    freeNote:"Free version: overall score and basic advice. The detailed AI analysis is reserved for Premium and one-shot accounts.",
+    googleBtn:"Continue with Google", signupTitle:"Create your account", signupDesc:"Create a free account to access your analysis.",
+    signupBtn:"Create my account", toggleToSignup:"No account yet? Sign up", toggleToLogin:"Already have an account? Sign in",
+    forgotPassword:"Forgot your password?", resetTitle:"Reset your password", resetDesc:"Enter your email, you'll receive a link to choose a new password.",
+    resetBtn:"Send the link", resetSent:"Email sent! Check your inbox.", backToLogin:"Back to sign in",
+    signupSent:"Account created! Check your email to confirm your address, then sign in.", authError:"Something went wrong. Check your details and try again.",
+    nameLoginPh:"Your first name"
   }
 },
 
@@ -1814,11 +1832,17 @@ de: {
   gate:{
     verifyTitle:"Sicherheitsprüfung", verifying:"Überprüfung läuft…", verified:"Verifiziert",
     loginTitle:"Melde dich an, um deine Analyse zu sehen", loginDesc:"Deine Analyse ist bereit. Melde dich an, um darauf zuzugreifen.",
-    emailPh:"deine@email.com", passwordPh:"Passwort", loginBtn:"Anmelden", loginNote:"Demo: jede E-Mail/jedes Passwort funktioniert.",
+    emailPh:"deine@email.com", passwordPh:"Passwort", loginBtn:"Anmelden", loginNote:"Melde dich an oder erstelle ein kostenloses Konto, um auf deine Analyse zuzugreifen.",
     paywallTitle:"Schalte deine Analyse frei", paywallDesc:"Wähle einen Plan, um deinen Score, deine Routine und alle Empfehlungen zu sehen.",
     goPremium:"Premium-Angebote ansehen", goOneShot:"Einzelanalyse — 4,90 €", backHome:"Zurück zur Startseite",
     orEmail:"oder mit E-Mail fortfahren", continueFree:"Mit der kostenlosen Vorschau fortfahren",
-    freeNote:"Kostenlose Version: Gesamt-Score und Basistipps. Die detaillierte KI-Analyse ist Premium- und Einzelanalyse-Konten vorbehalten."
+    freeNote:"Kostenlose Version: Gesamt-Score und Basistipps. Die detaillierte KI-Analyse ist Premium- und Einzelanalyse-Konten vorbehalten.",
+    googleBtn:"Mit Google fortfahren", signupTitle:"Konto erstellen", signupDesc:"Erstelle ein kostenloses Konto, um auf deine Analyse zuzugreifen.",
+    signupBtn:"Konto erstellen", toggleToSignup:"Noch kein Konto? Registrieren", toggleToLogin:"Schon ein Konto? Anmelden",
+    forgotPassword:"Passwort vergessen?", resetTitle:"Passwort zurücksetzen", resetDesc:"Gib deine E-Mail ein, du erhältst einen Link, um ein neues Passwort zu wählen.",
+    resetBtn:"Link senden", resetSent:"E-Mail gesendet! Prüfe dein Postfach.", backToLogin:"Zurück zur Anmeldung",
+    signupSent:"Konto erstellt! Bestätige deine E-Mail-Adresse und melde dich dann an.", authError:"Etwas ist schiefgelaufen. Überprüfe deine Angaben und versuche es erneut.",
+    nameLoginPh:"Dein Vorname"
   }
 },
 
@@ -2004,11 +2028,17 @@ it: {
   gate:{
     verifyTitle:"Verifica di sicurezza", verifying:"Verifica in corso…", verified:"Verificato",
     loginTitle:"Accedi per vedere la tua analisi", loginDesc:"La tua analisi è pronta. Accedi per consultarla.",
-    emailPh:"tu@email.com", passwordPh:"Password", loginBtn:"Accedi", loginNote:"Demo: qualsiasi email/password funziona.",
+    emailPh:"tu@email.com", passwordPh:"Password", loginBtn:"Accedi", loginNote:"Accedi o crea un account gratuito per accedere alla tua analisi.",
     paywallTitle:"Sblocca la tua analisi", paywallDesc:"Scegli una formula per vedere il tuo punteggio, la routine e tutti i consigli.",
     goPremium:"Vedi le offerte Premium", goOneShot:"Formula singola — 4,90 €", backHome:"Torna alla home",
     orEmail:"oppure continua con un'email", continueFree:"Continua con l'anteprima gratuita",
-    freeNote:"Versione gratuita: punteggio generale e consigli di base. L'analisi dettagliata via IA è riservata agli account Premium e a quelli con formula singola."
+    freeNote:"Versione gratuita: punteggio generale e consigli di base. L'analisi dettagliata via IA è riservata agli account Premium e a quelli con formula singola.",
+    googleBtn:"Continua con Google", signupTitle:"Crea il tuo account", signupDesc:"Crea un account gratuito per accedere alla tua analisi.",
+    signupBtn:"Crea il mio account", toggleToSignup:"Non hai un account? Registrati", toggleToLogin:"Hai già un account? Accedi",
+    forgotPassword:"Password dimenticata?", resetTitle:"Reimposta la password", resetDesc:"Inserisci la tua email, riceverai un link per scegliere una nuova password.",
+    resetBtn:"Invia il link", resetSent:"Email inviata! Controlla la tua casella di posta.", backToLogin:"Torna all'accesso",
+    signupSent:"Account creato! Controlla la tua email per confermare l'indirizzo, poi accedi.", authError:"Si è verificato un errore. Controlla i tuoi dati e riprova.",
+    nameLoginPh:"Il tuo nome"
   }
 }
 };
@@ -2019,6 +2049,21 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
 
 </script>
 <script>
+  /* ---------- Supabase (accounts, subscriptions, history, evolution photos) ----------
+     Fill in these two values from your Supabase project (Dashboard → Project Settings →
+     API). The anon/public key is designed to be shipped in client code (like the Google
+     Client ID was) — it only allows what your Row Level Security policies permit. NEVER
+     put the "service_role" key here or anywhere in this file; that one is secret and
+     belongs only in a Vercel environment variable used by a serverless function. */
+  const SUPABASE_URL = "https://xlbovqhgnamoqubcczwz.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsYm92cWhnbmFtb3F1YmNjend6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NzkxMjUsImV4cCI6MjEwNDI1NTEyNX0.XCYCgya_7WHGmOtyBRcnX08pncFfkynEDijXGyQ-lj4";
+  let sb = null;
+  try{
+    if(SUPABASE_URL.indexOf('REPLACE_WITH') !== 0 && typeof supabase !== 'undefined'){
+      sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+  }catch(e){}
+
   /* ---------- Toasts ---------- */
   let toastTimeoutId = null;
   function showToast(message){
@@ -2305,24 +2350,101 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
 
   /* ---------- Evolution photo comparison ---------- */
+  /* With Supabase configured, photos live in the private "evolution-photos" Storage
+     bucket (compressed client-side before upload) with metadata rows in the
+     evolution_photos table; evolutionCache mirrors that as {id,date,storagePath,photo}
+     (photo = a short-lived signed URL). Without Supabase, everything stays in
+     localStorage as base64 data URLs, same as before. */
+  let evolutionCache = [];
   function getEvolutionPhotos(){
+    if(sb) return evolutionCache;
     try{ const raw = localStorage.getItem('solaneEvolutionPhotos'); if(raw) return JSON.parse(raw); }catch(e){}
     return [];
   }
   function saveEvolutionPhotos(list){
     try{ localStorage.setItem('solaneEvolutionPhotos', JSON.stringify(list.slice(0,10))); }catch(e){}
   }
-  function addEvolutionPhoto(photoDataUrl){
+  function compressImageDataUrl(dataUrl, maxDim, quality){
+    return new Promise((resolve)=>{
+      let done = false;
+      const finish = (val)=>{ if(done) return; done = true; resolve(val); };
+      const safetyTimer = setTimeout(()=> finish(dataUrl), 4000);
+      try{
+        const img = new Image();
+        img.onload = ()=>{
+          clearTimeout(safetyTimer);
+          try{
+            let w = img.width, h = img.height;
+            if(w > maxDim || h > maxDim){
+              if(w > h){ h = Math.round(h * maxDim / w); w = maxDim; }
+              else { w = Math.round(w * maxDim / h); h = maxDim; }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            finish(canvas.toDataURL('image/jpeg', quality || 0.72));
+          }catch(e){ finish(dataUrl); }
+        };
+        img.onerror = ()=>{ clearTimeout(safetyTimer); finish(dataUrl); };
+        img.src = dataUrl;
+      }catch(e){ clearTimeout(safetyTimer); finish(dataUrl); }
+    });
+  }
+  async function refreshEvolutionPhotos(){
+    if(!sb || !currentProfile || !currentProfile.id){ evolutionCache = []; return; }
+    const { data, error } = await sb.from('evolution_photos').select('*').eq('user_id', currentProfile.id).order('date', { ascending:false }).limit(10);
+    if(error || !data){ evolutionCache = []; renderEvolutionPhotos(); return; }
+    evolutionCache = await Promise.all(data.map(async row => {
+      let url = '';
+      try{
+        const { data:signed } = await sb.storage.from('evolution-photos').createSignedUrl(row.storage_path, 3600);
+        if(signed) url = signed.signedUrl;
+      }catch(e){}
+      return { id: row.id, date: row.date, storagePath: row.storage_path, photo: url };
+    }));
+    renderEvolutionPhotos();
+  }
+  async function addEvolutionPhoto(photoDataUrl){
     if(!photoDataUrl) return;
+    const compressed = await compressImageDataUrl(photoDataUrl, 900, 0.72);
+    if(sb){
+      if(!currentProfile || !currentProfile.id) return;
+      try{
+        const path = `${currentProfile.id}/${Date.now()}.jpg`;
+        const blob = await (await fetch(compressed)).blob();
+        const { error:upErr } = await sb.storage.from('evolution-photos').upload(path, blob, { contentType:'image/jpeg' });
+        if(upErr){ console.error('Evolution photo upload failed:', upErr); return; }
+        const { error:insErr } = await sb.from('evolution_photos').insert({ user_id: currentProfile.id, storage_path: path });
+        if(insErr) console.error('Evolution photo insert failed:', insErr);
+        await refreshEvolutionPhotos();
+      }catch(e){ console.error('Evolution photo save failed:', e); }
+      return;
+    }
     const list = getEvolutionPhotos();
-    list.unshift({ date:new Date().toISOString(), photo:photoDataUrl });
+    list.unshift({ date:new Date().toISOString(), photo:compressed });
     saveEvolutionPhotos(list);
+  }
+  async function deleteEvolutionPhoto(idOrIndex){
+    if(sb){
+      const item = evolutionCache.find(p => String(p.id) === String(idOrIndex));
+      if(!item) return;
+      try{
+        await sb.storage.from('evolution-photos').remove([item.storagePath]);
+        await sb.from('evolution_photos').delete().eq('id', item.id);
+      }catch(e){ console.error('Evolution photo delete failed:', e); }
+      await refreshEvolutionPhotos();
+      return;
+    }
+    const list = getEvolutionPhotos();
+    list.splice(idOrIndex, 1);
+    saveEvolutionPhotos(list);
+    renderEvolutionPhotos();
   }
   function onEvolutionPhotoChosen(input){
     const file = input.files && input.files[0];
     if(!file) return;
     const reader = new FileReader();
-    reader.onload = e => { addEvolutionPhoto(e.target.result); renderEvolutionPhotos(); input.value = ''; };
+    reader.onload = async e => { await addEvolutionPhoto(e.target.result); renderEvolutionPhotos(); input.value = ''; };
     reader.readAsDataURL(file);
   }
   function renderEvolutionPhotos(){
@@ -2336,10 +2458,16 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     }
     const oldest = list[list.length-1], newest = list[0];
     const fmt = d => { const dt = new Date(d); return isNaN(dt) ? '' : dt.toLocaleDateString(currentLang); };
+    const oldestKey = sb ? `'${oldest.id}'` : (list.length-1);
+    const newestKey = sb ? `'${newest.id}'` : 0;
     el.innerHTML = `<div class="evo-compare">
-      <div class="evo-shot"><img src="${oldest.photo}" alt=""><span>${res.evoCompareBefore||''} · ${fmt(oldest.date)}</span></div>
+      <div class="evo-shot"><img src="${oldest.photo}" alt=""><span>${res.evoCompareBefore||''} · ${fmt(oldest.date)}</span>
+        <button type="button" class="evo-del-btn" onclick="deleteEvolutionPhoto(${oldestKey})">✕</button>
+      </div>
       <div class="evo-arrow">→</div>
-      <div class="evo-shot"><img src="${newest.photo}" alt=""><span>${res.evoCompareAfter||''} · ${fmt(newest.date)}</span></div>
+      <div class="evo-shot"><img src="${newest.photo}" alt=""><span>${res.evoCompareAfter||''} · ${fmt(newest.date)}</span>
+        <button type="button" class="evo-del-btn" onclick="deleteEvolutionPhoto(${newestKey})">✕</button>
+      </div>
     </div>`;
   }
 
@@ -2842,17 +2970,67 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
 
   /* ---------- Account / storage helpers ---------- */
+  /* Account state: when Supabase is configured (sb !== null), `currentProfile` is a
+     synchronous in-memory cache kept in sync with the `profiles` table — populated by
+     refreshProfile() on load/login, updated immediately in the cache on every change
+     for a snappy UI, and persisted to Supabase in the background. This keeps the rest
+     of the app (which reads getAccount() synchronously all over the place) unchanged,
+     while the real source of truth lives server-side. Without Supabase configured yet,
+     everything falls back to the previous localStorage-only behaviour. */
+  let currentProfile = null;
   function getAccount(){
+    if(sb) return currentProfile || { loggedIn:false, email:'', name:'', picture:'', authProvider:'', plan:'free', oneshotCredits:0 };
     try{
       const raw = localStorage.getItem('solaneAccount');
       if(raw) return JSON.parse(raw);
     }catch(e){}
-    return { loggedIn:false, email:'', name:'', picture:'', authProvider:'', plan:'none', oneshotCredits:0 };
+    return { loggedIn:false, email:'', name:'', picture:'', authProvider:'', plan:'free', oneshotCredits:0 };
   }
   function saveAccount(acc){
+    if(sb){
+      currentProfile = acc;
+      if(acc.id){
+        sb.from('profiles').update({ plan: acc.plan, oneshot_credits: acc.oneshotCredits })
+          .eq('id', acc.id).then(({error})=>{ if(error) console.error('Supabase profile update failed:', error); });
+      }
+      return;
+    }
     try{ localStorage.setItem('solaneAccount', JSON.stringify(acc)); }catch(e){}
   }
+  /* Re-reads the logged-in user's session + profile row from Supabase and refreshes
+     the local cache + UI. Called on page load and on every auth state change (login,
+     logout, token refresh, OAuth redirect return). */
+  async function refreshProfile(){
+    if(!sb) return;
+    try{
+      const { data:{ session } } = await sb.auth.getSession();
+      if(!session){ currentProfile = null; historyCache = []; evolutionCache = []; updateNavAvatar(); return; }
+      const { data:profile, error } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+      if(error || !profile){ currentProfile = null; updateNavAvatar(); return; }
+      currentProfile = {
+        id: profile.id, loggedIn: true,
+        email: profile.email || session.user.email || '',
+        name: profile.name || '', picture: profile.picture || '',
+        authProvider: (session.user.app_metadata && session.user.app_metadata.provider) || 'email',
+        plan: profile.plan || 'free', oneshotCredits: profile.oneshot_credits || 0
+      };
+      updateNavAvatar();
+      renderAccountPanel();
+      await refreshHistory();
+      await refreshEvolutionPhotos();
+    }catch(e){ console.error('Supabase refreshProfile failed:', e); }
+  }
+  let historyCache = [];
+  async function refreshHistory(){
+    if(!sb || !currentProfile || !currentProfile.id) return;
+    const { data, error } = await sb.from('history').select('*').eq('user_id', currentProfile.id).order('date', { ascending:false }).limit(30);
+    if(!error && data){
+      historyCache = data.map(h=>({ date:h.date, globalScore:h.global_score, concernName:h.concern_name||'', sevKey:h.sev_key||'' }));
+      renderAccountPanel();
+    }
+  }
   function getHistory(){
+    if(sb) return historyCache;
     try{
       const raw = localStorage.getItem('solaneHistory');
       if(raw) return JSON.parse(raw);
@@ -2860,8 +3038,17 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     return [];
   }
   function addHistoryEntry(entry){
+    const item = { date:new Date().toISOString(), globalScore:entry.globalScore, concernName:entry.concernName||'', sevKey:entry.sevKey||'' };
+    if(sb){
+      historyCache = [item, ...historyCache].slice(0,30);
+      if(currentProfile && currentProfile.id){
+        sb.from('history').insert({ user_id: currentProfile.id, global_score:item.globalScore, concern_name:item.concernName, sev_key:item.sevKey })
+          .then(({error})=>{ if(error) console.error('Supabase history insert failed:', error); });
+      }
+      return;
+    }
     const h = getHistory();
-    h.unshift({ date:new Date().toISOString(), globalScore:entry.globalScore, concernName:entry.concernName||'', sevKey:entry.sevKey||'' });
+    h.unshift(item);
     try{ localStorage.setItem('solaneHistory', JSON.stringify(h.slice(0,30))); }catch(e){}
   }
   function getProducts(){
@@ -2876,8 +3063,13 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
 
   /* ---------- Pricing purchases ---------- */
+  /* NOTE: no real payment is taken here yet (Stripe or similar comes in a later step) —
+     this simulates a successful purchase and grants the plan immediately, but it does
+     require a real, logged-in Supabase account so the entitlement is actually persisted
+     server-side rather than faked client-side. */
   function buyPremium(){
     const acc = getAccount();
+    if(sb && !acc.loggedIn){ openDrawer(); drawerTab('compte'); showToast(t('gate.loginNote')); return; }
     acc.plan = currentBilling==='y' ? 'yearly' : 'monthly';
     if(!acc.loggedIn){ acc.loggedIn = true; }
     saveAccount(acc);
@@ -2886,6 +3078,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
   function buyOneShot(){
     const acc = getAccount();
+    if(sb && !acc.loggedIn){ openDrawer(); drawerTab('compte'); showToast(t('gate.loginNote')); return; }
     acc.oneshotCredits = (acc.oneshotCredits||0) + 1;
     if(!acc.loggedIn){ acc.loggedIn = true; }
     saveAccount(acc);
@@ -2965,7 +3158,15 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.4-4 4.2-6 7.5-6s6.1 2 7.5 6"/></svg>`;
     }
   }
-  function doLogout(){
+  async function doLogout(){
+    if(sb){
+      try{ await sb.auth.signOut(); }catch(e){ console.error('Supabase signOut failed:', e); }
+      currentProfile = null; historyCache = []; evolutionCache = [];
+      updateNavAvatar();
+      renderAccountPanel();
+      closeDrawer();
+      return;
+    }
     const acc = getAccount();
     acc.loggedIn = false; acc.email=''; acc.name=''; acc.picture=''; acc.authProvider='';
     saveAccount(acc);
@@ -3014,37 +3215,39 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
 
   /* ---------- Results access gate (verification / login / paywall) ---------- */
-  /* Google Identity Services — replace with your own OAuth Client ID from
-     https://console.cloud.google.com/apis/credentials (Web application, with your
-     Vercel domain added under "Authorized JavaScript origins"). This ID is public
-     by design (unlike an API key) and is safe to ship in client code. */
-  const GOOGLE_CLIENT_ID = "REPLACE_WITH_YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
-  let googleReady = false;
-  function initGoogleAuth(){
-    if(typeof google === 'undefined' || !google.accounts || !google.accounts.id) return;
-    if(GOOGLE_CLIENT_ID.indexOf('REPLACE_WITH') === 0) return;
-    try{
-      google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleGoogleCredentialResponse });
-      googleReady = true;
-    }catch(e){}
+  /* Google sign-in now goes through Supabase Auth instead of a client-side-only Google
+     Identity Services token: enable the "Google" provider in your Supabase project
+     (Dashboard → Authentication → Providers) and add your Google OAuth Client
+     ID/Secret there. No Google Client ID needs to live in this file any more. */
+  let googleAuthPopup = null, googleAuthPollId = null;
+  function loginWithGoogle(){
+    if(!sb) return;
+    if(googleAuthPollId) clearInterval(googleAuthPollId);
+    googleAuthPopup = window.open('about:blank', 'solaneGoogleAuth', 'width=480,height=640');
+    sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + window.location.pathname, skipBrowserRedirect: true }
+    }).then(({ data, error })=>{
+      if(error || !data || !data.url){ if(googleAuthPopup) googleAuthPopup.close(); return; }
+      if(googleAuthPopup) googleAuthPopup.location.href = data.url;
+    });
+    googleAuthPollId = setInterval(async ()=>{
+      if(!googleAuthPopup || googleAuthPopup.closed){
+        clearInterval(googleAuthPollId);
+        await refreshProfile();
+        if(getAccount().loggedIn) gateCheckAccess();
+        return;
+      }
+      try{
+        // Once the popup navigates back to our own origin (auth complete), Supabase's
+        // client running inside that popup page stores the new session (localStorage,
+        // same origin) — we just need to notice it's back and close it.
+        if(googleAuthPopup.location.origin === window.location.origin){
+          googleAuthPopup.close();
+        }
+      }catch(e){ /* still on accounts.google.com — cross-origin, expected, ignore */ }
+    }, 500);
   }
-  function base64UrlDecode(str){
-    str = str.replace(/-/g,'+').replace(/_/g,'/');
-    while(str.length % 4) str += '=';
-    return decodeURIComponent(atob(str).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-  }
-  function handleGoogleCredentialResponse(response){
-    try{
-      const payload = JSON.parse(base64UrlDecode(response.credential.split('.')[1]));
-      const acc = getAccount();
-      acc.loggedIn = true; acc.email = payload.email || acc.email; acc.name = payload.name || '';
-      acc.picture = payload.picture || ''; acc.authProvider = 'google';
-      saveAccount(acc);
-      updateNavAvatar();
-      gateCheckAccess();
-    }catch(e){}
-  }
-  window.addEventListener('load', ()=>{ setTimeout(initGoogleAuth, 300); });
 
   let analysisAIAllowed = false;
   let pendingResultPhoto = null;
@@ -3076,40 +3279,108 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(!acc.loggedIn){ renderGateLogin(); return; }
     gateCheckAccess();
   }
+  let gateAuthMode = 'login'; /* 'login' | 'signup' | 'reset' */
+  function gateSwitchMode(mode){ gateAuthMode = mode; renderGateLogin(); }
   function renderGateLogin(){
     const box = document.getElementById('gateBoxContent');
     if(!box) return;
+    const googleBtnHtml = sb ? `
+      <button type="button" class="btn btn-ghost btn-block gate-google-btn" onclick="loginWithGoogle()">
+        <svg width="18" height="18" viewBox="0 0 48 48" style="vertical-align:-4px;margin-right:8px;"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34 5.1 29.3 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.8-.4-4.5Z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34 5.1 29.3 3 24 3 15.9 3 8.9 7.6 6.3 14.7Z"/><path fill="#4CAF50" d="M24 45c5.2 0 9.9-2 13.4-5.2l-6.2-5.2c-2 1.4-4.6 2.4-7.2 2.4-5.2 0-9.6-3.3-11.3-8l-6.5 5C8.8 40.3 15.8 45 24 45Z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.3-4.1 5.6l6.2 5.2C40.9 36 44 30.5 44 24c0-1.4-.1-2.8-.4-3.5Z"/></svg>
+        ${t('gate.googleBtn')}
+      </button>
+      <div class="gate-or">${t('gate.orEmail')}</div>` : '';
+    if(gateAuthMode === 'reset'){
+      box.innerHTML = `
+        <h2>${t('gate.resetTitle')}</h2>
+        <p>${t('gate.resetDesc')}</p>
+        <form class="gate-form" onsubmit="return requestGatePasswordReset(event)">
+          <div class="field" style="margin-bottom:0;"><input type="email" id="gateEmail" placeholder="${t('gate.emailPh')}" required></div>
+          <button type="submit" class="btn btn-cream btn-block">${t('gate.resetBtn')}</button>
+        </form>
+        <div class="gate-note" id="gateAuthNote"></div>
+        <div class="gate-toggle"><a href="#" onclick="gateSwitchMode('login');return false;">${t('gate.backToLogin')}</a></div>`;
+      return;
+    }
+    if(gateAuthMode === 'signup'){
+      box.innerHTML = `
+        <h2>${t('gate.signupTitle')}</h2>
+        <p>${t('gate.signupDesc')}</p>
+        ${googleBtnHtml}
+        <form class="gate-form" onsubmit="return submitGateSignup(event)">
+          <div class="field" style="margin-bottom:0;"><input type="text" id="gateName" placeholder="${t('gate.nameLoginPh')}"></div>
+          <div class="field" style="margin-bottom:0;"><input type="email" id="gateEmail" placeholder="${t('gate.emailPh')}" required></div>
+          <div class="field" style="margin-bottom:0;"><input type="password" id="gatePassword" placeholder="${t('gate.passwordPh')}" required minlength="6"></div>
+          <button type="submit" class="btn btn-cream btn-block">${t('gate.signupBtn')}</button>
+        </form>
+        <div class="gate-note" id="gateAuthNote"></div>
+        <div class="gate-toggle"><a href="#" onclick="gateSwitchMode('login');return false;">${t('gate.toggleToLogin')}</a></div>`;
+      return;
+    }
     box.innerHTML = `
       <h2>${t('gate.loginTitle')}</h2>
       <p>${t('gate.loginDesc')}</p>
-      <div class="gsi-wrap" id="gsiButtonWrap"></div>
-      <div class="gate-or" id="gateOrDivider">${t('gate.orEmail')}</div>
+      ${googleBtnHtml}
       <form class="gate-form" onsubmit="return submitGateLogin(event)">
         <div class="field" style="margin-bottom:0;"><input type="email" id="gateEmail" placeholder="${t('gate.emailPh')}" required></div>
         <div class="field" style="margin-bottom:0;"><input type="password" id="gatePassword" placeholder="${t('gate.passwordPh')}" required></div>
         <button type="submit" class="btn btn-cream btn-block">${t('gate.loginBtn')}</button>
       </form>
+      <div class="gate-note" id="gateAuthNote"></div>
+      <div class="gate-toggle">
+        <a href="#" onclick="gateSwitchMode('reset');return false;">${t('gate.forgotPassword')}</a>
+        &nbsp;·&nbsp;
+        <a href="#" onclick="gateSwitchMode('signup');return false;">${t('gate.toggleToSignup')}</a>
+      </div>
       <div class="gate-note">${t('gate.loginNote')}</div>`;
-    renderGoogleButton();
   }
-  function renderGoogleButton(){
-    const el = document.getElementById('gsiButtonWrap'), divider = document.getElementById('gateOrDivider');
-    if(!el) return;
-    if(!googleReady) initGoogleAuth();
-    if(googleReady){
-      try{ google.accounts.id.renderButton(el, { theme:'outline', size:'large', shape:'pill', width:280, locale:currentLang }); return; }catch(e){}
-    }
-    el.style.display = 'none';
-    if(divider) divider.style.display = 'none';
+  function gateAuthNote(msg){
+    const el = document.getElementById('gateAuthNote');
+    if(el) el.textContent = msg;
   }
-  function submitGateLogin(e){
+  async function submitGateLogin(e){
     e.preventDefault();
     const email = document.getElementById('gateEmail').value.trim();
+    const password = document.getElementById('gatePassword').value;
     if(!email) return false;
+    if(sb){
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      if(error){ gateAuthNote(t('gate.authError')); return false; }
+      await refreshProfile();
+      gateCheckAccess();
+      return false;
+    }
     const acc = getAccount();
     acc.loggedIn = true; acc.email = email;
     saveAccount(acc);
     gateCheckAccess();
+    return false;
+  }
+  async function submitGateSignup(e){
+    e.preventDefault();
+    const name = document.getElementById('gateName').value.trim();
+    const email = document.getElementById('gateEmail').value.trim();
+    const password = document.getElementById('gatePassword').value;
+    if(!email || !password) return false;
+    if(sb){
+      const { data, error } = await sb.auth.signUp({ email, password, options:{ data:{ full_name:name } } });
+      if(error){ gateAuthNote(t('gate.authError')); return false; }
+      if(data && data.session){ await refreshProfile(); gateCheckAccess(); return false; }
+      gateAuthNote(t('gate.signupSent'));
+      return false;
+    }
+    const acc = getAccount();
+    acc.loggedIn = true; acc.email = email; acc.name = name;
+    saveAccount(acc);
+    gateCheckAccess();
+    return false;
+  }
+  async function requestGatePasswordReset(e){
+    e.preventDefault();
+    const email = document.getElementById('gateEmail').value.trim();
+    if(!email || !sb) return false;
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + window.location.pathname });
+    gateAuthNote(error ? t('gate.authError') : t('gate.resetSent'));
     return false;
   }
   function gateCheckAccess(){
@@ -3151,4 +3422,8 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   /* ---------- Init ---------- */
   applyI18n();
   updateNavAvatar();
+  if(sb){
+    refreshProfile();
+    sb.auth.onAuthStateChange(()=>{ refreshProfile(); });
+  }
 </script>
