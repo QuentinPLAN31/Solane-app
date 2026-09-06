@@ -335,7 +335,8 @@
   .evo-del-btn:hover{background:rgba(0,0,0,.75);}
   .evo-shot span{display:block; margin-top:6px; font-size:11.5px; color:var(--ink-faint);}
   .evo-arrow{color:var(--accent); flex:none; font-size:18px;}
-  .evo-compare-prompt{font-size:12.5px; color:var(--ink-faint); margin-top:12px;}
+  .evo-compare-prompt{font-size:12.5px; color:var(--ink-faint); margin-top:12px; text-align:center;}
+  .evo-single{text-align:center;}
   .evo-track-wrap{position:relative;}
   .evo-lock-banner{display:none; align-items:flex-start; gap:12px; background:var(--surface-2); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-top:14px;}
   .evo-lock-banner svg{flex:none; color:var(--accent); margin-top:1px;}
@@ -2619,8 +2620,25 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(!el) return;
     const res = I18N[currentLang].res;
     const list = getEvolutionPhotos();
-    if(list.length < 2){
+    if(list.length === 0){
       el.innerHTML = `<div class="evo-compare-prompt">${res.evoComparePrompt||''}</div>`;
+      return;
+    }
+    if(list.length === 1){
+      /* Right after a fresh analysis there's only the one just-taken photo —
+         show it (instead of just a bare text prompt) so it's clear the photo
+         was actually saved, with the same prompt underneath inviting a
+         second photo to unlock the before/after comparison. */
+      const only = list[0];
+      const fmt1 = d => { const dt = new Date(d); return isNaN(dt) ? '' : dt.toLocaleDateString(currentLang); };
+      el.innerHTML = `<div class="evo-single">
+        <div class="evo-shot" style="max-width:180px; margin:0 auto;">
+          <img src="${only.photo}" alt="">
+          <span>${fmt1(only.date)}</span>
+          <button type="button" class="evo-del-btn" onclick="deleteEvolutionPhoto('${only.id}')">✕</button>
+        </div>
+        <div class="evo-compare-prompt">${res.evoComparePrompt||''}</div>
+      </div>`;
       return;
     }
     const oldest = list[list.length-1], newest = list[0];
