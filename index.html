@@ -1268,10 +1268,24 @@
       </div>
     </div>
 
-    <button class="drawer-logout" onclick="doLogout()">
+    <button class="btn btn-cream btn-block" id="drawerLoginBtn" onclick="openAccountLogin()" style="display:none; margin-top:22px;">
+      <span data-i18n="drawer.login">Se connecter</span>
+    </button>
+    <button class="drawer-logout" id="drawerLogoutBtn" onclick="doLogout()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
       <span data-i18n="drawer.logout">Se déconnecter</span>
     </button>
+  </div>
+</div>
+
+<!-- Standalone login/signup overlay, reachable from the account panel without doing an analysis -->
+<div class="drawer-overlay" id="acctLoginOverlay">
+  <div class="drawer" style="max-width:420px;">
+    <div class="drawer-head">
+      <span class="brand" style="cursor:default;">Solane</span>
+      <button class="drawer-close" onclick="closeAccountLogin()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="gate-box" id="acctLoginBoxContent" style="text-align:center; padding:8px 0 4px;"></div>
   </div>
 </div>
 
@@ -1451,7 +1465,7 @@ fr: {
     tabProducts:"Mes produits", tabAccount:"Mon compte", scan:"Scanner une photo", addManual:"Ajouter manuellement",
     empty:"Aucun produit enregistré. Ajoute tes produits pour qu'ils apparaissent dans ta routine.",
     history:"Mon historique", historyLocked:"Historique disponible avec Premium", newAnalysis:"Nouvelle analyse",
-    status:"Statut", standard:"Standard", upsell:"Passer Premium — 9,90 €/mois →", logout:"Se déconnecter",
+    status:"Statut", standard:"Standard", upsell:"Passer Premium — 9,90 €/mois →", logout:"Se déconnecter", login:"Se connecter",
     manualNamePh:"Nom du produit", manualBrandPh:"Marque (optionnel)", manualAdd:"Ajouter", manualCancel:"Annuler",
     historyEmpty:"Aucune analyse enregistrée pour le moment.", historyScoreOf:"Score", removeProduct:"Retirer",
     planMonthly:"Premium (mensuel)", planYearly:"Premium (annuel)", planOneshot:"Formule à l'unité — {n} restante(s)"
@@ -1647,7 +1661,7 @@ en: {
     tabProducts:"My products", tabAccount:"My account", scan:"Scan a photo", addManual:"Add manually",
     empty:"No products saved yet. Add your products so they appear in your routine.",
     history:"My history", historyLocked:"History available with Premium", newAnalysis:"New analysis",
-    status:"Status", standard:"Standard", upsell:"Upgrade to Premium — €9.90/mo →", logout:"Log out",
+    status:"Status", standard:"Standard", upsell:"Upgrade to Premium — €9.90/mo →", logout:"Log out", login:"Sign in",
     manualNamePh:"Product name", manualBrandPh:"Brand (optional)", manualAdd:"Add", manualCancel:"Cancel",
     historyEmpty:"No analysis recorded yet.", historyScoreOf:"Score", removeProduct:"Remove",
     planMonthly:"Premium (monthly)", planYearly:"Premium (yearly)", planOneshot:"One-shot plan — {n} left"
@@ -1843,7 +1857,7 @@ de: {
     tabProducts:"Meine Produkte", tabAccount:"Mein Konto", scan:"Foto scannen", addManual:"Manuell hinzufügen",
     empty:"Noch keine Produkte gespeichert. Füge deine Produkte hinzu, damit sie in deiner Routine erscheinen.",
     history:"Mein Verlauf", historyLocked:"Verlauf verfügbar mit Premium", newAnalysis:"Neue Analyse",
-    status:"Status", standard:"Standard", upsell:"Zu Premium wechseln — 9,90 €/Monat →", logout:"Abmelden",
+    status:"Status", standard:"Standard", upsell:"Zu Premium wechseln — 9,90 €/Monat →", logout:"Abmelden", login:"Anmelden",
     manualNamePh:"Produktname", manualBrandPh:"Marke (optional)", manualAdd:"Hinzufügen", manualCancel:"Abbrechen",
     historyEmpty:"Noch keine Analyse gespeichert.", historyScoreOf:"Score", removeProduct:"Entfernen",
     planMonthly:"Premium (monatlich)", planYearly:"Premium (jährlich)", planOneshot:"Einzelanalyse — {n} übrig"
@@ -2039,7 +2053,7 @@ it: {
     tabProducts:"I miei prodotti", tabAccount:"Il mio account", scan:"Scansiona una foto", addManual:"Aggiungi manualmente",
     empty:"Nessun prodotto salvato. Aggiungi i tuoi prodotti perché appaiano nella tua routine.",
     history:"La mia cronologia", historyLocked:"Cronologia disponibile con Premium", newAnalysis:"Nuova analisi",
-    status:"Stato", standard:"Standard", upsell:"Passa a Premium — 9,90 €/mese →", logout:"Disconnetti",
+    status:"Stato", standard:"Standard", upsell:"Passa a Premium — 9,90 €/mese →", logout:"Disconnetti", login:"Accedi",
     manualNamePh:"Nome del prodotto", manualBrandPh:"Marca (opzionale)", manualAdd:"Aggiungi", manualCancel:"Annulla",
     historyEmpty:"Nessuna analisi registrata per ora.", historyScoreOf:"Punteggio", removeProduct:"Rimuovi",
     planMonthly:"Premium (mensile)", planYearly:"Premium (annuale)", planOneshot:"Formula singola — {n} rimanente/i"
@@ -3285,6 +3299,9 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     else if((acc.oneshotCredits||0) > 0){ planLabel = t('drawer.planOneshot').replace('{n}', acc.oneshotCredits); hasAccess = true; }
     pillEl.textContent = planLabel;
     upsellEl.style.display = hasAccess ? 'none' : 'block';
+    const loginBtn = document.getElementById('drawerLoginBtn'), logoutBtn = document.getElementById('drawerLogoutBtn');
+    if(loginBtn) loginBtn.style.display = acc.loggedIn ? 'none' : 'flex';
+    if(logoutBtn) logoutBtn.style.display = acc.loggedIn ? 'flex' : 'none';
     const history = getHistory();
     if(!hasAccess){
       histEl.innerHTML = `<div class="drawer-locked">
@@ -3331,7 +3348,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       if(!googleAuthPopup || googleAuthPopup.closed){
         clearInterval(googleAuthPollId);
         await refreshProfile();
-        if(getAccount().loggedIn) gateCheckAccess();
+        if(getAccount().loggedIn) afterGateLoginSuccess();
         return;
       }
       try{
@@ -3376,9 +3393,31 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     gateCheckAccess();
   }
   let gateAuthMode = 'login'; /* 'login' | 'signup' | 'reset' */
+  /* The login/signup/reset form (renderGateLogin and friends) is shared between two
+     entry points: unlocking a just-finished analysis (gateBoxId 'gateBoxContent',
+     gateLoginContext 'analysis') and logging in from the account panel with no
+     analysis involved (gateBoxId 'acctLoginBoxContent', gateLoginContext 'account').
+     After a successful login/signup, where we go next depends on gateLoginContext. */
+  let gateBoxId = 'gateBoxContent';
+  let gateLoginContext = 'analysis';
+  function openAccountLogin(){
+    closeDrawer();
+    gateBoxId = 'acctLoginBoxContent';
+    gateLoginContext = 'account';
+    gateAuthMode = 'login';
+    const overlay = document.getElementById('acctLoginOverlay');
+    if(overlay) overlay.classList.add('show');
+    renderGateLogin();
+  }
+  function closeAccountLogin(){
+    const overlay = document.getElementById('acctLoginOverlay');
+    if(overlay) overlay.classList.remove('show');
+    gateBoxId = 'gateBoxContent';
+    gateLoginContext = 'analysis';
+  }
   function gateSwitchMode(mode){ gateAuthMode = mode; renderGateLogin(); }
   function renderGateLogin(){
-    const box = document.getElementById('gateBoxContent');
+    const box = document.getElementById(gateBoxId);
     if(!box) return;
     const googleBtnHtml = sb ? `
       <button type="button" class="btn btn-ghost btn-block gate-google-btn" onclick="loginWithGoogle()">
@@ -3431,51 +3470,70 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       <div class="gate-note">${t('gate.loginNote')}</div>`;
   }
   function gateAuthNote(msg){
-    const el = document.getElementById('gateAuthNote');
+    /* Scoped to the currently active gate box — two copies of this form can exist in
+       the DOM at once (the analysis unlock box and the account-panel login overlay),
+       both using the same inner id, so a plain getElementById could hit the wrong one. */
+    const box = document.getElementById(gateBoxId);
+    const el = box ? box.querySelector('#gateAuthNote') : null;
     if(el) el.textContent = msg;
+  }
+  /* After a successful login/signup: unlock the just-finished analysis when that's
+     why the form was opened, or just close the account-login overlay and refresh
+     the account panel when the person opened it straight from "Mon compte". */
+  function afterGateLoginSuccess(){
+    if(gateLoginContext === 'account'){
+      closeAccountLogin();
+      openDrawer();
+      drawerTab('compte');
+      return;
+    }
+    gateCheckAccess();
   }
   async function submitGateLogin(e){
     e.preventDefault();
-    const email = document.getElementById('gateEmail').value.trim();
-    const password = document.getElementById('gatePassword').value;
+    const box = document.getElementById(gateBoxId);
+    const email = box.querySelector('#gateEmail').value.trim();
+    const password = box.querySelector('#gatePassword').value;
     if(!email) return false;
     if(sb){
       justLoggedOut = false;
       const { error } = await sb.auth.signInWithPassword({ email, password });
       if(error){ gateAuthNote(t('gate.authError')); return false; }
       await refreshProfile();
-      gateCheckAccess();
+      afterGateLoginSuccess();
       return false;
     }
     const acc = getAccount();
     acc.loggedIn = true; acc.email = email;
     saveAccount(acc);
-    gateCheckAccess();
+    afterGateLoginSuccess();
     return false;
   }
   async function submitGateSignup(e){
     e.preventDefault();
-    const name = document.getElementById('gateName').value.trim();
-    const email = document.getElementById('gateEmail').value.trim();
-    const password = document.getElementById('gatePassword').value;
+    const box = document.getElementById(gateBoxId);
+    const name = box.querySelector('#gateName').value.trim();
+    const email = box.querySelector('#gateEmail').value.trim();
+    const password = box.querySelector('#gatePassword').value;
     if(!email || !password) return false;
     if(sb){
       justLoggedOut = false;
       const { data, error } = await sb.auth.signUp({ email, password, options:{ data:{ full_name:name } } });
       if(error){ gateAuthNote(t('gate.authError')); return false; }
-      if(data && data.session){ await refreshProfile(); gateCheckAccess(); return false; }
+      if(data && data.session){ await refreshProfile(); afterGateLoginSuccess(); return false; }
       gateAuthNote(t('gate.signupSent'));
       return false;
     }
     const acc = getAccount();
     acc.loggedIn = true; acc.email = email; acc.name = name;
     saveAccount(acc);
-    gateCheckAccess();
+    afterGateLoginSuccess();
     return false;
   }
   async function requestGatePasswordReset(e){
     e.preventDefault();
-    const email = document.getElementById('gateEmail').value.trim();
+    const box = document.getElementById(gateBoxId);
+    const email = box.querySelector('#gateEmail').value.trim();
     if(!email || !sb) return false;
     const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: CANONICAL_ORIGIN + '/' });
     gateAuthNote(error ? t('gate.authError') : t('gate.resetSent'));
