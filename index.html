@@ -457,6 +457,9 @@
   .toggle button.on .save-badge{background:rgba(0,0,0,.2);}
   .toggle button:not(.on) .save-badge{background:var(--accent-soft); color:var(--accent);}
   .price-card{ max-width:420px; margin:0 auto; text-align:left; background:var(--surface); border:1.5px solid var(--accent); border-radius:22px; padding:36px; position:relative; }
+  .already-sub-card{ max-width:420px; margin:0 auto 40px; text-align:left; background:var(--surface); border:1.5px solid var(--accent); border-radius:22px; padding:36px; }
+  .already-sub-card h3{font-size:22px; margin-bottom:4px; color:var(--ink);}
+  .already-sub-card .sub{color:var(--ink-soft); font-size:14px; display:block; font-family:var(--serif-sub);}
   .price-badge{ position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:var(--accent); color:var(--accent-ink); font-size:12px; font-weight:600; padding:6px 16px; border-radius:999px; white-space:nowrap; display:flex; align-items:center; gap:5px; }
   .price-ic{ width:42px;height:42px;border-radius:12px; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; margin-bottom:17px; }
   .price-card h3{font-size:22px; margin-bottom:4px; color:var(--ink);}
@@ -1083,6 +1086,13 @@
       </div>
       <span class="txt" data-i18n-html="pricing.trustBadge">Rejoins les <b>14 300</b> utilisateurs déjà inscrits</span>
     </div>
+    <div class="already-sub-card" id="alreadySubCard" style="display:none;">
+      <div class="price-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12l5 5L20 6"/></svg></div>
+      <h3 data-i18n="pricing.alreadyTitle">Tu es déjà abonné(e)</h3>
+      <span class="sub" id="alreadySubPlan"></span>
+      <button class="btn btn-primary btn-block" onclick="closeDrawer(); openDrawer(); openAccountManage();" style="margin-top:18px;" data-i18n="pricing.alreadyManage">Gérer mon abonnement</button>
+    </div>
+    <div id="pricingCards">
     <div class="toggle">
       <button class="on" id="toggleMonthly" onclick="setBilling('m')" data-i18n="pricing.monthly">Mensuel</button>
       <button id="toggleYearly" onclick="setBilling('y')"><span data-i18n="pricing.yearly">Annuel</span> <span class="save-badge">−33%</span></button>
@@ -1121,6 +1131,7 @@
         <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.oneshotLi3">Aucun engagement, aucun renouvellement</span></li>
       </ul>
       <button class="btn btn-ghost btn-block" id="oneshotCta" onclick="buyOneShot()" data-i18n="pricing.oneshotCta">Acheter 1 analyse — 4,90 €</button>
+    </div>
     </div>
 
     <div class="price-faq">
@@ -1403,6 +1414,7 @@ fr: {
     li4:"Produits recommandés avec prix & liens", li5:"Suivi d'évolution dans le temps", li6:"Chat IA avec conseillère skincare",
     li7:"Plan repas anti-imperfections personnalisé, 7 jours 🍽️",
     ctaMonthly:"Commencer — 9,90 €/mois", ctaYearly:"Commencer — 79 €/an",
+    alreadyTitle:"Tu es déjà abonné(e)", alreadyManage:"Gérer mon abonnement",
     faqTitle:"Questions fréquentes",
     faq1q:"Puis-je annuler mon abonnement ?", faq1a:"Oui, tu peux annuler à tout moment depuis ton compte. L'accès Premium reste actif jusqu'à la fin de la période en cours.",
     faq2q:"Que se passe-t-il après mon abonnement ?", faq2a:"Tu as accès à des analyses illimitées, ton historique complet, le chat IA et le plan repas personnalisé.",
@@ -1483,7 +1495,8 @@ fr: {
     changeEmail:"Adresse e-mail", newEmailPh:"Nouvelle adresse e-mail", saveEmail:"Mettre à jour l'e-mail",
     emailSent:"Vérifie ta boîte mail pour confirmer le changement d'adresse.",
     changePassword:"Mot de passe", newPasswordPh:"Nouveau mot de passe (6 caractères min.)", savePassword:"Mettre à jour le mot de passe",
-    passwordUpdated:"Mot de passe mis à jour.", error:"Une erreur est survenue, réessaie.", close:"Fermer"
+    passwordUpdated:"Mot de passe mis à jour.", error:"Une erreur est survenue, réessaie.", close:"Fermer",
+    currentPasswordPh:"Mot de passe actuel", currentPasswordNeeded:"Indique ton mot de passe actuel pour confirmer.", wrongPassword:"Mot de passe actuel incorrect."
   },
   gate:{
     verifyTitle:"Vérification de sécurité", verifying:"Vérification en cours…", verified:"Vérifié",
@@ -1608,6 +1621,7 @@ en: {
     li4:"Recommended products with prices & links", li5:"Progress tracking over time", li6:"AI chat with a skincare advisor",
     li7:"Personalised anti-blemish meal plan, 7 days 🍽️",
     ctaMonthly:"Get started — €9.90/mo", ctaYearly:"Get started — €79/yr",
+    alreadyTitle:"You're already subscribed", alreadyManage:"Manage my subscription",
     faqTitle:"Frequently asked questions",
     faq1q:"Can I cancel my subscription?", faq1a:"Yes, you can cancel any time from your account. Premium access stays active until the end of the current period.",
     faq2q:"What happens after my subscription ends?", faq2a:"You get unlimited analyses, your full history, the AI chat and the personalised meal plan.",
@@ -1688,7 +1702,8 @@ en: {
     changeEmail:"Email address", newEmailPh:"New email address", saveEmail:"Update email",
     emailSent:"Check your inbox to confirm the address change.",
     changePassword:"Password", newPasswordPh:"New password (min. 6 characters)", savePassword:"Update password",
-    passwordUpdated:"Password updated.", error:"Something went wrong, please try again.", close:"Close"
+    passwordUpdated:"Password updated.", error:"Something went wrong, please try again.", close:"Close",
+    currentPasswordPh:"Current password", currentPasswordNeeded:"Enter your current password to confirm.", wrongPassword:"Current password is incorrect."
   },
   gate:{
     verifyTitle:"Security check", verifying:"Verifying…", verified:"Verified",
@@ -1813,6 +1828,7 @@ de: {
     li4:"Empfohlene Produkte mit Preisen & Links", li5:"Fortschrittsverfolgung über die Zeit", li6:"KI-Chat mit Hautpflegeberatung",
     li7:"Personalisierter Ernährungsplan gegen Unreinheiten, 7 Tage 🍽️",
     ctaMonthly:"Loslegen — 9,90 €/Monat", ctaYearly:"Loslegen — 79 €/Jahr",
+    alreadyTitle:"Du bist bereits abonniert", alreadyManage:"Abo verwalten",
     faqTitle:"Häufige Fragen",
     faq1q:"Kann ich mein Abo kündigen?", faq1a:"Ja, du kannst jederzeit über dein Konto kündigen. Der Premium-Zugang bleibt bis zum Ende des laufenden Zeitraums aktiv.",
     faq2q:"Was passiert nach meinem Abo?", faq2a:"Du behältst Zugang zu unbegrenzten Analysen, deinem vollständigen Verlauf, dem KI-Chat und dem persönlichen Ernährungsplan.",
@@ -1893,7 +1909,8 @@ de: {
     changeEmail:"E-Mail-Adresse", newEmailPh:"Neue E-Mail-Adresse", saveEmail:"E-Mail aktualisieren",
     emailSent:"Prüfe dein Postfach, um die Änderung der Adresse zu bestätigen.",
     changePassword:"Passwort", newPasswordPh:"Neues Passwort (mind. 6 Zeichen)", savePassword:"Passwort aktualisieren",
-    passwordUpdated:"Passwort aktualisiert.", error:"Etwas ist schiefgelaufen, versuch es erneut.", close:"Schließen"
+    passwordUpdated:"Passwort aktualisiert.", error:"Etwas ist schiefgelaufen, versuch es erneut.", close:"Schließen",
+    currentPasswordPh:"Aktuelles Passwort", currentPasswordNeeded:"Gib dein aktuelles Passwort zur Bestätigung ein.", wrongPassword:"Aktuelles Passwort ist falsch."
   },
   gate:{
     verifyTitle:"Sicherheitsprüfung", verifying:"Überprüfung läuft…", verified:"Verifiziert",
@@ -2018,6 +2035,7 @@ it: {
     li4:"Prodotti consigliati con prezzi & link", li5:"Monitoraggio dei progressi nel tempo", li6:"Chat IA con una consulente skincare",
     li7:"Piano alimentare anti-imperfezioni personalizzato, 7 giorni 🍽️",
     ctaMonthly:"Inizia — 9,90 €/mese", ctaYearly:"Inizia — 79 €/anno",
+    alreadyTitle:"Sei già abbonato/a", alreadyManage:"Gestisci il mio abbonamento",
     faqTitle:"Domande frequenti",
     faq1q:"Posso annullare il mio abbonamento?", faq1a:"Sì, puoi annullare in qualsiasi momento dal tuo account. L'accesso Premium resta attivo fino alla fine del periodo in corso.",
     faq2q:"Cosa succede dopo il mio abbonamento?", faq2a:"Hai accesso ad analisi illimitate, alla cronologia completa, alla chat IA e al piano alimentare personalizzato.",
@@ -2098,7 +2116,8 @@ it: {
     changeEmail:"Indirizzo e-mail", newEmailPh:"Nuovo indirizzo e-mail", saveEmail:"Aggiorna e-mail",
     emailSent:"Controlla la tua posta per confermare il cambio di indirizzo.",
     changePassword:"Password", newPasswordPh:"Nuova password (min. 6 caratteri)", savePassword:"Aggiorna password",
-    passwordUpdated:"Password aggiornata.", error:"Qualcosa è andato storto, riprova.", close:"Chiudi"
+    passwordUpdated:"Password aggiornata.", error:"Qualcosa è andato storto, riprova.", close:"Chiudi",
+    currentPasswordPh:"Password attuale", currentPasswordNeeded:"Inserisci la password attuale per confermare.", wrongPassword:"Password attuale errata."
   },
   gate:{
     verifyTitle:"Verifica di sicurezza", verifying:"Verifica in corso…", verified:"Verificato",
@@ -2169,7 +2188,26 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     document.querySelectorAll('nav.links button').forEach(b=>b.classList.remove('on'));
     const navBtn = document.querySelector('nav.links button[data-nav="'+id+'"]');
     if(navBtn) navBtn.classList.add('on');
+    if(id === 'tarifs') renderPricingPage();
     window.scrollTo({top:0, behavior:'instant'});
+  }
+
+  /* Someone already on a paid subscription (monthly/yearly) has no reason to see
+     the plan-selection cards again — show a simple "already subscribed" panel
+     that links straight to account management instead. One-off ("à l'unité")
+     purchases don't count as a subscription, so those accounts still see the
+     normal pricing cards (they may want to buy another one-shot analysis). */
+  function renderPricingPage(){
+    const acc = getAccount();
+    const alreadySub = acc.loggedIn && (acc.plan === 'monthly' || acc.plan === 'yearly');
+    const alreadyCard = document.getElementById('alreadySubCard'), cards = document.getElementById('pricingCards');
+    if(!alreadyCard || !cards) return;
+    alreadyCard.style.display = alreadySub ? 'block' : 'none';
+    cards.style.display = alreadySub ? 'none' : 'block';
+    if(alreadySub){
+      const planLabel = acc.plan === 'yearly' ? t('drawer.planYearly') : t('drawer.planMonthly');
+      document.getElementById('alreadySubPlan').textContent = planLabel;
+    }
   }
 
   /* ---------- i18n ---------- */
@@ -2423,17 +2461,21 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     document.getElementById('diag-ready').style.display='none';
     document.getElementById('diag-gate').style.display='none';
     document.getElementById('diag-results').style.display='block';
-    if(hasEvolutionTrackingAccess()) addEvolutionPhoto(pendingResultPhoto || capturedPhotoDataUrl);
     historyNoticeArmed = true;
     /* Wait for renderResults() to settle (it may upgrade the local report to an AI
        one) before saving to history, so the saved snapshot — reopenable later from
-       "Mon historique" — is whichever version actually ended up on screen. */
-    renderResults().then(()=>{
+       "Mon historique" — is whichever version actually ended up on screen. Only
+       once that history row exists (and we have its id) do we attach the
+       diagnostic photo to it — evolution photos are scoped per-analysis, never
+       shared across analyses (see currentHistoryId below). */
+    renderResults().then(async ()=>{
       if(!lastReport) return;
-      addHistoryEntry({
+      currentHistoryId = await addHistoryEntry({
         globalScore: lastReport.globalScore, concernName: lastReport.concernName, sevKey: lastReport.sevKey,
         report: lastReport, source: lastReportSource
       });
+      if(hasEvolutionTrackingAccess()) await addEvolutionPhoto(pendingResultPhoto || capturedPhotoDataUrl);
+      renderEvolutionPhotos();
     });
   }
 
@@ -2442,15 +2484,24 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
      bucket (compressed client-side before upload) with metadata rows in the
      evolution_photos table; evolutionCache mirrors that as {id,date,storagePath,photo}
      (photo = a short-lived signed URL). Without Supabase, everything stays in
-     localStorage as base64 data URLs, same as before. */
+     localStorage as base64 data URLs, same as before.
+     Each photo belongs to ONE analysis (currentHistoryId, set whenever a fresh
+     analysis is saved to history or a past one is reopened via viewHistoryEntry)
+     — comparisons never mix photos from different analyses; to compare, you
+     reopen the analysis you want to track. */
   let evolutionCache = [];
-  function getEvolutionPhotos(){
-    if(sb) return evolutionCache;
+  let currentHistoryId = null;
+  function genLocalId(){ return 'id_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8); }
+  function getAllLocalEvolutionPhotos(){
     try{ const raw = localStorage.getItem('solaneEvolutionPhotos'); if(raw) return JSON.parse(raw); }catch(e){}
     return [];
   }
+  function getEvolutionPhotos(){
+    if(sb) return evolutionCache;
+    return getAllLocalEvolutionPhotos().filter(p => p.historyId === currentHistoryId);
+  }
   function saveEvolutionPhotos(list){
-    try{ localStorage.setItem('solaneEvolutionPhotos', JSON.stringify(list.slice(0,10))); }catch(e){}
+    try{ localStorage.setItem('solaneEvolutionPhotos', JSON.stringify(list.slice(0,200))); }catch(e){}
   }
   function compressImageDataUrl(dataUrl, maxDim, quality){
     return new Promise((resolve)=>{
@@ -2479,8 +2530,8 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     });
   }
   async function refreshEvolutionPhotos(){
-    if(!sb || !currentProfile || !currentProfile.id){ evolutionCache = []; return; }
-    const { data, error } = await sb.from('evolution_photos').select('*').eq('user_id', currentProfile.id).order('date', { ascending:false }).limit(10);
+    if(!sb || !currentProfile || !currentProfile.id || !currentHistoryId){ evolutionCache = []; renderEvolutionPhotos(); return; }
+    const { data, error } = await sb.from('evolution_photos').select('*').eq('user_id', currentProfile.id).eq('history_id', currentHistoryId).order('date', { ascending:false }).limit(10);
     if(error || !data){ evolutionCache = []; renderEvolutionPhotos(); return; }
     evolutionCache = await Promise.all(data.map(async row => {
       let url = '';
@@ -2493,7 +2544,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     renderEvolutionPhotos();
   }
   async function addEvolutionPhoto(photoDataUrl){
-    if(!photoDataUrl) return;
+    if(!photoDataUrl || !currentHistoryId) return;
     const compressed = await compressImageDataUrl(photoDataUrl, 900, 0.72);
     if(sb){
       if(!currentProfile || !currentProfile.id) return;
@@ -2502,14 +2553,14 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
         const blob = await (await fetch(compressed)).blob();
         const { error:upErr } = await sb.storage.from('evolution-photos').upload(path, blob, { contentType:'image/jpeg' });
         if(upErr){ console.error('Evolution photo upload failed:', upErr); return; }
-        const { error:insErr } = await sb.from('evolution_photos').insert({ user_id: currentProfile.id, storage_path: path });
+        const { error:insErr } = await sb.from('evolution_photos').insert({ user_id: currentProfile.id, storage_path: path, history_id: currentHistoryId });
         if(insErr) console.error('Evolution photo insert failed:', insErr);
         await refreshEvolutionPhotos();
       }catch(e){ console.error('Evolution photo save failed:', e); }
       return;
     }
-    const list = getEvolutionPhotos();
-    list.unshift({ date:new Date().toISOString(), photo:compressed });
+    const list = getAllLocalEvolutionPhotos();
+    list.unshift({ id: genLocalId(), date:new Date().toISOString(), photo:compressed, historyId: currentHistoryId });
     saveEvolutionPhotos(list);
   }
   async function deleteEvolutionPhoto(idOrIndex){
@@ -2523,9 +2574,10 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       await refreshEvolutionPhotos();
       return;
     }
-    const list = getEvolutionPhotos();
-    list.splice(idOrIndex, 1);
-    saveEvolutionPhotos(list);
+    const full = getAllLocalEvolutionPhotos();
+    const idx = full.findIndex(p => String(p.id) === String(idOrIndex));
+    if(idx > -1) full.splice(idx, 1);
+    saveEvolutionPhotos(full);
     renderEvolutionPhotos();
   }
   function onEvolutionPhotoChosen(input){
@@ -2573,8 +2625,8 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     }
     const oldest = list[list.length-1], newest = list[0];
     const fmt = d => { const dt = new Date(d); return isNaN(dt) ? '' : dt.toLocaleDateString(currentLang); };
-    const oldestKey = sb ? `'${oldest.id}'` : (list.length-1);
-    const newestKey = sb ? `'${newest.id}'` : 0;
+    const oldestKey = `'${oldest.id}'`;
+    const newestKey = `'${newest.id}'`;
     el.innerHTML = `<div class="evo-compare">
       <div class="evo-shot"><img src="${oldest.photo}" alt=""><span>${res.evoCompareBefore||''} · ${fmt(oldest.date)}</span>
         <button type="button" class="evo-del-btn" onclick="deleteEvolutionPhoto(${oldestKey})">✕</button>
@@ -2827,7 +2879,9 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     document.getElementById('scoreRingFill').setAttribute('stroke-dasharray', CIRC.toFixed(1));
     document.getElementById('scoreRingFill').setAttribute('stroke-dashoffset', (CIRC * (1 - pct/100)).toFixed(1));
     document.getElementById('scoreRingNum').textContent = r.globalScore;
-    document.getElementById('scoreMarker').style.left = pct + '%';
+    const scoreMarkerEl = document.getElementById('scoreMarker');
+    scoreMarkerEl.style.left = pct + '%';
+    scoreMarkerEl.style.background = gaugeColorAt(pct);
 
     let readKey = 'readLevelMid';
     if(pct >= 85) readKey = 'readLevelHigh';
@@ -2841,6 +2895,22 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
 
   function esc(s){ return (s==null?'':String(s)).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+  /* Interpolates the same 3-stop gradient used by .score-gradient-bar's CSS
+     background (red -> orange -> green) so the round cursor on top of it can
+     be painted the exact color of the gauge at that position, instead of
+     staying plain white regardless of the score. */
+  function gaugeColorAt(pct){
+    const stops = [[201,87,63],[224,162,83],[127,174,122]]; // #c9573f, #e0a253, #7fae7a
+    const p = Math.max(0, Math.min(100, pct));
+    const seg = p <= 50 ? 0 : 1;
+    const t = p <= 50 ? p/50 : (p-50)/50;
+    const a = stops[seg], b = stops[seg+1];
+    const r = Math.round(a[0] + (b[0]-a[0])*t);
+    const g = Math.round(a[1] + (b[1]-a[1])*t);
+    const bl = Math.round(a[2] + (b[2]-a[2])*t);
+    return `rgb(${r},${g},${bl})`;
+  }
 
   function openSectionDetail(section){
     const r = lastReport;
@@ -3140,7 +3210,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(!sb || !currentProfile || !currentProfile.id) return;
     const { data, error } = await sb.from('history').select('*').eq('user_id', currentProfile.id).order('date', { ascending:false }).limit(30);
     if(!error && data){
-      historyCache = data.map(h=>({ date:h.date, globalScore:h.global_score, concernName:h.concern_name||'', sevKey:h.sev_key||'', report:h.report_json||null, source:h.source||'local' }));
+      historyCache = data.map(h=>({ id:h.id, date:h.date, globalScore:h.global_score, concernName:h.concern_name||'', sevKey:h.sev_key||'', report:h.report_json||null, source:h.source||'local' }));
       renderAccountPanel();
     }
   }
@@ -3152,24 +3222,34 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     }catch(e){}
     return [];
   }
-  function addHistoryEntry(entry){
+  /* Returns the new entry's id (Supabase row id, or a generated local id) so the
+     caller can tie evolution photos to this specific analysis via currentHistoryId
+     — evolution photos are per-analysis, never shared across analyses. */
+  async function addHistoryEntry(entry){
     const item = {
+      id: null,
       date:new Date().toISOString(), globalScore:entry.globalScore, concernName:entry.concernName||'', sevKey:entry.sevKey||'',
       report: entry.report || null, source: entry.source || 'local'
     };
     if(sb){
       historyCache = [item, ...historyCache].slice(0,30);
       if(currentProfile && currentProfile.id){
-        sb.from('history').insert({
-          user_id: currentProfile.id, global_score:item.globalScore, concern_name:item.concernName, sev_key:item.sevKey,
-          report_json: item.report, source: item.source
-        }).then(({error})=>{ if(error) console.error('Supabase history insert failed:', error); });
+        try{
+          const { data, error } = await sb.from('history').insert({
+            user_id: currentProfile.id, global_score:item.globalScore, concern_name:item.concernName, sev_key:item.sevKey,
+            report_json: item.report, source: item.source
+          }).select().single();
+          if(error) console.error('Supabase history insert failed:', error);
+          else if(data) item.id = data.id;
+        }catch(e){ console.error('Supabase history insert failed:', e); }
       }
-      return;
+      return item.id;
     }
+    item.id = genLocalId();
     const h = getHistory();
     h.unshift(item);
     try{ localStorage.setItem('solaneHistory', JSON.stringify(h.slice(0,30))); }catch(e){}
+    return item.id;
   }
   function getProducts(){
     try{
@@ -3523,12 +3603,14 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       ${sb ? `
       <h5>${t('manage.changeEmail')}</h5>
       <form class="gate-form" onsubmit="return submitChangeEmail(event)" style="margin-bottom:18px;">
-        <input type="email" id="manageNewEmail" placeholder="${t('manage.newEmailPh')}" required autocomplete="email">
+        <div class="field" style="margin-bottom:0;"><input type="email" id="manageNewEmail" placeholder="${t('manage.newEmailPh')}" required autocomplete="email"></div>
+        <div class="field" style="margin-bottom:0;"><input type="password" id="manageEmailCurrentPassword" placeholder="${t('manage.currentPasswordPh')}" required autocomplete="current-password"></div>
         <button type="submit" class="btn btn-primary btn-block">${t('manage.saveEmail')}</button>
       </form>
       <h5>${t('manage.changePassword')}</h5>
       <form class="gate-form" onsubmit="return submitChangePassword(event)">
-        <input type="password" id="manageNewPassword" placeholder="${t('manage.newPasswordPh')}" minlength="6" required autocomplete="new-password">
+        <div class="field" style="margin-bottom:0;"><input type="password" id="managePasswordCurrentPassword" placeholder="${t('manage.currentPasswordPh')}" required autocomplete="current-password"></div>
+        <div class="field" style="margin-bottom:0;"><input type="password" id="manageNewPassword" placeholder="${t('manage.newPasswordPh')}" minlength="6" required autocomplete="new-password"></div>
         <button type="submit" class="btn btn-primary btn-block">${t('manage.savePassword')}</button>
       </form>` : ''}
       <p id="manageNote" style="margin-top:14px; font-size:13px; min-height:18px;"></p>
@@ -3542,26 +3624,44 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     renderAccountManage();
     manageNote(t('manage.cancelConfirm'), false);
   }
+  /* Re-authenticates with the account's current password before a sensitive
+     change (email/password). Accounts that signed up via Google have no
+     password to check, so the current-password step is skipped for them. */
+  async function verifyCurrentPassword(currentPassword){
+    const acc = getAccount();
+    if(acc.authProvider && acc.authProvider !== 'email') return true;
+    if(!currentPassword) return false;
+    const { error } = await sb.auth.signInWithPassword({ email: acc.email, password: currentPassword });
+    return !error;
+  }
   async function submitChangeEmail(e){
     e.preventDefault();
     const box = document.getElementById('acctManageContent');
     const newEmail = box.querySelector('#manageNewEmail').value.trim();
+    const currentPassword = box.querySelector('#manageEmailCurrentPassword').value;
     if(!newEmail || !sb) return false;
+    const ok = await verifyCurrentPassword(currentPassword);
+    if(!ok){ manageNote(t('manage.wrongPassword'), true); return false; }
     const { error } = await sb.auth.updateUser({ email: newEmail });
     if(error){ manageNote(t('manage.error'), true); return false; }
     manageNote(t('manage.emailSent'), false);
     box.querySelector('#manageNewEmail').value = '';
+    box.querySelector('#manageEmailCurrentPassword').value = '';
     return false;
   }
   async function submitChangePassword(e){
     e.preventDefault();
     const box = document.getElementById('acctManageContent');
     const newPassword = box.querySelector('#manageNewPassword').value;
+    const currentPassword = box.querySelector('#managePasswordCurrentPassword').value;
     if(!newPassword || !sb) return false;
+    const ok = await verifyCurrentPassword(currentPassword);
+    if(!ok){ manageNote(t('manage.wrongPassword'), true); return false; }
     const { error } = await sb.auth.updateUser({ password: newPassword });
     if(error){ manageNote(t('manage.error'), true); return false; }
     manageNote(t('manage.passwordUpdated'), false);
     box.querySelector('#manageNewPassword').value = '';
+    box.querySelector('#managePasswordCurrentPassword').value = '';
     return false;
   }
   function gateSwitchMode(mode){ gateAuthMode = mode; renderGateLogin(); }
@@ -3738,12 +3838,17 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
 
   /* Reopens a saved history entry exactly as it was, without recomputing anything
      or touching the current in-progress quiz state. */
-  function viewHistoryEntry(idx){
+  async function viewHistoryEntry(idx){
     const history = getHistory();
     const h = history[idx];
     if(!h || !h.report) return;
     lastReport = h.report;
     lastReportSource = h.source || 'local';
+    /* Switch the "current analysis" context to this one so evolution photos
+       shown/added from here belong to THIS analysis, not whichever was open
+       before (each analysis keeps its own separate photo comparison). */
+    currentHistoryId = h.id || null;
+    evolutionCache = []; // avoid a flash of the previous analysis's photos before the refresh below
     analysisAIAllowed = true;
     closeDrawer();
     document.getElementById('diag-quiz').style.display='none';
@@ -3752,7 +3857,8 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     document.getElementById('diag-results').style.display='block';
     showPage('diag');
     applyReportToDOM(lastReport, lastReportSource);
-    renderEvolutionPhotos();
+    if(sb) await refreshEvolutionPhotos();
+    else renderEvolutionPhotos();
   }
 
   /* ---------- Init ---------- */
