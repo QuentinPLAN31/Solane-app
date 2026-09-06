@@ -3204,8 +3204,23 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.4-4 4.2-6 7.5-6s6.1 2 7.5 6"/></svg>`;
     }
   }
+  /* Set right before a logout and for a few seconds after: guards against the
+     onAuthStateChange listener (below) reviving the session from a stale
+     auto-refresh/network response racing behind the explicit logout, and reset
+     the instant a real login flow starts. */
+  let justLoggedOut = false;
+  function purgeLocalSupabaseSession(){
+    /* Belt-and-braces: wipe whatever Supabase itself stored client-side so the
+       next getSession() call can't possibly resurrect the old session, even if
+       the network signOut() call is slow, blocked, or never resolves. */
+    try{
+      Object.keys(localStorage).filter(k => /^sb-.*-auth-token$/.test(k)).forEach(k => localStorage.removeItem(k));
+    }catch(e){ console.error('[Solane] purgeLocalSupabaseSession failed:', e); }
+  }
   function doLogout(){
     console.log('[Solane] doLogout() called, sb configured:', !!sb);
+    justLoggedOut = true;
+    setTimeout(()=>{ justLoggedOut = false; }, 8000);
     /* Close the drawer FIRST, unconditionally, before anything else that could
        possibly throw — so the click always visibly does something even if a
        later step fails. Every following step is individually wrapped so one
@@ -3213,6 +3228,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     try{ closeDrawer(); }catch(e){ console.error('[Solane] closeDrawer failed:', e); }
     if(sb){
       currentProfile = null; historyCache = []; evolutionCache = [];
+      purgeLocalSupabaseSession();
       try{ updateNavAvatar(); }catch(e){ console.error('[Solane] updateNavAvatar failed:', e); }
       try{ renderAccountPanel(); }catch(e){ console.error('[Solane] renderAccountPanel failed:', e); }
       /* The actual server-side sign-out runs in the background — the UI above is
@@ -3223,7 +3239,12 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
           sb.auth.signOut(),
           new Promise((_,reject)=> setTimeout(()=> reject(new Error('signOut timeout')), 5000))
         ]).then(()=> console.log('[Solane] Supabase signOut settled OK'))
-          .catch(e => console.error('[Solane] Supabase signOut failed or timed out:', e));
+          .catch(e => console.error('[Solane] Supabase signOut failed or timed out:', e))
+          .finally(()=>{
+            purgeLocalSupabaseSession();
+            currentProfile = null;
+            try{ updateNavAvatar(); renderAccountPanel(); }catch(e){}
+          });
       }catch(e){ console.error('[Solane] Supabase signOut call threw:', e); }
       return;
     }
@@ -3283,6 +3304,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   let googleAuthPopup = null, googleAuthPollId = null;
   function loginWithGoogle(){
     if(!sb) return;
+    justLoggedOut = false;
     if(googleAuthPollId) clearInterval(googleAuthPollId);
     googleAuthPopup = window.open('about:blank', 'solaneGoogleAuth', 'width=480,height=640');
     sb.auth.signInWithOAuth({
@@ -3405,6 +3427,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     const password = document.getElementById('gatePassword').value;
     if(!email) return false;
     if(sb){
+      justLoggedOut = false;
       const { error } = await sb.auth.signInWithPassword({ email, password });
       if(error){ gateAuthNote(t('gate.authError')); return false; }
       await refreshProfile();
@@ -3424,6 +3447,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     const password = document.getElementById('gatePassword').value;
     if(!email || !password) return false;
     if(sb){
+      justLoggedOut = false;
       const { data, error } = await sb.auth.signUp({ email, password, options:{ data:{ full_name:name } } });
       if(error){ gateAuthNote(t('gate.authError')); return false; }
       if(data && data.session){ await refreshProfile(); gateCheckAccess(); return false; }
@@ -3485,6 +3509,15 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   updateNavAvatar();
   if(sb){
     refreshProfile();
-    sb.auth.onAuthStateChange(()=>{ refreshProfile(); });
+    sb.auth.onAuthStateChange((event)=>{
+      console.log('[Solane] onAuthStateChange:', event, 'justLoggedOut:', justLoggedOut);
+      if(justLoggedOut && event !== 'SIGNED_OUT'){
+        /* Something (an auto-refresh, a stale network response) is trying to
+           re-establish a session moments after an explicit, user-initiated
+           logout — ignore it rather than silently logging the person back in. */
+        return;
+      }
+      refreshProfile();
+    });
   }
 </script>
