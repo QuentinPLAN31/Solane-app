@@ -568,6 +568,9 @@
   .prod-list-item .rm{border:none; background:none; color:var(--ink-faint); cursor:pointer; font-size:11px; text-decoration:underline; flex:none;}
   .history-list{display:flex; flex-direction:column; gap:9px; margin-bottom:22px;}
   .history-item{border:1px solid var(--line); border-radius:13px; padding:12px 14px; display:flex; align-items:center; gap:12px;}
+  .history-item.clickable{cursor:pointer; transition:border-color .15s, background .15s;}
+  .history-item.clickable:hover{border-color:var(--accent); background:var(--surface-2);}
+  .history-item-arrow{flex:none; color:var(--ink-faint);}
   .history-item .sc{width:38px; height:38px; border-radius:50%; background:var(--accent-soft); color:var(--accent); font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; flex:none;}
   .history-item .info{flex:1; min-width:0;}
   .history-item .info .n{font-size:13px; font-weight:600; color:var(--ink);}
@@ -1220,18 +1223,7 @@
       <span class="brand" style="cursor:default;">Solane</span>
       <button class="drawer-close" onclick="closeDrawer()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
-    <div class="drawer-tabs">
-      <button class="on" id="tabProduits" onclick="drawerTab('produits')">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13.5" r="3.2"/></svg>
-        <span data-i18n="drawer.tabProducts">Mes produits</span>
-      </button>
-      <button id="tabCompte" onclick="drawerTab('compte')">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.4-4 4.2-6 7.5-6s6.1 2 7.5 6"/></svg>
-        <span data-i18n="drawer.tabAccount">Mon compte</span>
-      </button>
-    </div>
-
-    <div id="drawer-produits">
+    <div id="drawer-produits" style="display:none;">
       <div class="prod-grid">
         <div class="prod-tile" onclick="document.getElementById('drawerScanInput').click()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13.5" r="3.2"/></svg><span data-i18n="drawer.scan">Scanner une photo</span></div>
         <div class="prod-tile" onclick="toggleManualAddForm()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="drawer.addManual">Ajouter manuellement</span></div>
@@ -1252,7 +1244,7 @@
       </div>
     </div>
 
-    <div id="drawer-compte" style="display:none;">
+    <div id="drawer-compte">
       <h5 data-i18n="drawer.history">Mon historique</h5>
       <div id="historyContainer"></div>
       <button class="btn btn-primary btn-block" onclick="closeDrawer(); startDiagnostic();" style="margin-bottom:22px;"><span data-i18n="drawer.newAnalysis">Nouvelle analyse</span></button>
@@ -1268,6 +1260,9 @@
       </div>
     </div>
 
+    <button class="btn btn-cream btn-block" id="drawerManageBtn" onclick="openAccountManage()" style="display:none; margin-top:10px;">
+      <span data-i18n="drawer.manage">Gérer le compte</span>
+    </button>
     <button class="btn btn-cream btn-block" id="drawerLoginBtn" onclick="openAccountLogin()" style="display:none; margin-top:22px;">
       <span data-i18n="drawer.login">Se connecter</span>
     </button>
@@ -1286,6 +1281,17 @@
       <button class="drawer-close" onclick="closeAccountLogin()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="gate-box" id="acctLoginBoxContent" style="text-align:center; padding:8px 0 4px;"></div>
+  </div>
+</div>
+
+<!-- Manage-account overlay: cancel/downgrade subscription, change email, change password -->
+<div class="drawer-overlay" id="acctManageOverlay">
+  <div class="drawer" style="max-width:420px;">
+    <div class="drawer-head">
+      <span class="brand" style="cursor:default;" data-i18n="manage.title">Gérer mon compte</span>
+      <button class="drawer-close" onclick="closeAccountManage()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div id="acctManageContent" style="padding:4px 0 4px;"></div>
   </div>
 </div>
 
@@ -1466,9 +1472,18 @@ fr: {
     empty:"Aucun produit enregistré. Ajoute tes produits pour qu'ils apparaissent dans ta routine.",
     history:"Mon historique", historyLocked:"Historique disponible avec Premium", newAnalysis:"Nouvelle analyse",
     status:"Statut", standard:"Standard", upsell:"Passer Premium — 9,90 €/mois →", logout:"Se déconnecter", login:"Se connecter",
+    manage:"Gérer le compte",
     manualNamePh:"Nom du produit", manualBrandPh:"Marque (optionnel)", manualAdd:"Ajouter", manualCancel:"Annuler",
     historyEmpty:"Aucune analyse enregistrée pour le moment.", historyScoreOf:"Score", removeProduct:"Retirer",
     planMonthly:"Premium (mensuel)", planYearly:"Premium (annuel)", planOneshot:"Formule à l'unité — {n} restante(s)"
+  },
+  manage:{
+    title:"Gérer mon compte", currentPlan:"Formule actuelle", noSub:"Aucun abonnement actif — formule gratuite",
+    cancelSub:"Résilier l'abonnement", cancelConfirm:"Abonnement résilié — tu es repassé(e) en formule gratuite.",
+    changeEmail:"Adresse e-mail", newEmailPh:"Nouvelle adresse e-mail", saveEmail:"Mettre à jour l'e-mail",
+    emailSent:"Vérifie ta boîte mail pour confirmer le changement d'adresse.",
+    changePassword:"Mot de passe", newPasswordPh:"Nouveau mot de passe (6 caractères min.)", savePassword:"Mettre à jour le mot de passe",
+    passwordUpdated:"Mot de passe mis à jour.", error:"Une erreur est survenue, réessaie.", close:"Fermer"
   },
   gate:{
     verifyTitle:"Vérification de sécurité", verifying:"Vérification en cours…", verified:"Vérifié",
@@ -1662,9 +1677,18 @@ en: {
     empty:"No products saved yet. Add your products so they appear in your routine.",
     history:"My history", historyLocked:"History available with Premium", newAnalysis:"New analysis",
     status:"Status", standard:"Standard", upsell:"Upgrade to Premium — €9.90/mo →", logout:"Log out", login:"Sign in",
+    manage:"Manage account",
     manualNamePh:"Product name", manualBrandPh:"Brand (optional)", manualAdd:"Add", manualCancel:"Cancel",
     historyEmpty:"No analysis recorded yet.", historyScoreOf:"Score", removeProduct:"Remove",
     planMonthly:"Premium (monthly)", planYearly:"Premium (yearly)", planOneshot:"One-shot plan — {n} left"
+  },
+  manage:{
+    title:"Manage my account", currentPlan:"Current plan", noSub:"No active subscription — free plan",
+    cancelSub:"Cancel subscription", cancelConfirm:"Subscription cancelled — you're back on the free plan.",
+    changeEmail:"Email address", newEmailPh:"New email address", saveEmail:"Update email",
+    emailSent:"Check your inbox to confirm the address change.",
+    changePassword:"Password", newPasswordPh:"New password (min. 6 characters)", savePassword:"Update password",
+    passwordUpdated:"Password updated.", error:"Something went wrong, please try again.", close:"Close"
   },
   gate:{
     verifyTitle:"Security check", verifying:"Verifying…", verified:"Verified",
@@ -1858,9 +1882,18 @@ de: {
     empty:"Noch keine Produkte gespeichert. Füge deine Produkte hinzu, damit sie in deiner Routine erscheinen.",
     history:"Mein Verlauf", historyLocked:"Verlauf verfügbar mit Premium", newAnalysis:"Neue Analyse",
     status:"Status", standard:"Standard", upsell:"Zu Premium wechseln — 9,90 €/Monat →", logout:"Abmelden", login:"Anmelden",
+    manage:"Konto verwalten",
     manualNamePh:"Produktname", manualBrandPh:"Marke (optional)", manualAdd:"Hinzufügen", manualCancel:"Abbrechen",
     historyEmpty:"Noch keine Analyse gespeichert.", historyScoreOf:"Score", removeProduct:"Entfernen",
     planMonthly:"Premium (monatlich)", planYearly:"Premium (jährlich)", planOneshot:"Einzelanalyse — {n} übrig"
+  },
+  manage:{
+    title:"Konto verwalten", currentPlan:"Aktueller Plan", noSub:"Kein aktives Abonnement — kostenloser Plan",
+    cancelSub:"Abonnement kündigen", cancelConfirm:"Abonnement gekündigt — du bist wieder im kostenlosen Plan.",
+    changeEmail:"E-Mail-Adresse", newEmailPh:"Neue E-Mail-Adresse", saveEmail:"E-Mail aktualisieren",
+    emailSent:"Prüfe dein Postfach, um die Änderung der Adresse zu bestätigen.",
+    changePassword:"Passwort", newPasswordPh:"Neues Passwort (mind. 6 Zeichen)", savePassword:"Passwort aktualisieren",
+    passwordUpdated:"Passwort aktualisiert.", error:"Etwas ist schiefgelaufen, versuch es erneut.", close:"Schließen"
   },
   gate:{
     verifyTitle:"Sicherheitsprüfung", verifying:"Überprüfung läuft…", verified:"Verifiziert",
@@ -2054,9 +2087,18 @@ it: {
     empty:"Nessun prodotto salvato. Aggiungi i tuoi prodotti perché appaiano nella tua routine.",
     history:"La mia cronologia", historyLocked:"Cronologia disponibile con Premium", newAnalysis:"Nuova analisi",
     status:"Stato", standard:"Standard", upsell:"Passa a Premium — 9,90 €/mese →", logout:"Disconnetti", login:"Accedi",
+    manage:"Gestisci account",
     manualNamePh:"Nome del prodotto", manualBrandPh:"Marca (opzionale)", manualAdd:"Aggiungi", manualCancel:"Annulla",
     historyEmpty:"Nessuna analisi registrata per ora.", historyScoreOf:"Punteggio", removeProduct:"Rimuovi",
     planMonthly:"Premium (mensile)", planYearly:"Premium (annuale)", planOneshot:"Formula singola — {n} rimanente/i"
+  },
+  manage:{
+    title:"Gestisci il mio account", currentPlan:"Formula attuale", noSub:"Nessun abbonamento attivo — formula gratuita",
+    cancelSub:"Disdici l'abbonamento", cancelConfirm:"Abbonamento disdetto — sei tornato/a alla formula gratuita.",
+    changeEmail:"Indirizzo e-mail", newEmailPh:"Nuovo indirizzo e-mail", saveEmail:"Aggiorna e-mail",
+    emailSent:"Controlla la tua posta per confermare il cambio di indirizzo.",
+    changePassword:"Password", newPasswordPh:"Nuova password (min. 6 caratteri)", savePassword:"Aggiorna password",
+    passwordUpdated:"Password aggiornata.", error:"Qualcosa è andato storto, riprova.", close:"Chiudi"
   },
   gate:{
     verifyTitle:"Verifica di sicurezza", verifying:"Verifica in corso…", verified:"Verificato",
@@ -2381,11 +2423,18 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     document.getElementById('diag-ready').style.display='none';
     document.getElementById('diag-gate').style.display='none';
     document.getElementById('diag-results').style.display='block';
-    const localReport = computeReport();
-    addHistoryEntry({ globalScore:localReport.globalScore, concernName:localReport.data.name, sevKey:localReport.sevKey });
     if(hasEvolutionTrackingAccess()) addEvolutionPhoto(pendingResultPhoto || capturedPhotoDataUrl);
     historyNoticeArmed = true;
-    renderResults();
+    /* Wait for renderResults() to settle (it may upgrade the local report to an AI
+       one) before saving to history, so the saved snapshot — reopenable later from
+       "Mon historique" — is whichever version actually ended up on screen. */
+    renderResults().then(()=>{
+      if(!lastReport) return;
+      addHistoryEntry({
+        globalScore: lastReport.globalScore, concernName: lastReport.concernName, sevKey: lastReport.sevKey,
+        report: lastReport, source: lastReportSource
+      });
+    });
   }
 
   /* ---------- Evolution photo comparison ---------- */
@@ -3091,7 +3140,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(!sb || !currentProfile || !currentProfile.id) return;
     const { data, error } = await sb.from('history').select('*').eq('user_id', currentProfile.id).order('date', { ascending:false }).limit(30);
     if(!error && data){
-      historyCache = data.map(h=>({ date:h.date, globalScore:h.global_score, concernName:h.concern_name||'', sevKey:h.sev_key||'' }));
+      historyCache = data.map(h=>({ date:h.date, globalScore:h.global_score, concernName:h.concern_name||'', sevKey:h.sev_key||'', report:h.report_json||null, source:h.source||'local' }));
       renderAccountPanel();
     }
   }
@@ -3104,12 +3153,17 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     return [];
   }
   function addHistoryEntry(entry){
-    const item = { date:new Date().toISOString(), globalScore:entry.globalScore, concernName:entry.concernName||'', sevKey:entry.sevKey||'' };
+    const item = {
+      date:new Date().toISOString(), globalScore:entry.globalScore, concernName:entry.concernName||'', sevKey:entry.sevKey||'',
+      report: entry.report || null, source: entry.source || 'local'
+    };
     if(sb){
       historyCache = [item, ...historyCache].slice(0,30);
       if(currentProfile && currentProfile.id){
-        sb.from('history').insert({ user_id: currentProfile.id, global_score:item.globalScore, concern_name:item.concernName, sev_key:item.sevKey })
-          .then(({error})=>{ if(error) console.error('Supabase history insert failed:', error); });
+        sb.from('history').insert({
+          user_id: currentProfile.id, global_score:item.globalScore, concern_name:item.concernName, sev_key:item.sevKey,
+          report_json: item.report, source: item.source
+        }).then(({error})=>{ if(error) console.error('Supabase history insert failed:', error); });
       }
       return;
     }
@@ -3140,6 +3194,15 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(!acc.loggedIn){ acc.loggedIn = true; }
     saveAccount(acc);
     renderAccountPanel();
+    if(pendingGateUnlock){
+      /* An analysis was already run and sitting behind the paywall — jump straight
+         back into it instead of leaving the person stranded on the pricing page. */
+      pendingGateUnlock = false;
+      analysisAIAllowed = true;
+      showToast(currentBilling==='y' ? t('pricing.ctaYearly') : t('pricing.ctaMonthly'));
+      grantResultsAccess();
+      return;
+    }
     alert(currentBilling==='y' ? t('pricing.ctaYearly') : t('pricing.ctaMonthly'));
   }
   function buyOneShot(){
@@ -3149,6 +3212,11 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(!acc.loggedIn){ acc.loggedIn = true; }
     saveAccount(acc);
     renderAccountPanel();
+    if(pendingGateUnlock){
+      showToast(t('pricing.oneshotBought'));
+      gateCheckAccess();
+      return;
+    }
     alert(t('pricing.oneshotBought'));
   }
 
@@ -3160,11 +3228,10 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
   function closeDrawer(){ document.getElementById('drawerOverlay').classList.remove('show'); }
   function drawerTab(which){
-    document.getElementById('tabProduits').classList.toggle('on', which==='produits');
-    document.getElementById('tabCompte').classList.toggle('on', which==='compte');
-    document.getElementById('drawer-produits').style.display = which==='produits' ? 'block':'none';
-    document.getElementById('drawer-compte').style.display = which==='compte' ? 'block':'none';
-    if(which==='compte') renderAccountPanel();
+    // Single-panel drawer now (Mes produits tab removed) — kept as a no-op
+    // shim so existing callers (buyPremium/buyOneShot/afterGateLoginSuccess)
+    // don't need to change; it just makes sure the account panel is fresh.
+    renderAccountPanel();
   }
   document.getElementById('drawerOverlay').addEventListener('click', e=>{ if(e.target.id==='drawerOverlay') closeDrawer(); });
 
@@ -3299,9 +3366,11 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     else if((acc.oneshotCredits||0) > 0){ planLabel = t('drawer.planOneshot').replace('{n}', acc.oneshotCredits); hasAccess = true; }
     pillEl.textContent = planLabel;
     upsellEl.style.display = hasAccess ? 'none' : 'block';
-    const loginBtn = document.getElementById('drawerLoginBtn'), logoutBtn = document.getElementById('drawerLogoutBtn');
+    const loginBtn = document.getElementById('drawerLoginBtn'), logoutBtn = document.getElementById('drawerLogoutBtn'),
+          manageBtn = document.getElementById('drawerManageBtn');
     if(loginBtn) loginBtn.style.display = acc.loggedIn ? 'none' : 'flex';
     if(logoutBtn) logoutBtn.style.display = acc.loggedIn ? 'flex' : 'none';
+    if(manageBtn) manageBtn.style.display = acc.loggedIn ? 'flex' : 'none';
     const history = getHistory();
     if(!hasAccess){
       histEl.innerHTML = `<div class="drawer-locked">
@@ -3311,10 +3380,15 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     } else if(!history.length){
       histEl.innerHTML = `<div class="drawer-locked"><span>${t('drawer.historyEmpty')}</span></div>`;
     } else {
-      histEl.innerHTML = `<div class="history-list">${history.map(h=>{
+      histEl.innerHTML = `<div class="history-list">${history.map((h,i)=>{
         const d = new Date(h.date);
         const dateStr = isNaN(d) ? '' : d.toLocaleDateString(currentLang);
-        return `<div class="history-item"><div class="sc">${h.globalScore}</div><div class="info"><div class="n">${esc(h.concernName || t('drawer.historyScoreOf'))}</div><div class="d">${dateStr}</div></div></div>`;
+        const clickable = !!h.report;
+        return `<div class="history-item${clickable ? ' clickable':''}"${clickable ? ` onclick="viewHistoryEntry(${i})"`:''}>
+          <div class="sc">${h.globalScore}</div>
+          <div class="info"><div class="n">${esc(h.concernName || t('drawer.historyScoreOf'))}</div><div class="d">${dateStr}</div></div>
+          ${clickable ? `<svg class="history-item-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg>` : ''}
+        </div>`;
       }).join('')}</div>`;
     }
   }
@@ -3414,6 +3488,81 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(overlay) overlay.classList.remove('show');
     gateBoxId = 'gateBoxContent';
     gateLoginContext = 'analysis';
+  }
+
+  /* ---------- Manage account: cancel/downgrade subscription, change email/password ---------- */
+  function openAccountManage(){
+    closeDrawer();
+    const overlay = document.getElementById('acctManageOverlay');
+    if(overlay) overlay.classList.add('show');
+    renderAccountManage();
+  }
+  function closeAccountManage(){
+    const overlay = document.getElementById('acctManageOverlay');
+    if(overlay) overlay.classList.remove('show');
+  }
+  function manageNote(msg, isError){
+    const box = document.getElementById('acctManageContent');
+    const el = box ? box.querySelector('#manageNote') : null;
+    if(el){ el.textContent = msg; el.style.color = isError ? 'var(--err, #c0392b)' : 'var(--accent)'; }
+  }
+  function renderAccountManage(){
+    const box = document.getElementById('acctManageContent');
+    if(!box) return;
+    const acc = getAccount();
+    let planLabel = t('manage.noSub');
+    if(acc.plan==='monthly') planLabel = t('drawer.planMonthly');
+    else if(acc.plan==='yearly') planLabel = t('drawer.planYearly');
+    else if((acc.oneshotCredits||0) > 0) planLabel = t('drawer.planOneshot').replace('{n}', acc.oneshotCredits);
+    const hasSub = acc.plan==='monthly' || acc.plan==='yearly';
+    box.innerHTML = `
+      <div class="drawer-acc" style="margin-bottom:16px;">
+        <div class="row"><span>${t('manage.currentPlan')}</span><span class="status-pill">${esc(planLabel)}</span></div>
+        ${hasSub ? `<button type="button" class="btn btn-ghost btn-block" style="margin-top:12px;" onclick="cancelSubscription()">${t('manage.cancelSub')}</button>` : ''}
+      </div>
+      ${sb ? `
+      <h5>${t('manage.changeEmail')}</h5>
+      <form class="gate-form" onsubmit="return submitChangeEmail(event)" style="margin-bottom:18px;">
+        <input type="email" id="manageNewEmail" placeholder="${t('manage.newEmailPh')}" required autocomplete="email">
+        <button type="submit" class="btn btn-primary btn-block">${t('manage.saveEmail')}</button>
+      </form>
+      <h5>${t('manage.changePassword')}</h5>
+      <form class="gate-form" onsubmit="return submitChangePassword(event)">
+        <input type="password" id="manageNewPassword" placeholder="${t('manage.newPasswordPh')}" minlength="6" required autocomplete="new-password">
+        <button type="submit" class="btn btn-primary btn-block">${t('manage.savePassword')}</button>
+      </form>` : ''}
+      <p id="manageNote" style="margin-top:14px; font-size:13px; min-height:18px;"></p>
+    `;
+  }
+  function cancelSubscription(){
+    const acc = getAccount();
+    acc.plan = 'free';
+    saveAccount(acc);
+    renderAccountPanel();
+    renderAccountManage();
+    manageNote(t('manage.cancelConfirm'), false);
+  }
+  async function submitChangeEmail(e){
+    e.preventDefault();
+    const box = document.getElementById('acctManageContent');
+    const newEmail = box.querySelector('#manageNewEmail').value.trim();
+    if(!newEmail || !sb) return false;
+    const { error } = await sb.auth.updateUser({ email: newEmail });
+    if(error){ manageNote(t('manage.error'), true); return false; }
+    manageNote(t('manage.emailSent'), false);
+    box.querySelector('#manageNewEmail').value = '';
+    return false;
+  }
+  async function submitChangePassword(e){
+    e.preventDefault();
+    const box = document.getElementById('acctManageContent');
+    const newPassword = box.querySelector('#manageNewPassword').value;
+    if(!newPassword || !sb) return false;
+    const { error } = await sb.auth.updateUser({ password: newPassword });
+    if(error){ manageNote(t('manage.error'), true); return false; }
+    manageNote(t('manage.passwordUpdated'), false);
+    box.querySelector('#manageNewPassword').value = '';
+    return false;
   }
   function gateSwitchMode(mode){ gateAuthMode = mode; renderGateLogin(); }
   function renderGateLogin(){
@@ -3554,25 +3703,56 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   function renderGatePaywall(){
     const box = document.getElementById('gateBoxContent');
     if(!box) return;
+    pendingGateUnlock = true;
     box.innerHTML = `
       <div class="sparkle-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2Z"/></svg></div>
       <h2>${t('gate.paywallTitle')}</h2>
       <p>${t('gate.paywallDesc')}</p>
       <div class="gate-paywall-actions">
-        <button class="btn btn-cream btn-block" onclick="showPage('tarifs')">${t('gate.goPremium')}</button>
-        <button class="btn btn-ghost btn-block" onclick="buyOneShot(); gateCheckAccess();">${t('gate.goOneShot')}</button>
+        <button class="btn btn-cream btn-block" onclick="goToPricingFromGate()">${t('gate.goPremium')}</button>
+        <button class="btn btn-ghost btn-block" onclick="buyOneShot()">${t('gate.goOneShot')}</button>
         <button class="btn btn-ghost btn-block" onclick="continueFreePreview()">${t('gate.continueFree')}</button>
       </div>
       <div class="gate-note">${t('gate.freeNote')}</div>`;
   }
+  /* Set while an already-computed analysis is sitting behind the paywall — lets
+     buyPremium()/buyOneShot() know to jump straight back into that analysis once
+     the (simulated) purchase completes, instead of stranding the person on the
+     pricing page and forcing them to redo the whole quiz. */
+  let pendingGateUnlock = false;
+  function goToPricingFromGate(){
+    pendingGateUnlock = true;
+    showPage('tarifs');
+  }
   function continueFreePreview(){
+    pendingGateUnlock = false;
     analysisAIAllowed = false;
     grantResultsAccess();
   }
   function grantResultsAccess(){
+    pendingGateUnlock = false;
     document.getElementById('diag-gate').style.display='none';
     showPage('diag');
     showResults();
+  }
+
+  /* Reopens a saved history entry exactly as it was, without recomputing anything
+     or touching the current in-progress quiz state. */
+  function viewHistoryEntry(idx){
+    const history = getHistory();
+    const h = history[idx];
+    if(!h || !h.report) return;
+    lastReport = h.report;
+    lastReportSource = h.source || 'local';
+    analysisAIAllowed = true;
+    closeDrawer();
+    document.getElementById('diag-quiz').style.display='none';
+    document.getElementById('diag-ready').style.display='none';
+    document.getElementById('diag-gate').style.display='none';
+    document.getElementById('diag-results').style.display='block';
+    showPage('diag');
+    applyReportToDOM(lastReport, lastReportSource);
+    renderEvolutionPhotos();
   }
 
   /* ---------- Init ---------- */
