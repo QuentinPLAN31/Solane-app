@@ -590,13 +590,22 @@
   .gate-toggle a:hover{text-decoration:underline;}
   .gate-google-btn{display:flex; align-items:center; justify-content:center;}
   .gate-paywall-actions{display:flex; flex-direction:column; gap:12px; margin-top:26px;}
-  .price-card.oneshot{border-color:var(--line); margin-top:22px;}
+  .price-card.oneshot{border-color:var(--line);}
+  .price-card.oneshot.standalone{margin-top:0;}
   .price-card.oneshot .price-ic{background:var(--surface-2); color:var(--ink-soft);}
-  .price-card.lifetime{border-color:var(--line); margin-top:22px;}
+  .price-card.lifetime{border-color:var(--line); margin-top:0;}
   .price-card.lifetime .price-ic{background:var(--surface-2); color:var(--ink-soft);}
   .price-card.lifetime .price-num small{margin-left:4px;}
   .price-divider{display:flex; align-items:center; gap:12px; max-width:420px; margin:22px auto; color:var(--ink-faint); font-size:12.5px;}
   .price-divider::before, .price-divider::after{content:""; flex:1; height:1px; background:var(--line);}
+  .price-pair-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px; max-width:900px; margin:0 auto; align-items:start;}
+  .price-pair-grid .price-card{max-width:none; margin:0; height:100%;}
+  .price-pair-grid .toggle{margin-bottom:20px;}
+  .price-pair-spacer{height:44px; margin-bottom:20px;}
+  @media (max-width:760px){
+    .price-pair-grid{grid-template-columns:1fr; max-width:420px;}
+    .price-pair-spacer{display:none;}
+  }
   .drawer-logout{ margin-top:22px; display:flex; align-items:center; gap:8px; color:var(--ink-faint); font-size:13.5px; background:none; border:none; cursor:pointer; }
   .drawer-logout:hover{color:var(--ink);}
 </style>
@@ -1097,34 +1106,7 @@
       <button class="btn btn-primary btn-block" onclick="closeDrawer(); openDrawer(); openAccountManage();" style="margin-top:18px;" data-i18n="pricing.alreadyManage">Gérer mon abonnement</button>
     </div>
     <div id="pricingCards">
-    <div class="toggle">
-      <button class="on" id="toggleMonthly" onclick="setBilling('m')" data-i18n="pricing.monthly">Mensuel</button>
-      <button id="toggleYearly" onclick="setBilling('y')"><span data-i18n="pricing.yearly">Annuel</span> <span class="save-badge">−33%</span></button>
-    </div>
-    <div class="price-card">
-      <div class="price-badge">★ <span data-i18n="pricing.popular">Le plus populaire</span></div>
-      <div class="price-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg></div>
-      <h3 data-i18n="pricing.plan">Premium</h3>
-      <span class="sub" data-i18n="pricing.planSub">Pour celles qui veulent des résultats durables</span>
-      <div><span class="price-num" id="priceNum">9,90 €</span><small>/<span data-i18n="pricing.perMonth">mois</span></small></div>
-      <div class="price-billed" id="priceBilled" data-i18n="pricing.billedMonthly">Facturé chaque mois</div>
-      <div class="price-save" id="priceSave" style="visibility:hidden;"><span data-i18n="pricing.save">Économise 39,80 € (33%)</span></div>
-      <ul class="price-list">
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li1">Analyses illimitées de ta peau</span></li>
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li2">Score de santé cutanée + historique</span></li>
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li3">Routine personnalisée (matin & soir)</span></li>
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li4">Produits recommandés avec prix & liens</span></li>
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li5">Suivi d'évolution dans le temps</span></li>
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li6">Chat IA avec conseillère skincare</span></li>
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li7">Plan repas anti-imperfections personnalisé, 7 jours 🍽️</span></li>
-      </ul>
-      <button class="btn btn-primary btn-block" id="priceCta" onclick="buyPremium()" data-i18n="pricing.ctaMonthly">Commencer — 9,90 €/mois</button>
-    </div>
-    <div class="price-under" id="priceUnder"></div>
-
-    <div class="price-divider"><span data-i18n="pricing.orDivider">ou</span></div>
-
-    <div class="price-card oneshot">
+    <div class="price-card oneshot standalone">
       <div class="price-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
       <h3 data-i18n="pricing.oneshotPlan">Formule à l'unité</h3>
       <span class="sub" data-i18n="pricing.oneshotSub">Idéal pour tester, sans engagement</span>
@@ -1139,17 +1121,49 @@
 
     <div class="price-divider"><span data-i18n="pricing.orDivider">ou</span></div>
 
-    <div class="price-card lifetime">
-      <div class="price-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg></div>
-      <h3 data-i18n="pricing.lifetimePlan">Premium à vie</h3>
-      <span class="sub" data-i18n="pricing.lifetimeSub">Paiement unique, accès pour toujours</span>
-      <div><span class="price-num" data-i18n="pricing.lifetimePrice">99 €</span><small data-i18n="pricing.lifetimeUnit">une seule fois</small></div>
-      <ul class="price-list">
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.lifetimeLi1">5 analyses complètes par IA chaque mois</span></li>
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.lifetimeLi2">Historique, suivi d'évolution & chat IA inclus</span></li>
-        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.lifetimeLi3">Aucun renouvellement, aucun engagement</span></li>
-      </ul>
-      <button class="btn btn-ghost btn-block" id="lifetimeCta" onclick="buyLifetime()" data-i18n="pricing.lifetimeCta">Débloquer à vie — 99 €</button>
+    <div class="price-pair-grid">
+      <div class="price-col">
+        <div class="toggle">
+          <button class="on" id="toggleMonthly" onclick="setBilling('m')" data-i18n="pricing.monthly">Mensuel</button>
+          <button id="toggleYearly" onclick="setBilling('y')"><span data-i18n="pricing.yearly">Annuel</span> <span class="save-badge">−33%</span></button>
+        </div>
+        <div class="price-card">
+          <div class="price-badge">★ <span data-i18n="pricing.popular">Le plus populaire</span></div>
+          <div class="price-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg></div>
+          <h3 data-i18n="pricing.plan">Premium</h3>
+          <span class="sub" data-i18n="pricing.planSub">Pour celles qui veulent des résultats durables</span>
+          <div><span class="price-num" id="priceNum">9,90 €</span><small>/<span data-i18n="pricing.perMonth">mois</span></small></div>
+          <div class="price-billed" id="priceBilled" data-i18n="pricing.billedMonthly">Facturé chaque mois</div>
+          <div class="price-save" id="priceSave" style="visibility:hidden;"><span data-i18n="pricing.save">Économise 39,80 € (33%)</span></div>
+          <ul class="price-list">
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li1">Analyses illimitées de ta peau</span></li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li2">Score de santé cutanée + historique</span></li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li3">Routine personnalisée (matin & soir)</span></li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li4">Produits recommandés avec prix & liens</span></li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li5">Suivi d'évolution dans le temps</span></li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li6">Chat IA avec conseillère skincare</span></li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.li7">Plan repas anti-imperfections personnalisé, 7 jours 🍽️</span></li>
+          </ul>
+          <button class="btn btn-primary btn-block" id="priceCta" onclick="buyPremium()" data-i18n="pricing.ctaMonthly">Commencer — 9,90 €/mois</button>
+        </div>
+        <div class="price-under" id="priceUnder"></div>
+      </div>
+
+      <div class="price-col">
+        <div class="price-pair-spacer" aria-hidden="true"></div>
+        <div class="price-card lifetime">
+          <div class="price-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg></div>
+          <h3 data-i18n="pricing.lifetimePlan">Premium à vie</h3>
+          <span class="sub" data-i18n="pricing.lifetimeSub">Paiement unique, accès pour toujours</span>
+          <div><span class="price-num" data-i18n="pricing.lifetimePrice">99 €</span><small data-i18n="pricing.lifetimeUnit">une seule fois</small></div>
+          <ul class="price-list">
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.lifetimeLi1">5 analyses complètes par IA chaque mois</span></li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.lifetimeLi2">Historique, suivi d'évolution & chat IA inclus</span></li>
+            <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.lifetimeLi3">Aucun renouvellement, aucun engagement</span></li>
+          </ul>
+          <button class="btn btn-ghost btn-block" id="lifetimeCta" onclick="buyLifetime()" data-i18n="pricing.lifetimeCta">Débloquer à vie — 99 €</button>
+        </div>
+      </div>
     </div>
     </div>
 
@@ -3033,7 +3047,11 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
        via an active subscription, lifetime access, or a one-shot credit just
        spent on THIS analysis), instead of showing it unconditionally. */
     const teaser = document.getElementById('premiumTeaser');
-    if(teaser) teaser.style.display = (source === 'ai') ? 'none' : '';
+    /* Base this on analysisAIAllowed (paid/unlocked access), not on source==='ai':
+       when access was granted but the AI call itself fails or is still pending,
+       source stays 'local' even though the person already paid — the upsell must
+       not keep showing in that case. */
+    if(teaser) teaser.style.display = analysisAIAllowed ? 'none' : '';
 
     document.getElementById('concernName').textContent = r.concernName;
     document.getElementById('concernDesc').textContent = (r.causes||'').split('.')[0] + '.';
