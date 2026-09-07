@@ -2,5 +2,9 @@
   "name": "solane-app",
   "version": "1.0.0",
   "private": true,
-  "description": "Site Solane avec analyse peau par IA (Claude) — front statique + fonction serverless /api/analyze."
+  "description": "Site Solane avec analyse peau par IA (Claude) — front statique + fonctions serverless /api (analyse IA, paiements Stripe).",
+  "dependencies": {
+    "stripe": "^17.4.0",
+    "@supabase/supabase-js": "^2.45.4"
+  }
 }
