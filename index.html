@@ -592,6 +592,9 @@
   .gate-paywall-actions{display:flex; flex-direction:column; gap:12px; margin-top:26px;}
   .price-card.oneshot{border-color:var(--line); margin-top:22px;}
   .price-card.oneshot .price-ic{background:var(--surface-2); color:var(--ink-soft);}
+  .price-card.lifetime{border-color:var(--line); margin-top:22px;}
+  .price-card.lifetime .price-ic{background:var(--surface-2); color:var(--ink-soft);}
+  .price-card.lifetime .price-num small{margin-left:4px;}
   .price-divider{display:flex; align-items:center; gap:12px; max-width:420px; margin:22px auto; color:var(--ink-faint); font-size:12.5px;}
   .price-divider::before, .price-divider::after{content:""; flex:1; height:1px; background:var(--line);}
   .drawer-logout{ margin-top:22px; display:flex; align-items:center; gap:8px; color:var(--ink-faint); font-size:13.5px; background:none; border:none; cursor:pointer; }
@@ -1133,6 +1136,21 @@
       </ul>
       <button class="btn btn-ghost btn-block" id="oneshotCta" onclick="buyOneShot()" data-i18n="pricing.oneshotCta">Acheter 1 analyse — 4,90 €</button>
     </div>
+
+    <div class="price-divider"><span data-i18n="pricing.orDivider">ou</span></div>
+
+    <div class="price-card lifetime">
+      <div class="price-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg></div>
+      <h3 data-i18n="pricing.lifetimePlan">Premium à vie</h3>
+      <span class="sub" data-i18n="pricing.lifetimeSub">Paiement unique, accès pour toujours</span>
+      <div><span class="price-num" data-i18n="pricing.lifetimePrice">99 €</span><small data-i18n="pricing.lifetimeUnit">une seule fois</small></div>
+      <ul class="price-list">
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.lifetimeLi1">5 analyses complètes par IA chaque mois</span></li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.lifetimeLi2">Historique, suivi d'évolution & chat IA inclus</span></li>
+        <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke="currentColor"><path d="M4 12l5 5L20 6"/></svg><span data-i18n="pricing.lifetimeLi3">Aucun renouvellement, aucun engagement</span></li>
+      </ul>
+      <button class="btn btn-ghost btn-block" id="lifetimeCta" onclick="buyLifetime()" data-i18n="pricing.lifetimeCta">Débloquer à vie — 99 €</button>
+    </div>
     </div>
 
     <div class="price-faq">
@@ -1422,6 +1440,9 @@ fr: {
     orDivider:"ou", oneshotPlan:"Formule à l'unité", oneshotSub:"Idéal pour tester, sans engagement",
     oneshotPrice:"4,90 €", oneshotUnit:"analyse", oneshotLi1:"1 analyse complète par IA", oneshotLi2:"Routine, produits & nutrition détaillés",
     oneshotLi3:"Aucun engagement, aucun renouvellement", oneshotCta:"Acheter 1 analyse — 4,90 €",
+    lifetimePlan:"Premium à vie", lifetimeSub:"Paiement unique, accès pour toujours", lifetimePrice:"99 €", lifetimeUnit:"une seule fois",
+    lifetimeLi1:"5 analyses complètes par IA chaque mois", lifetimeLi2:"Historique, suivi d'évolution & chat IA inclus", lifetimeLi3:"Aucun renouvellement, aucun engagement",
+    lifetimeCta:"Débloquer à vie — 99 €", lifetimeBought:"Accès à vie débloqué !",
     oneshotBought:"Ta formule à l'unité est activée : 1 analyse disponible."
   },
   about:{
@@ -1488,7 +1509,7 @@ fr: {
     manage:"Gérer le compte",
     manualNamePh:"Nom du produit", manualBrandPh:"Marque (optionnel)", manualAdd:"Ajouter", manualCancel:"Annuler",
     historyEmpty:"Aucune analyse enregistrée pour le moment.", historyScoreOf:"Score", removeProduct:"Retirer",
-    planMonthly:"Premium (mensuel)", planYearly:"Premium (annuel)", planOneshot:"Formule à l'unité — {n} restante(s)"
+    planMonthly:"Premium (mensuel)", planYearly:"Premium (annuel)", planLifetime:"Premium (à vie)", planOneshot:"Formule à l'unité — {n} restante(s)"
   },
   manage:{
     title:"Gérer mon compte", currentPlan:"Formule actuelle", noSub:"Aucun abonnement actif — formule gratuite",
@@ -1512,7 +1533,8 @@ fr: {
     forgotPassword:"Mot de passe oublié ?", resetTitle:"Réinitialiser le mot de passe", resetDesc:"Indique ton email, tu recevras un lien pour choisir un nouveau mot de passe.",
     resetBtn:"Envoyer le lien", resetSent:"Email envoyé ! Vérifie ta boîte de réception.", backToLogin:"Retour à la connexion",
     signupSent:"Compte créé ! Vérifie ton email pour confirmer ton adresse, puis connecte-toi.", authError:"Une erreur est survenue. Vérifie tes informations et réessaie.",
-    nameLoginPh:"Ton prénom"
+    nameLoginPh:"Ton prénom",
+    quotaTitle:"Limite mensuelle atteinte", quotaDesc:"Tu as utilisé tes 5 analyses ce mois-ci. Reviens le mois prochain pour de nouvelles analyses."
   }
 },
 
@@ -1629,6 +1651,9 @@ en: {
     orDivider:"or", oneshotPlan:"One-shot plan", oneshotSub:"Perfect for a first try, no commitment",
     oneshotPrice:"€4.90", oneshotUnit:"analysis", oneshotLi1:"1 full AI-powered analysis", oneshotLi2:"Detailed routine, products & nutrition",
     oneshotLi3:"No commitment, no renewal", oneshotCta:"Buy 1 analysis — €4.90",
+    lifetimePlan:"Lifetime Premium", lifetimeSub:"One-time payment, access forever", lifetimePrice:"€99", lifetimeUnit:"one time only",
+    lifetimeLi1:"5 full AI analyses every month", lifetimeLi2:"History, evolution tracking & AI chat included", lifetimeLi3:"No renewal, no commitment",
+    lifetimeCta:"Unlock for life — €99", lifetimeBought:"Lifetime access unlocked!",
     oneshotBought:"Your one-shot plan is active: 1 analysis available."
   },
   about:{
@@ -1695,7 +1720,7 @@ en: {
     manage:"Manage account",
     manualNamePh:"Product name", manualBrandPh:"Brand (optional)", manualAdd:"Add", manualCancel:"Cancel",
     historyEmpty:"No analysis recorded yet.", historyScoreOf:"Score", removeProduct:"Remove",
-    planMonthly:"Premium (monthly)", planYearly:"Premium (yearly)", planOneshot:"One-shot plan — {n} left"
+    planMonthly:"Premium (monthly)", planYearly:"Premium (yearly)", planLifetime:"Premium (lifetime)", planOneshot:"One-shot plan — {n} left"
   },
   manage:{
     title:"Manage my account", currentPlan:"Current plan", noSub:"No active subscription — free plan",
@@ -1719,7 +1744,8 @@ en: {
     forgotPassword:"Forgot your password?", resetTitle:"Reset your password", resetDesc:"Enter your email, you'll receive a link to choose a new password.",
     resetBtn:"Send the link", resetSent:"Email sent! Check your inbox.", backToLogin:"Back to sign in",
     signupSent:"Account created! Check your email to confirm your address, then sign in.", authError:"Something went wrong. Check your details and try again.",
-    nameLoginPh:"Your first name"
+    nameLoginPh:"Your first name",
+    quotaTitle:"Monthly limit reached", quotaDesc:"You've used your 5 analyses this month. Come back next month for more."
   }
 },
 
@@ -1836,6 +1862,9 @@ de: {
     orDivider:"oder", oneshotPlan:"Einzelanalyse", oneshotSub:"Ideal zum Testen, ohne Abo",
     oneshotPrice:"4,90 €", oneshotUnit:"Analyse", oneshotLi1:"1 vollständige KI-Analyse", oneshotLi2:"Detaillierte Routine, Produkte & Ernährung",
     oneshotLi3:"Keine Verpflichtung, keine Verlängerung", oneshotCta:"1 Analyse kaufen — 4,90 €",
+    lifetimePlan:"Premium lebenslang", lifetimeSub:"Einmalzahlung, Zugang für immer", lifetimePrice:"99 €", lifetimeUnit:"einmalig",
+    lifetimeLi1:"5 vollständige KI-Analysen pro Monat", lifetimeLi2:"Verlauf, Fortschrittsverfolgung & KI-Chat inklusive", lifetimeLi3:"Keine Verlängerung, keine Verpflichtung",
+    lifetimeCta:"Lebenslang freischalten — 99 €", lifetimeBought:"Lebenslanger Zugang freigeschaltet!",
     oneshotBought:"Deine Einzelanalyse ist aktiv: 1 Analyse verfügbar."
   },
   about:{
@@ -1902,7 +1931,7 @@ de: {
     manage:"Konto verwalten",
     manualNamePh:"Produktname", manualBrandPh:"Marke (optional)", manualAdd:"Hinzufügen", manualCancel:"Abbrechen",
     historyEmpty:"Noch keine Analyse gespeichert.", historyScoreOf:"Score", removeProduct:"Entfernen",
-    planMonthly:"Premium (monatlich)", planYearly:"Premium (jährlich)", planOneshot:"Einzelanalyse — {n} übrig"
+    planMonthly:"Premium (monatlich)", planYearly:"Premium (jährlich)", planLifetime:"Premium (lebenslang)", planOneshot:"Einzelanalyse — {n} übrig"
   },
   manage:{
     title:"Konto verwalten", currentPlan:"Aktueller Plan", noSub:"Kein aktives Abonnement — kostenloser Plan",
@@ -1926,7 +1955,8 @@ de: {
     forgotPassword:"Passwort vergessen?", resetTitle:"Passwort zurücksetzen", resetDesc:"Gib deine E-Mail ein, du erhältst einen Link, um ein neues Passwort zu wählen.",
     resetBtn:"Link senden", resetSent:"E-Mail gesendet! Prüfe dein Postfach.", backToLogin:"Zurück zur Anmeldung",
     signupSent:"Konto erstellt! Bestätige deine E-Mail-Adresse und melde dich dann an.", authError:"Etwas ist schiefgelaufen. Überprüfe deine Angaben und versuche es erneut.",
-    nameLoginPh:"Dein Vorname"
+    nameLoginPh:"Dein Vorname",
+    quotaTitle:"Monatslimit erreicht", quotaDesc:"Du hast deine 5 Analysen diesen Monat aufgebraucht. Komm nächsten Monat für weitere zurück."
   }
 },
 
@@ -2043,6 +2073,9 @@ it: {
     orDivider:"o", oneshotPlan:"Formula singola", oneshotSub:"Ideale per provare, senza impegno",
     oneshotPrice:"4,90 €", oneshotUnit:"analisi", oneshotLi1:"1 analisi completa via IA", oneshotLi2:"Routine, prodotti & nutrizione dettagliati",
     oneshotLi3:"Nessun impegno, nessun rinnovo", oneshotCta:"Acquista 1 analisi — 4,90 €",
+    lifetimePlan:"Premium a vita", lifetimeSub:"Pagamento unico, accesso per sempre", lifetimePrice:"99 €", lifetimeUnit:"una tantum",
+    lifetimeLi1:"5 analisi complete con IA ogni mese", lifetimeLi2:"Cronologia, monitoraggio dei progressi & chat IA incluse", lifetimeLi3:"Nessun rinnovo, nessun impegno",
+    lifetimeCta:"Sblocca a vita — 99 €", lifetimeBought:"Accesso a vita sbloccato!",
     oneshotBought:"La tua formula singola è attiva: 1 analisi disponibile."
   },
   about:{
@@ -2109,7 +2142,7 @@ it: {
     manage:"Gestisci account",
     manualNamePh:"Nome del prodotto", manualBrandPh:"Marca (opzionale)", manualAdd:"Aggiungi", manualCancel:"Annulla",
     historyEmpty:"Nessuna analisi registrata per ora.", historyScoreOf:"Punteggio", removeProduct:"Rimuovi",
-    planMonthly:"Premium (mensile)", planYearly:"Premium (annuale)", planOneshot:"Formula singola — {n} rimanente/i"
+    planMonthly:"Premium (mensile)", planYearly:"Premium (annuale)", planLifetime:"Premium (a vita)", planOneshot:"Formula singola — {n} rimanente/i"
   },
   manage:{
     title:"Gestisci il mio account", currentPlan:"Formula attuale", noSub:"Nessun abbonamento attivo — formula gratuita",
@@ -2133,7 +2166,8 @@ it: {
     forgotPassword:"Password dimenticata?", resetTitle:"Reimposta la password", resetDesc:"Inserisci la tua email, riceverai un link per scegliere una nuova password.",
     resetBtn:"Invia il link", resetSent:"Email inviata! Controlla la tua casella di posta.", backToLogin:"Torna all'accesso",
     signupSent:"Account creato! Controlla la tua email per confermare l'indirizzo, poi accedi.", authError:"Si è verificato un errore. Controlla i tuoi dati e riprova.",
-    nameLoginPh:"Il tuo nome"
+    nameLoginPh:"Il tuo nome",
+    quotaTitle:"Limite mensile raggiunto", quotaDesc:"Hai usato le tue 5 analisi di questo mese. Torna il mese prossimo per altre analisi."
   }
 }
 };
@@ -2193,20 +2227,20 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     window.scrollTo({top:0, behavior:'instant'});
   }
 
-  /* Someone already on a paid subscription (monthly/yearly) has no reason to see
+  /* Someone already on a paid plan (monthly/yearly/lifetime) has no reason to see
      the plan-selection cards again — show a simple "already subscribed" panel
      that links straight to account management instead. One-off ("à l'unité")
      purchases don't count as a subscription, so those accounts still see the
      normal pricing cards (they may want to buy another one-shot analysis). */
   function renderPricingPage(){
     const acc = getAccount();
-    const alreadySub = acc.loggedIn && (acc.plan === 'monthly' || acc.plan === 'yearly');
+    const alreadySub = acc.loggedIn && (acc.plan === 'monthly' || acc.plan === 'yearly' || acc.plan === 'lifetime');
     const alreadyCard = document.getElementById('alreadySubCard'), cards = document.getElementById('pricingCards');
     if(!alreadyCard || !cards) return;
     alreadyCard.style.display = alreadySub ? 'block' : 'none';
     cards.style.display = alreadySub ? 'none' : 'block';
     if(alreadySub){
-      const planLabel = acc.plan === 'yearly' ? t('drawer.planYearly') : t('drawer.planMonthly');
+      const planLabel = acc.plan === 'yearly' ? t('drawer.planYearly') : acc.plan === 'lifetime' ? t('drawer.planLifetime') : t('drawer.planMonthly');
       document.getElementById('alreadySubPlan').textContent = planLabel;
     }
   }
@@ -2590,10 +2624,10 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
   /* Evolution tracking (photo comparison over time) is a subscription-only perk:
      one-shot ("ponctuel") purchases unlock that single analysis but not the
-     ongoing comparison feature, which needs a monthly/yearly plan. */
+     ongoing comparison feature, which needs a monthly/yearly/lifetime plan. */
   function hasEvolutionTrackingAccess(){
     const acc = getAccount();
-    return acc.plan === 'monthly' || acc.plan === 'yearly';
+    return acc.plan === 'monthly' || acc.plan === 'yearly' || acc.plan === 'lifetime';
   }
   function updateEvolutionTrackingLock(){
     const wrap = document.getElementById('evolutionTrackWrap');
@@ -3317,6 +3351,24 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     }
     alert(t('pricing.oneshotBought'));
   }
+  /* One-time payment (99 €), same 5-analyses-per-month quota as monthly/yearly
+     (enforced centrally in gateCheckAccess via MONTHLY_ANALYSIS_QUOTA), but
+     never expires and nothing to renew or cancel. */
+  function buyLifetime(){
+    const acc = getAccount();
+    if(sb && !acc.loggedIn){ openDrawer(); drawerTab('compte'); showToast(t('gate.loginNote')); return; }
+    acc.plan = 'lifetime';
+    if(!acc.loggedIn){ acc.loggedIn = true; }
+    saveAccount(acc);
+    renderAccountPanel();
+    if(pendingGateUnlock){
+      pendingGateUnlock = false;
+      showToast(t('pricing.lifetimeBought'));
+      gateCheckAccess();
+      return;
+    }
+    alert(t('pricing.lifetimeBought'));
+  }
 
   /* ---------- Account panel ---------- */
   function openDrawer(){
@@ -3461,6 +3513,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     let planLabel = t('drawer.standard'), hasAccess = false;
     if(acc.plan==='monthly'){ planLabel = t('drawer.planMonthly'); hasAccess = true; }
     else if(acc.plan==='yearly'){ planLabel = t('drawer.planYearly'); hasAccess = true; }
+    else if(acc.plan==='lifetime'){ planLabel = t('drawer.planLifetime'); hasAccess = true; }
     else if((acc.oneshotCredits||0) > 0){ planLabel = t('drawer.planOneshot').replace('{n}', acc.oneshotCredits); hasAccess = true; }
     pillEl.textContent = planLabel;
     upsellEl.style.display = hasAccess ? 'none' : 'block';
@@ -3611,8 +3664,9 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     let planLabel = t('manage.noSub');
     if(acc.plan==='monthly') planLabel = t('drawer.planMonthly');
     else if(acc.plan==='yearly') planLabel = t('drawer.planYearly');
+    else if(acc.plan==='lifetime') planLabel = t('drawer.planLifetime');
     else if((acc.oneshotCredits||0) > 0) planLabel = t('drawer.planOneshot').replace('{n}', acc.oneshotCredits);
-    const hasSub = acc.plan==='monthly' || acc.plan==='yearly';
+    const hasSub = acc.plan==='monthly' || acc.plan==='yearly'; // lifetime is a one-time purchase, nothing recurring to cancel
     box.innerHTML = `
       <div class="drawer-acc" style="margin-bottom:16px;">
         <div class="row"><span>${t('manage.currentPlan')}</span><span class="status-pill">${esc(planLabel)}</span></div>
@@ -3806,9 +3860,27 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     gateAuthNote(error ? t('gate.authError') : t('gate.resetSent'));
     return false;
   }
+  /* Every paid recurring-ish plan (monthly/yearly/lifetime) is capped at
+     MONTHLY_ANALYSIS_QUOTA full AI analyses per calendar month — a one-shot
+     ("ponctuel") purchase is capped at exactly 1 use via oneshotCredits instead. */
+  const MONTHLY_ANALYSIS_QUOTA = 5;
+  function getAnalysesThisMonth(){
+    const now = new Date();
+    const y = now.getFullYear(), m = now.getMonth();
+    return getHistory().filter(h => {
+      if(h.source !== 'ai') return false;
+      const d = new Date(h.date);
+      return !isNaN(d) && d.getFullYear()===y && d.getMonth()===m;
+    }).length;
+  }
   function gateCheckAccess(){
     const acc = getAccount();
-    if(acc.plan==='monthly' || acc.plan==='yearly'){ analysisAIAllowed = true; grantResultsAccess(); return; }
+    if(acc.plan==='monthly' || acc.plan==='yearly' || acc.plan==='lifetime'){
+      if(getAnalysesThisMonth() >= MONTHLY_ANALYSIS_QUOTA){ renderGateQuotaReached(); return; }
+      analysisAIAllowed = true;
+      grantResultsAccess();
+      return;
+    }
     if((acc.oneshotCredits||0) > 0){
       acc.oneshotCredits -= 1;
       saveAccount(acc);
@@ -3832,6 +3904,17 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
         <button class="btn btn-ghost btn-block" onclick="continueFreePreview()">${t('gate.continueFree')}</button>
       </div>
       <div class="gate-note">${t('gate.freeNote')}</div>`;
+  }
+  function renderGateQuotaReached(){
+    const box = document.getElementById('gateBoxContent');
+    if(!box) return;
+    box.innerHTML = `
+      <div class="sparkle-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+      <h2>${t('gate.quotaTitle')}</h2>
+      <p>${t('gate.quotaDesc')}</p>
+      <div class="gate-paywall-actions">
+        <button class="btn btn-ghost btn-block" onclick="showPage('home')">${t('gate.backHome')}</button>
+      </div>`;
   }
   /* Set while an already-computed analysis is sitting behind the paywall — lets
      buyPremium()/buyOneShot() know to jump straight back into that analysis once
