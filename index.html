@@ -3909,46 +3909,32 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
 
   /* ---------- Results access gate (verification / login / paywall) ---------- */
-  /* Google sign-in now goes through Supabase Auth instead of a client-side-only Google
-     Identity Services token: enable the "Google" provider in your Supabase project
-     (Dashboard → Authentication → Providers) and add your Google OAuth Client
-     ID/Secret there. No Google Client ID needs to live in this file any more. */
-  let googleAuthPopup = null, googleAuthPollId = null;
+  /* Google sign-in goes through Supabase Auth (enable the "Google" provider in
+     your Supabase project — Dashboard → Authentication → Providers — and add
+     your Google OAuth Client ID/Secret there; no Google Client ID needs to
+     live in this file). This used to open a popup and poll it, which turned
+     out to be unreliable (popup blockers, third-party-cookie restrictions in
+     private/incognito windows, and Google's own "unverified app" interstitial
+     all made the popup silently fail to complete in some browsers). A plain
+     full-page redirect — the same mechanism already used for Stripe Checkout —
+     has none of those failure modes, so that's what this does now. */
   function loginWithGoogle(){
     if(!sb) return;
-    if(window.location.origin !== CANONICAL_ORIGIN){
-      /* Refuse to even start: the popup would come back authenticated on
-         CANONICAL_ORIGIN while this tab (a different origin, e.g. a Vercel
-         preview URL) can never see that session — it would just look "stuck". */
-      showToast(t('res.googleWrongOrigin'));
-      return;
-    }
     justLoggedOut = false;
-    if(googleAuthPollId) clearInterval(googleAuthPollId);
-    googleAuthPopup = window.open('about:blank', 'solaneGoogleAuth', 'width=480,height=640');
+    /* A full-page redirect unloads the whole app just like a Stripe redirect —
+       stash whatever the person was doing so we can resume it once we're back
+       with a confirmed session (see RESUME_KEY / the Init block below). */
+    try{
+      sessionStorage.setItem(RESUME_KEY, JSON.stringify({
+        googleLogin: true, gateLoginContext,
+        diagAnswers, capturedPhotoDataUrl, pendingResultPhoto,
+        lang: currentLang
+      }));
+    }catch(e){ console.error('Could not stash resume state:', e); }
     sb.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: CANONICAL_ORIGIN + '/', skipBrowserRedirect: true }
-    }).then(({ data, error })=>{
-      if(error || !data || !data.url){ if(googleAuthPopup) googleAuthPopup.close(); return; }
-      if(googleAuthPopup) googleAuthPopup.location.href = data.url;
+      options: { redirectTo: CANONICAL_ORIGIN + '/' }
     });
-    googleAuthPollId = setInterval(async ()=>{
-      if(!googleAuthPopup || googleAuthPopup.closed){
-        clearInterval(googleAuthPollId);
-        await refreshProfile();
-        if(getAccount().loggedIn) afterGateLoginSuccess();
-        return;
-      }
-      try{
-        // Once the popup navigates back to our own origin (auth complete), Supabase's
-        // client running inside that popup page stores the new session (localStorage,
-        // same origin) — we just need to notice it's back and close it.
-        if(googleAuthPopup.location.origin === window.location.origin){
-          googleAuthPopup.close();
-        }
-      }catch(e){ /* still on accounts.google.com — cross-origin, expected, ignore */ }
-    }, 500);
   }
 
   let analysisAIAllowed = false;
@@ -4340,6 +4326,32 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       } else if(checkout === 'cancel'){
         window.history.replaceState({}, '', window.location.pathname);
         handleCheckoutCancelReturn();
+      } else {
+        /* Returning from a full-page Google OAuth redirect (see loginWithGoogle) —
+           resume whatever the person was doing (unlocking a just-finished analysis,
+           or just logging in from the account panel) now that the session is back. */
+        let googleResume = null;
+        try{
+          const raw = sessionStorage.getItem(RESUME_KEY);
+          if(raw){ const parsed = JSON.parse(raw); if(parsed && parsed.googleLogin) googleResume = parsed; }
+        }catch(e){}
+        if(googleResume){
+          try{ sessionStorage.removeItem(RESUME_KEY); }catch(e){}
+          if(getAccount().loggedIn){
+            diagAnswers = googleResume.diagAnswers || diagAnswers;
+            capturedPhotoDataUrl = googleResume.capturedPhotoDataUrl || capturedPhotoDataUrl;
+            pendingResultPhoto = googleResume.pendingResultPhoto || pendingResultPhoto;
+            gateLoginContext = googleResume.gateLoginContext || 'analysis';
+            if(gateLoginContext === 'analysis'){
+              pendingGateUnlock = true;
+              document.getElementById('diag-quiz').style.display='none';
+              document.getElementById('diag-ready').style.display='none';
+              document.getElementById('diag-gate').style.display='block';
+              showPage('diag');
+            }
+            afterGateLoginSuccess();
+          }
+        }
       }
     });
     sb.auth.onAuthStateChange((event)=>{
