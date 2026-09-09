@@ -371,8 +371,10 @@
   .nutrition-day-item .lbl svg{color:var(--accent); flex:none;}
   .nutrition-day-item .val{font-size:13.5px; color:var(--ink-soft); line-height:1.5;}
 
-  .btn-seemore{margin-top:16px; background:none; border:none; padding:0; font:inherit; font-size:13px; font-weight:700; color:var(--accent); cursor:pointer; display:inline-flex; align-items:center; gap:5px;}
-  .btn-seemore:hover{text-decoration:underline;}
+  .btn-seemore{margin-top:16px; background:linear-gradient(90deg,#c9573f,#e0a253,#7fae7a); border:none; padding:10px 18px; border-radius:999px; font:inherit; font-size:13px; font-weight:700; color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(224,162,83,.28); transition:transform .15s ease, box-shadow .15s ease;}
+  .btn-seemore svg{ flex:none; }
+  .btn-seemore:hover{ transform:translateY(-1px); box-shadow:0 6px 18px rgba(224,162,83,.38); }
+  .btn-seemore:active{ transform:translateY(0); }
   .detail-page-title{font-size:clamp(23px,2.9vw,29px); margin:18px 0 26px; color:var(--ink);}
   .detail-block{border:1px solid var(--line); border-radius:16px; padding:22px 24px; margin-bottom:16px;}
   .detail-block .db-head{display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:10px;}
@@ -3879,6 +3881,13 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     else if(acc.plan==='yearly'){ planLabel = t('drawer.planYearly'); hasAccess = true; }
     else if(acc.plan==='lifetime'){ planLabel = t('drawer.planLifetime'); hasAccess = true; }
     else if((acc.oneshotCredits||0) > 0){ planLabel = t('drawer.planOneshot').replace('{n}', acc.oneshotCredits); hasAccess = true; }
+    const history = getHistory();
+    /* A one-shot credit is consumed the moment its analysis is unlocked, so right
+       after using it acc.oneshotCredits is back to 0 — without this, the analysis
+       that was JUST paid for would look locked again the instant it's saved. Any
+       existing history row means this account paid for at least one analysis at
+       some point, so keep the history panel (and its upsell banner) unlocked. */
+    if(!hasAccess && history.length) hasAccess = true;
     pillEl.textContent = planLabel;
     upsellEl.style.display = hasAccess ? 'none' : 'block';
     const loginBtn = document.getElementById('drawerLoginBtn'), logoutBtn = document.getElementById('drawerLogoutBtn'),
@@ -3886,7 +3895,6 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(loginBtn) loginBtn.style.display = acc.loggedIn ? 'none' : 'flex';
     if(logoutBtn) logoutBtn.style.display = acc.loggedIn ? 'flex' : 'none';
     if(manageBtn) manageBtn.style.display = acc.loggedIn ? 'flex' : 'none';
-    const history = getHistory();
     if(!hasAccess){
       histEl.innerHTML = `<div class="drawer-locked">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
