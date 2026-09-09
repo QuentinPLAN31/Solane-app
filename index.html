@@ -580,6 +580,7 @@
   .history-item.clickable:hover{border-color:var(--accent); background:var(--surface-2);}
   .history-item-arrow{flex:none; color:var(--ink-faint);}
   .history-item .sc{width:38px; height:38px; border-radius:50%; background:var(--accent-soft); color:var(--accent); font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; flex:none;}
+  .history-item .sc.photo{background-size:cover; background-position:center; border:1px solid var(--line);}
   .history-item .info{flex:1; min-width:0;}
   .history-item .info .n{font-size:13px; font-weight:600; color:var(--ink);}
   .history-item .info .d{font-size:11.5px; color:var(--ink-faint);}
@@ -2786,7 +2787,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       if(!lastReport) return;
       currentHistoryId = await addHistoryEntry({
         globalScore: lastReport.globalScore, concernName: lastReport.concernName, sevKey: lastReport.sevKey,
-        report: lastReport, source: lastReportSource
+        report: lastReport, source: lastReportSource, photo: pendingResultPhoto || capturedPhotoDataUrl
       });
       if(hasEvolutionTrackingAccess()) await addEvolutionPhoto(pendingResultPhoto || capturedPhotoDataUrl);
       renderEvolutionPhotos();
@@ -3574,7 +3575,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(!sb || !currentProfile || !currentProfile.id) return;
     const { data, error } = await sb.from('history').select('*').eq('user_id', currentProfile.id).order('date', { ascending:false }).limit(30);
     if(!error && data){
-      historyCache = data.map(h=>({ id:h.id, date:h.date, globalScore:h.global_score, concernName:h.concern_name||'', sevKey:h.sev_key||'', report:h.report_json||null, source:h.source||'local' }));
+      historyCache = data.map(h=>({ id:h.id, date:h.date, globalScore:h.global_score, concernName:h.concern_name||'', sevKey:h.sev_key||'', report:h.report_json||null, source:h.source||'local', photoThumb:h.photo_thumb||null }));
       renderAccountPanel();
     }
   }
@@ -3590,10 +3591,19 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
      caller can tie evolution photos to this specific analysis via currentHistoryId
      — evolution photos are per-analysis, never shared across analyses. */
   async function addHistoryEntry(entry){
+    /* A small square thumbnail of the diagnostic photo, stored directly on the
+       history row (not in the evolution-photos bucket, which is a separate,
+       premium-gated feature for comparing photos over time) — this one is
+       purely decorative, shown next to every entry in "Mon historique" so it
+       actually looks like a photo gallery instead of a bare list of numbers. */
+    let photoThumb = null;
+    if(entry.photo){
+      try{ photoThumb = await compressImageDataUrl(entry.photo, 120, 0.6); }catch(e){}
+    }
     const item = {
       id: null,
       date:new Date().toISOString(), globalScore:entry.globalScore, concernName:entry.concernName||'', sevKey:entry.sevKey||'',
-      report: entry.report || null, source: entry.source || 'local'
+      report: entry.report || null, source: entry.source || 'local', photoThumb
     };
     if(sb){
       historyCache = [item, ...historyCache].slice(0,30);
@@ -3601,7 +3611,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
         try{
           const { data, error } = await sb.from('history').insert({
             user_id: currentProfile.id, global_score:item.globalScore, concern_name:item.concernName, sev_key:item.sevKey,
-            report_json: item.report, source: item.source
+            report_json: item.report, source: item.source, photo_thumb: item.photoThumb
           }).select().single();
           if(error) console.error('Supabase history insert failed:', error);
           else if(data) item.id = data.id;
@@ -3929,7 +3939,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
         const dateStr = isNaN(d) ? '' : d.toLocaleDateString(currentLang);
         const clickable = !!h.report;
         return `<div class="history-item${clickable ? ' clickable':''}"${clickable ? ` onclick="viewHistoryEntry(${i})"`:''}>
-          <div class="sc">${h.globalScore}</div>
+          ${h.photoThumb ? `<div class="sc photo" style="background-image:url('${h.photoThumb}')"></div>` : `<div class="sc">${h.globalScore}</div>`}
           <div class="info"><div class="n">${esc(h.concernName || t('drawer.historyScoreOf'))}</div><div class="d">${dateStr}</div></div>
           ${clickable ? `<svg class="history-item-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg>` : ''}
         </div>`;
