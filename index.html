@@ -449,6 +449,12 @@
   .detail-lock-cta{border:1px solid var(--line); border-radius:18px; padding:26px 22px; margin-top:24px; text-align:center; background:radial-gradient(120% 100% at 50% 0%, var(--accent-soft) 0%, transparent 60%), var(--surface);}
   .detail-lock-cta .crown{width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; background:linear-gradient(135deg,#c9573f,#e0a253); color:#fff;}
   .detail-lock-cta .dlc-text{font-size:14px; color:var(--ink-soft); max-width:380px; margin:0 auto;}
+  .causes-text-wrap{position:relative;}
+  .causes-text-wrap.half-locked{max-height:5.6em; overflow:hidden;}
+  .causes-text-wrap.half-locked::after{content:""; position:absolute; left:0; right:0; bottom:0; height:65%; backdrop-filter:blur(3.5px); -webkit-backdrop-filter:blur(3.5px); background:linear-gradient(to bottom, transparent, var(--bg) 88%); pointer-events:none;}
+  .causes-detail-half{position:relative;}
+  .causes-detail-half.half-locked{max-height:220px; overflow:hidden;}
+  .causes-detail-half.half-locked::after{content:""; position:absolute; left:0; right:0; bottom:0; height:70%; backdrop-filter:blur(3.5px); -webkit-backdrop-filter:blur(3.5px); background:linear-gradient(to bottom, transparent, var(--bg) 90%); pointer-events:none;}
 
   /* ---------- Pricing ---------- */
   .pricing-shell{padding:60px 0 100px; text-align:center;}
@@ -1011,7 +1017,9 @@
 
       <div class="detail-panel">
         <div class="h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 2h6l1 6-4 3-4-3 1-6Z"/><path d="M8 11l-3 9h14l-3-9"/></svg><span class="t" data-i18n="res.o2t">Origines et causes</span></div>
-        <p id="causesText">Puisque tu observes cela depuis 6 à 12 mois, il est probable que le stress, l'alimentation ou des changements hormonaux contribuent à ce teint terne.</p>
+        <div class="causes-text-wrap" id="causesTextWrap">
+          <p id="causesText">Puisque tu observes cela depuis 6 à 12 mois, il est probable que le stress, l'alimentation ou des changements hormonaux contribuent à ce teint terne.</p>
+        </div>
         <button class="btn-seemore" onclick="openSectionDetail('causes')"><span data-i18n="res.seeMore">Voir plus</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
 
@@ -3134,6 +3142,8 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     pill.className = 'pill ' + (r.sevKey==='sevLow' ? 'pill-good' : r.sevKey==='sevHigh' ? 'pill-bad' : '');
 
     document.getElementById('causesText').textContent = r.causes;
+    const causesWrap = document.getElementById('causesTextWrap');
+    if(causesWrap) causesWrap.classList.toggle('half-locked', !analysisAIAllowed);
 
     document.getElementById('routineAMTitle').textContent = res.routineAMTitle;
     document.getElementById('routinePMTitle').textContent = res.routinePMTitle;
@@ -3279,13 +3289,15 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       html += `<h3 class="section-title">${esc(res.causesMethodTitle)}</h3>
       <div class="detail-block"><div class="db-body">${esc(methodBody)}</div></div>`;
       html += `<h3 class="section-title">${esc(res.causesFactorsTitle)}</h3>`;
+      html += `<div class="causes-detail-half${locked ? ' half-locked' : ''}">`;
       (res.causesFactors||[]).forEach(f=>{
         html += `<div class="detail-block">
           <div class="db-title">${esc(f.title)}</div>
           <div class="db-body" style="margin-top:8px;">${esc(f.body)}</div>
         </div>`;
       });
-      html += `<p class="detail-intro" style="margin-top:20px; font-size:12.5px; opacity:.75;">${esc(res.causesDisclaimer)}</p>`;
+      html += `</div>`;
+      if(!locked) html += `<p class="detail-intro" style="margin-top:20px; font-size:12.5px; opacity:.75;">${esc(res.causesDisclaimer)}</p>`;
     }
 
     else if(section === 'routine'){
@@ -3422,7 +3434,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       });
     }
 
-    if(locked && section !== 'causes'){
+    if(locked){
       html += `<div class="detail-lock-cta">
         <div class="crown"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8l4 3 5-6 5 6 4-3-2 10H5L3 8Z"/></svg></div>
         <div class="dlc-text">${esc(res.detailLockCta || res.teaserSub || '')}</div>
