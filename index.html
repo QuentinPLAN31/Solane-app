@@ -2790,7 +2790,8 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       if(!lastReport) return;
       currentHistoryId = await addHistoryEntry({
         globalScore: lastReport.globalScore, concernName: lastReport.concernName, sevKey: lastReport.sevKey,
-        report: lastReport, source: lastReportSource, photo: pendingResultPhoto || capturedPhotoDataUrl
+        report: lastReport, source: lastReportSource, photo: pendingResultPhoto || capturedPhotoDataUrl,
+        unlocked: analysisAIAllowed
       });
       if(hasEvolutionTrackingAccess()) await addEvolutionPhoto(pendingResultPhoto || capturedPhotoDataUrl);
       renderEvolutionPhotos();
@@ -3593,7 +3594,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(!sb || !currentProfile || !currentProfile.id) return;
     const { data, error } = await sb.from('history').select('*').eq('user_id', currentProfile.id).order('date', { ascending:false }).limit(30);
     if(!error && data){
-      historyCache = data.map(h=>({ id:h.id, date:h.date, globalScore:h.global_score, concernName:h.concern_name||'', sevKey:h.sev_key||'', report:h.report_json||null, source:h.source||'local', photoThumb:h.photo_thumb||null }));
+      historyCache = data.map(h=>({ id:h.id, date:h.date, globalScore:h.global_score, concernName:h.concern_name||'', sevKey:h.sev_key||'', report:h.report_json||null, source:h.source||'local', photoThumb:h.photo_thumb||null, unlocked: h.unlocked==null ? true : !!h.unlocked }));
       renderAccountPanel();
     }
   }
@@ -3618,10 +3619,11 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(entry.photo){
       try{ photoThumb = await compressImageDataUrl(entry.photo, 120, 0.6); }catch(e){}
     }
+    const unlocked = entry.unlocked !== false;
     const item = {
       id: null,
       date:new Date().toISOString(), globalScore:entry.globalScore, concernName:entry.concernName||'', sevKey:entry.sevKey||'',
-      report: entry.report || null, source: entry.source || 'local', photoThumb
+      report: entry.report || null, source: entry.source || 'local', photoThumb, unlocked
     };
     if(sb){
       historyCache = [item, ...historyCache].slice(0,30);
@@ -3629,7 +3631,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
         try{
           const { data, error } = await sb.from('history').insert({
             user_id: currentProfile.id, global_score:item.globalScore, concern_name:item.concernName, sev_key:item.sevKey,
-            report_json: item.report, source: item.source, photo_thumb: item.photoThumb
+            report_json: item.report, source: item.source, photo_thumb: item.photoThumb, unlocked: item.unlocked
           }).select().single();
           if(error) console.error('Supabase history insert failed:', error);
           else if(data) item.id = data.id;
@@ -4361,7 +4363,12 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
        before (each analysis keeps its own separate photo comparison). */
     currentHistoryId = h.id || null;
     evolutionCache = []; // avoid a flash of the previous analysis's photos before the refresh below
-    analysisAIAllowed = true;
+    /* This entry keeps whatever access level it was saved with — a free-preview
+       analysis stays blurred forever in history, it doesn't retroactively unlock
+       just because it's being reopened (h.unlocked defaults to true for entries
+       saved before this field existed, since back then everyone had paid to see
+       results at all). */
+    analysisAIAllowed = h.unlocked !== false;
     closeDrawer();
     document.getElementById('diag-quiz').style.display='none';
     document.getElementById('diag-ready').style.display='none';
