@@ -4274,7 +4274,14 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       grantResultsAccess();
       return;
     }
-    renderGatePaywall();
+    /* No paid access: don't stop on a separate paywall screen — show the
+       analysis right away. Every premium section already renders with only
+       its first item visible and the rest marked .locked-item (blurred via
+       CSS as long as #lockedResultsWrap doesn't have .unlocked — see
+       applyReportToDOM), and the in-page upsell card (#premiumTeaser) is
+       the paywall itself, right there in the results. */
+    analysisAIAllowed = false;
+    grantResultsAccess();
   }
   function renderGatePaywall(){
     const box = document.getElementById('gateBoxContent');
