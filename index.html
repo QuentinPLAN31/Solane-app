@@ -427,9 +427,7 @@
   .observed-card .oc-head{display:flex; align-items:center; gap:10px; margin-bottom:14px; color:var(--accent);}
   .observed-card .oc-head svg{flex:none;}
   .observed-card .oc-head span{font-family:"Fraunces"; font-size:16.5px; color:var(--ink); letter-spacing:-.01em;}
-  .oc-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
-  .oc-list li{display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--ink-soft); line-height:1.5;}
-  .oc-list li .oc-dot{flex:none; width:7px; height:7px; border-radius:50%; margin-top:7px; background:var(--accent);}
+  .observed-card .oc-text{font-size:14.5px; color:var(--ink-soft); line-height:1.7; margin:0;}
 
   .premium-teaser{border:1px solid var(--line); border-radius:20px; padding:34px 30px; margin-bottom:40px; text-align:center; background:radial-gradient(120% 100% at 50% 0%, var(--accent-soft) 0%, transparent 60%), var(--surface);}
   .premium-teaser .crown{width:46px; height:46px; border-radius:50%; margin:0 auto 16px; background:linear-gradient(160deg,#c98a5c,#8a5230); display:flex; align-items:center; justify-content:center; color:#fff;}
@@ -981,7 +979,7 @@
 
       <div class="observed-card" id="observedCard">
         <div class="oc-head"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg><span data-i18n="res.observedTitle">Ce qu'on observe</span></div>
-        <ul class="oc-list" id="observedList"></ul>
+        <p class="oc-text" id="observedText"></p>
       </div>
 
       <div class="word-card">
@@ -1489,7 +1487,7 @@ fr: {
     detail2:"Puisque tu observes cela depuis 6 à 12 mois, il est probable que le stress, l'alimentation ou des changements hormonaux contribuent à ce teint terne. Une routine de soins régulière peut aider à stabiliser l'état de ta peau.",
     ctaTitle:"Stop au hasard.", ctaBody:"Arrête de gaspiller dans des produits qui ne sont pas faits pour ta peau. Voici ce qu'il te faut vraiment.", ctaBtn:"Découvrir mon plan",
     readEyebrow:"Comment lire ton score", readBody:"Plus le score se rapproche de 100, plus les signes visibles sont limités. Un score plus proche de 0 indique davantage de signes à surveiller, sans constituer un diagnostic.",
-    readLeft:"Signes plus marqués", readRight:"Peau bien équilibrée", observedTitle:"Ce qu'on observe", observedLocalConcerns:"Tu as signalé : {list}.", observedLocalNone:"Tu n'as signalé aucune préoccupation particulière dans le quiz — c'est plutôt bon signe.", observedLocalHabits:"Habitudes qui peuvent y contribuer : {list}.", observedLocalSkin:"Type de peau indiqué : {skin}.",
+    readLeft:"Signes plus marqués", readRight:"Peau bien équilibrée", observedTitle:"Ce qu'on observe", obsLocalIntro:"D'après ce que tu as indiqué dans le quiz, tu as une peau {skin}", obsLocalWithConcerns:", avec {list} que tu as toi-même signalé(s)", obsLocalNoConcerns:", sans préoccupation particulière signalée", obsLocalWithHabits:". Des habitudes comme {list} peuvent en partie expliquer cela.", obsLocalNoHabits:".", obsLocalOutro:" Seule une vraie analyse de ta photo par IA permettra de confirmer précisément ce qui est réellement visible sur ta peau.",
     readLevelHigh:"un excellent niveau", readLevelGood:"un bon niveau de départ", readLevelMid:"un niveau à surveiller", readLevelLow:"des signes à surveiller de près",
     wordTitle:"Le mot de Solane", wordTemplate:"Ce type de signe ({concern}) est fréquent, surtout après {since}. Avec une routine adaptée, ta peau peut s'améliorer. N'hésite pas à consulter un dermatologue si besoin.",
     teaserTitle:"Solane Premium, le vrai coup de pouce pour ta peau", teaserSub:"Transforme ton analyse en une routine claire, personnalisée et facile à suivre.",
@@ -1759,7 +1757,7 @@ en: {
     detail2:"Since you've noticed this for 6 to 12 months, stress, diet or hormonal changes are likely contributing to this dull complexion. A regular skincare routine can help stabilise your skin.",
     ctaTitle:"Stop guessing.", ctaBody:"Stop wasting money on products that aren't made for your skin. Here's what you actually need.", ctaBtn:"Discover my plan",
     readEyebrow:"How to read your score", readBody:"The closer the score is to 100, the fewer visible signs there are. A score closer to 0 indicates more signs to watch, without being a diagnosis.",
-    readLeft:"More visible signs", readRight:"Well-balanced skin", observedTitle:"What we observe", observedLocalConcerns:"You reported: {list}.", observedLocalNone:"You didn't report any particular concern in the quiz — that's a good sign.", observedLocalHabits:"Habits that may be contributing: {list}.", observedLocalSkin:"Skin type you indicated: {skin}.",
+    readLeft:"More visible signs", readRight:"Well-balanced skin", observedTitle:"What we observe", obsLocalIntro:"Based on what you told us in the quiz, you have {skin} skin", obsLocalWithConcerns:", with {list} that you reported yourself", obsLocalNoConcerns:", with no particular concern reported", obsLocalWithHabits:". Habits like {list} may partly explain this.", obsLocalNoHabits:".", obsLocalOutro:" Only a real AI analysis of your photo can confirm exactly what's visible on your skin.",
     readLevelHigh:"an excellent level", readLevelGood:"a good starting level", readLevelMid:"a level to watch", readLevelLow:"signs to watch closely",
     wordTitle:"A word from Solane", wordTemplate:"It's normal to notice this kind of {concern}, especially after {since}. With the right routine, your skin can improve. Don't hesitate to see a dermatologist if needed.",
     teaserTitle:"Solane Premium, the real boost for your skin", teaserSub:"Turn your analysis into a clear, personalised, easy-to-follow routine.",
@@ -2029,7 +2027,7 @@ de: {
     detail2:"Da du das seit 6 bis 12 Monaten beobachtest, tragen wahrscheinlich Stress, Ernährung oder hormonelle Veränderungen zu diesem fahlen Teint bei. Eine regelmäßige Pflegeroutine kann helfen, deine Haut zu stabilisieren.",
     ctaTitle:"Schluss mit Zufall.", ctaBody:"Verschwende kein Geld mehr für Produkte, die nicht zu deiner Haut passen. Hier ist, was du wirklich brauchst.", ctaBtn:"Meinen Plan entdecken",
     readEyebrow:"So liest du deinen Score", readBody:"Je näher der Score bei 100 liegt, desto weniger sichtbare Anzeichen gibt es. Ein Score näher bei 0 zeigt mehr zu beobachtende Anzeichen an, ohne eine Diagnose zu sein.",
-    readLeft:"Deutlichere Anzeichen", readRight:"Gut ausgeglichene Haut", observedTitle:"Was wir beobachten", observedLocalConcerns:"Du hast angegeben: {list}.", observedLocalNone:"Du hast im Quiz kein besonderes Anliegen angegeben — das ist ein gutes Zeichen.", observedLocalHabits:"Gewohnheiten, die dazu beitragen könnten: {list}.", observedLocalSkin:"Angegebener Hauttyp: {skin}.",
+    readLeft:"Deutlichere Anzeichen", readRight:"Gut ausgeglichene Haut", observedTitle:"Was wir beobachten", obsLocalIntro:"Laut deinen Angaben im Quiz hast du {skin} Haut", obsLocalWithConcerns:", mit {list}, die du selbst angegeben hast", obsLocalNoConcerns:", ohne ein bestimmtes angegebenes Anliegen", obsLocalWithHabits:". Gewohnheiten wie {list} könnten das teilweise erklären.", obsLocalNoHabits:".", obsLocalOutro:" Nur eine echte KI-Analyse deines Fotos kann genau bestätigen, was auf deiner Haut wirklich sichtbar ist.",
     readLevelHigh:"ein ausgezeichnetes Niveau", readLevelGood:"ein guter Ausgangspunkt", readLevelMid:"ein zu beobachtendes Niveau", readLevelLow:"Anzeichen, die genau beobachtet werden sollten",
     wordTitle:"Das Wort von Solane", wordTemplate:"Es ist normal, diese Art von {concern} zu bemerken, besonders nach {since}. Mit der richtigen Routine kann sich deine Haut verbessern. Zögere nicht, bei Bedarf eine Dermatologin zu konsultieren.",
     teaserTitle:"Solane Premium, der echte Schub für deine Haut", teaserSub:"Verwandle deine Analyse in eine klare, persönliche und leicht umsetzbare Routine.",
@@ -2299,7 +2297,7 @@ it: {
     detail2:"Dato che lo noti da 6-12 mesi, è probabile che stress, alimentazione o cambiamenti ormonali contribuiscano a questo incarnato spento. Una routine di cura regolare può aiutare a stabilizzare la tua pelle.",
     ctaTitle:"Basta con il caso.", ctaBody:"Smetti di sprecare soldi in prodotti non adatti alla tua pelle. Ecco cosa ti serve davvero.", ctaBtn:"Scopri il mio piano",
     readEyebrow:"Come leggere il tuo punteggio", readBody:"Più il punteggio si avvicina a 100, più i segni visibili sono limitati. Un punteggio più vicino a 0 indica più segni da monitorare, senza costituire una diagnosi.",
-    readLeft:"Segni più evidenti", readRight:"Pelle ben equilibrata", observedTitle:"Cosa osserviamo", observedLocalConcerns:"Hai segnalato: {list}.", observedLocalNone:"Non hai segnalato nessuna preoccupazione particolare nel quiz — è un buon segno.", observedLocalHabits:"Abitudini che potrebbero contribuire: {list}.", observedLocalSkin:"Tipo di pelle indicato: {skin}.",
+    readLeft:"Segni più evidenti", readRight:"Pelle ben equilibrata", observedTitle:"Cosa osserviamo", obsLocalIntro:"In base a quanto indicato nel quiz, hai una pelle {skin}", obsLocalWithConcerns:", con {list} che hai segnalato tu stesso/a", obsLocalNoConcerns:", senza alcuna preoccupazione particolare segnalata", obsLocalWithHabits:". Abitudini come {list} potrebbero in parte spiegarlo.", obsLocalNoHabits:".", obsLocalOutro:" Solo una vera analisi IA della tua foto può confermare con precisione cosa è realmente visibile sulla tua pelle.",
     readLevelHigh:"un livello eccellente", readLevelGood:"un buon punto di partenza", readLevelMid:"un livello da monitorare", readLevelLow:"segni da monitorare da vicino",
     wordTitle:"La parola di Solane", wordTemplate:"È normale notare questo tipo di {concern}, soprattutto dopo {since}. Con una routine adatta, la tua pelle può migliorare. Non esitare a consultare un dermatologo se necessario.",
     teaserTitle:"Solane Premium, la vera spinta per la tua pelle", teaserSub:"Trasforma la tua analisi in una routine chiara, personalizzata e facile da seguire.",
@@ -2705,27 +2703,33 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     let sevKey='sevMed', sevScoreRef = primaryConcernKey ? (scores[Object.keys(concernEffects[primaryConcernKey]||{})[0]] ?? globalScore) : globalScore;
     if(sevScoreRef>=75) sevKey='sevLow'; else if(sevScoreRef<55) sevKey='sevHigh'; else sevKey='sevMed';
 
-    /* Local (non-AI) "what we observe" recap — honestly built from the quiz
-       answers, since without the AI vision call this code never actually looks
-       at the photo. Only mentions concerns/habits the person themselves picked;
-       never invents anything they didn't report. Replaced by the AI's own
-       real photo-based "observed" list once the AI report comes back (see
-       normalizeAI), so a free/local preview never overclaims and a paid AI
+    /* Local (non-AI) "what we observe" recap — a single honest paragraph built
+       from the quiz answers only, since without the AI vision call this code
+       never actually looks at the photo. It never claims to describe the photo
+       itself (that would be the "fake analysis" the person doesn't want) — it
+       openly says it's based on the quiz and that only the AI's real photo
+       analysis can confirm what's actually visible. Replaced by the AI's own
+       real, photo-grounded paragraph once the AI report comes back (see
+       normalizeAI), which explicitly connects the quiz answers to what's
+       genuinely visible in the photo — confirming matches and flagging
+       mismatches — so a free/local preview never overclaims and a paid AI
        analysis always shows the real thing. */
     const dSteps = I18N[currentLang].diagSteps;
     const res0 = I18N[currentLang].res;
-    let observedLocal = [];
+    let observedLocal = (res0.obsLocalIntro||'{skin}').replace('{skin}', skinLabel);
     if(concernKeys.length){
-      const labels = concernIdx.map(i=> dSteps.concernsOptions[i]).filter(Boolean);
-      observedLocal.push((res0.observedLocalConcerns||'{list}').replace('{list}', labels.join(', ')));
+      const labels = concernIdx.map(i=> dSteps.concernsOptions[i]).filter(Boolean).map(s=>s.toLowerCase());
+      observedLocal += (res0.obsLocalWithConcerns||'').replace('{list}', labels.join(', '));
     } else {
-      observedLocal.push(res0.observedLocalNone||'');
+      observedLocal += (res0.obsLocalNoConcerns||'');
     }
     if(habitKeys.length){
-      const hLabels = habitIdx.map(i=> dSteps.habitsOptions[i]).filter(Boolean);
-      observedLocal.push((res0.observedLocalHabits||'{list}').replace('{list}', hLabels.join(', ')));
+      const hLabels = habitIdx.map(i=> dSteps.habitsOptions[i]).filter(Boolean).map(s=>s.toLowerCase());
+      observedLocal += (res0.obsLocalWithHabits||'.').replace('{list}', hLabels.join(', '));
+    } else {
+      observedLocal += (res0.obsLocalNoHabits||'.');
     }
-    observedLocal.push((res0.observedLocalSkin||'{skin}').replace('{skin}', skinLabel));
+    observedLocal += (res0.obsLocalOutro||'');
 
     return {
       scores, globalScore, bestKey, primaryConcernKey, data, causes, sevKey, sincePhrase,
@@ -3131,10 +3135,9 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       }
       const useAIEvolution = Array.isArray(json.evolution) && json.evolution.length===3 && !!matchLen(json.evolutionWhy, 3);
       /* "observed" is the AI's real, photo-grounded recap — only used when it's a
-         proper list of short, non-empty strings; otherwise fall back to the
+         proper, reasonably substantial paragraph; otherwise fall back to the
          quiz-based local recap rather than show nothing or something malformed. */
-      const useAIObserved = Array.isArray(json.observed) && json.observed.length>0
-        && json.observed.every(s=>typeof s === 'string' && s.trim().length>0);
+      const useAIObserved = typeof json.observed === 'string' && json.observed.trim().length>=30;
       return {
         scores: json.scores || fallback.scores,
         globalScore: Number.isFinite(json.globalScore) ? json.globalScore : fallback.globalScore,
@@ -3211,14 +3214,12 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
        not keep showing in that case. */
     if(teaser) teaser.style.display = analysisAIAllowed ? 'none' : '';
 
-    /* "Ce qu'on observe" recap — always fully visible, even to non-paying users
-       (it's meant to hook them immediately), never inside the locked wrapper. */
-    const observedList = document.getElementById('observedList');
-    if(observedList){
-      observedList.innerHTML = (r.observed||[]).map(line=>
-        `<li><span class="oc-dot"></span><span>${esc(line)}</span></li>`
-      ).join('');
-    }
+    /* "Ce qu'on observe" recap — a single flowing paragraph, always fully visible
+       even to non-paying users (it's meant to hook them immediately), never
+       inside the locked wrapper. For the AI source it explicitly connects the
+       self-reported quiz answers with what's genuinely visible in the photo. */
+    const observedText = document.getElementById('observedText');
+    if(observedText) observedText.textContent = r.observed || '';
 
     document.getElementById('concernName').textContent = r.concernName;
     document.getElementById('concernDesc').textContent = (r.causes||'').split('.')[0] + '.';
