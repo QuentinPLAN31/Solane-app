@@ -1292,9 +1292,9 @@
       <button onclick="showPage('contact')" data-i18n="nav.contact">Contact</button>
     </div>
     <div class="foot-legal">
-      <a href="#" data-i18n="footer.legal1">Mentions légales</a>
-      <a href="#" data-i18n="footer.legal2">Politique de confidentialité</a>
-      <a href="#" data-i18n="footer.legal3">Politique de remboursement</a>
+      <a href="#" onclick="return false;" data-i18n="footer.legal1">Mentions légales</a>
+      <a href="#" onclick="return false;" data-i18n="footer.legal2">Politique de confidentialité</a>
+      <a href="#" onclick="return false;" data-i18n="footer.legal3">Politique de remboursement</a>
       <span>bonjour@solane.app</span>
     </div>
     <div class="foot-lang">
@@ -4400,6 +4400,15 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
 
   /* ---------- Init ---------- */
+  /* This is a single-page app with no real hash routing — a stray trailing "#"
+     in the address bar (e.g. left over from an old link with href="#") never
+     gets a chance to clear itself since there's no page reload. Strip it once
+     on load so the URL stays clean. */
+  if(window.location.hash === '#' || window.location.hash === ''){
+    if(window.location.href.endsWith('#')){
+      window.history.replaceState({}, '', window.location.href.slice(0, -1));
+    }
+  }
   applyI18n();
   updateNavAvatar();
   if(sb){
