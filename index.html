@@ -660,6 +660,7 @@
     <nav class="links">
       <button onclick="showPage('home')" data-nav="home" data-i18n="nav.home">Accueil</button>
       <button onclick="startDiagnostic()" data-nav="diag" data-i18n="nav.diag">Faire l'analyse</button>
+      <button onclick="openMyAnalyses()" data-i18n="nav.myAnalyses">Mes analyses</button>
       <button onclick="showPage('tarifs')" data-nav="tarifs" data-i18n="nav.tarifs">Tarifs</button>
       <button onclick="showPage('apropos')" data-nav="apropos" data-i18n="nav.apropos">À propos</button>
       <button onclick="showPage('blog')" data-nav="blog" data-i18n="nav.blog">Blog</button>
@@ -1285,6 +1286,7 @@
     <div class="foot-nav">
       <button onclick="showPage('home')" data-i18n="nav.home">Accueil</button>
       <button onclick="startDiagnostic()" data-i18n="nav.diag">Faire l'analyse</button>
+      <button onclick="openMyAnalyses()" data-i18n="nav.myAnalyses">Mes analyses</button>
       <button onclick="showPage('apropos')" data-i18n="nav.apropos">À propos</button>
       <button onclick="showPage('blog')" data-i18n="nav.blog">Blog</button>
       <button onclick="showPage('contact')" data-i18n="nav.contact">Contact</button>
@@ -1388,7 +1390,7 @@
 const I18N = {
 fr: {
   meta:{ title:"Solane" },
-  nav:{ home:"Accueil", diag:"Faire l'analyse", tarifs:"Tarifs", apropos:"À propos", blog:"Blog", contact:"Contact", cta:"Commencer l'analyse" },
+  nav:{ home:"Accueil", diag:"Faire l'analyse", myAnalyses:"Mes analyses", tarifs:"Tarifs", apropos:"À propos", blog:"Blog", contact:"Contact", cta:"Commencer l'analyse" },
   hero:{
     eyebrow:"Diagnostic cutané par IA", h1:"Votre peau évolue.", lede:"Votre routine devrait suivre le mouvement.",
     desc:"Comprenez ce qui agit vraiment sur votre peau, suivez son évolution et obtenez des résultats visibles grâce à une analyse intelligente et personnalisée.",
@@ -1656,7 +1658,7 @@ fr: {
 
 en: {
   meta:{ title:"Solane" },
-  nav:{ home:"Home", diag:"Take the analysis", tarifs:"Pricing", apropos:"About", blog:"Blog", contact:"Contact", cta:"Start my analysis" },
+  nav:{ home:"Home", diag:"Take the analysis", myAnalyses:"My analyses", tarifs:"Pricing", apropos:"About", blog:"Blog", contact:"Contact", cta:"Start my analysis" },
   hero:{
     eyebrow:"AI skin diagnosis", h1:"Your skin keeps changing.", lede:"Your routine should keep up.",
     desc:"Understand what's really affecting your skin, track its evolution, and get visible results with a smart, personalised analysis.",
@@ -1924,7 +1926,7 @@ en: {
 
 de: {
   meta:{ title:"Solane" },
-  nav:{ home:"Start", diag:"Analyse starten", tarifs:"Preise", apropos:"Über uns", blog:"Blog", contact:"Kontakt", cta:"Analyse starten" },
+  nav:{ home:"Start", diag:"Analyse starten", myAnalyses:"Meine Analysen", tarifs:"Preise", apropos:"Über uns", blog:"Blog", contact:"Kontakt", cta:"Analyse starten" },
   hero:{
     eyebrow:"Hautanalyse mit KI", h1:"Deine Haut verändert sich.", lede:"Deine Routine sollte mithalten.",
     desc:"Verstehe, was deine Haut wirklich beeinflusst, verfolge ihre Entwicklung und erziele sichtbare Ergebnisse dank einer intelligenten, persönlichen Analyse.",
@@ -2192,7 +2194,7 @@ de: {
 
 it: {
   meta:{ title:"Solane" },
-  nav:{ home:"Home", diag:"Fai l'analisi", tarifs:"Prezzi", apropos:"Chi siamo", blog:"Blog", contact:"Contatti", cta:"Inizia l'analisi" },
+  nav:{ home:"Home", diag:"Fai l'analisi", myAnalyses:"Le mie analisi", tarifs:"Prezzi", apropos:"Chi siamo", blog:"Blog", contact:"Contatti", cta:"Inizia l'analisi" },
   hero:{
     eyebrow:"Diagnosi della pelle con IA", h1:"La tua pelle cambia sempre.", lede:"La tua routine dovrebbe seguirla.",
     desc:"Capisci cosa influisce davvero sulla tua pelle, monitora la sua evoluzione e ottieni risultati visibili grazie a un'analisi intelligente e personalizzata.",
@@ -3805,6 +3807,9 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     renderProductsList();
     renderAccountPanel();
   }
+  /* "Mes analyses" nav tab — same account panel as the avatar button, just a
+     more discoverable entry point since history is the main reason to open it. */
+  function openMyAnalyses(){ openDrawer(); }
   function closeDrawer(){ document.getElementById('drawerOverlay').classList.remove('show'); }
   function drawerTab(which){
     // Single-panel drawer now (Mes produits tab removed) — kept as a no-op
@@ -4375,12 +4380,15 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
        before (each analysis keeps its own separate photo comparison). */
     currentHistoryId = h.id || null;
     evolutionCache = []; // avoid a flash of the previous analysis's photos before the refresh below
-    /* This entry keeps whatever access level it was saved with — a free-preview
-       analysis stays blurred forever in history, it doesn't retroactively unlock
-       just because it's being reopened (h.unlocked defaults to true for entries
-       saved before this field existed, since back then everyone had paid to see
-       results at all). */
-    analysisAIAllowed = h.unlocked !== false;
+    /* An entry keeps its own saved access level (h.unlocked) UNLESS the account
+       now has an active subscription (monthly/yearly/lifetime) — someone who
+       subscribes after doing a free-preview analysis expects that old analysis
+       to unlock too, not stay blurred forever. A one-shot ("ponctuel") credit
+       is different: it's spent on one specific NEW analysis, so it does NOT
+       retroactively unlock older free-preview entries. h.unlocked defaults to
+       true for entries saved before this field existed (back then everyone had
+       already paid to see results at all). */
+    analysisAIAllowed = h.unlocked !== false || hasEvolutionTrackingAccess();
     closeDrawer();
     document.getElementById('diag-quiz').style.display='none';
     document.getElementById('diag-ready').style.display='none';
