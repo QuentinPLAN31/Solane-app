@@ -3538,7 +3538,14 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     const localReport = normalizeLocal(computeReport());
     applyReportToDOM(localReport, 'local');
 
-    if(!analysisAIAllowed) return;
+    /* The real AI photo analysis now runs for EVERYONE, paid or not — a free
+       user's "Ce qu'on observe" recap must be a genuine reading of their photo,
+       not just an echo of their quiz answers (that was the whole point of
+       adding it: hook the user immediately, even before they pay). Payment
+       still gates the premium SECTIONS via analysisAIAllowed/.locked-item
+       (see applyReportToDOM) — it no longer gates whether the AI call happens
+       at all. This does mean every analysis (paid or free) now costs one
+       Anthropic API call; that's an accepted tradeoff for a real free preview. */
     const ai = await fetchAIReport();
     if(ai){
       const merged = normalizeAI(ai, localReport);
@@ -4375,6 +4382,12 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     const y = now.getFullYear(), m = now.getMonth();
     return getHistory().filter(h => {
       if(h.source !== 'ai') return false;
+      /* The AI call now also runs for free-preview (unpaid) analyses — see
+         renderResults — so only entries that were actually UNLOCKED (paid
+         access at the time) count against the monthly quota. Otherwise
+         someone's free curiosity clicks before ever subscribing would eat
+         into their quota the moment they upgrade. */
+      if(h.unlocked === false) return false;
       const d = new Date(h.date);
       return !isNaN(d) && d.getFullYear()===y && d.getMonth()===m;
     }).length;
