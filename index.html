@@ -423,6 +423,13 @@
   .word-card{border:1px solid var(--line); border-radius:15px; padding:22px 25px; margin-bottom:22px;}
   .word-card .t{font-family:"Fraunces"; font-size:18px; color:var(--ink); margin-bottom:10px;}
   .word-card p{font-size:14px; color:var(--ink-soft);}
+  .observed-card{border:1px solid var(--line); border-radius:16px; padding:22px 24px; margin-bottom:22px; background:radial-gradient(120% 100% at 0% 0%, var(--accent-soft) 0%, transparent 55%), var(--surface);}
+  .observed-card .oc-head{display:flex; align-items:center; gap:10px; margin-bottom:14px; color:var(--accent);}
+  .observed-card .oc-head svg{flex:none;}
+  .observed-card .oc-head span{font-family:"Fraunces"; font-size:16.5px; color:var(--ink); letter-spacing:-.01em;}
+  .oc-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
+  .oc-list li{display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--ink-soft); line-height:1.5;}
+  .oc-list li .oc-dot{flex:none; width:7px; height:7px; border-radius:50%; margin-top:7px; background:var(--accent);}
 
   .premium-teaser{border:1px solid var(--line); border-radius:20px; padding:34px 30px; margin-bottom:40px; text-align:center; background:radial-gradient(120% 100% at 50% 0%, var(--accent-soft) 0%, transparent 60%), var(--surface);}
   .premium-teaser .crown{width:46px; height:46px; border-radius:50%; margin:0 auto 16px; background:linear-gradient(160deg,#c98a5c,#8a5230); display:flex; align-items:center; justify-content:center; color:#fff;}
@@ -972,6 +979,11 @@
         </div>
       </div>
 
+      <div class="observed-card" id="observedCard">
+        <div class="oc-head"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg><span data-i18n="res.observedTitle">Ce qu'on observe</span></div>
+        <ul class="oc-list" id="observedList"></ul>
+      </div>
+
       <div class="word-card">
         <div class="t" data-i18n="res.wordTitle">Le mot de Solane</div>
         <p id="solaneWordText">Il est normal d'observer ce type de signe, surtout après plusieurs mois. Avec une routine adaptée, ta peau peut s'améliorer. N'hésite pas à consulter un dermatologue si besoin.</p>
@@ -1459,6 +1471,8 @@ fr: {
     concernsOptions:["Acné","Points noirs","Rougeurs","Teint terne","Rides","Taches","Sécheresse"],
     sinceTitle:"Depuis combien de temps observes-tu cela ?", sinceOptions:["Moins d'un mois","1 à 3 mois","3 à 6 mois","6 à 12 mois","1 à 2 ans","2 à 5 ans","Plus de 5 ans"],
     goalTitle:"Quel est ton objectif principal ?", goalOptions:["Corriger","Stabiliser"],
+    habitsTitle:"As-tu ces habitudes en ce moment ?", habitsSub:"Sélectionne tout ce qui s'applique — ça nous aide à mieux comprendre les causes.",
+    habitsOptions:["Sommeil insuffisant","Stress important","Exposition au soleil sans protection","Alimentation riche en sucre / produits transformés","Peu d'eau bue dans la journée","Tabac","Beaucoup de temps sur écrans / mains sur le visage","Sport intense sans nettoyage de peau après"],
     photoTitle:"Dernière étape", photoSub:"Prends une photo de ton visage, idéalement sans maquillage et avec une bonne lumière naturelle."
   },
   res:{
@@ -1475,7 +1489,7 @@ fr: {
     detail2:"Puisque tu observes cela depuis 6 à 12 mois, il est probable que le stress, l'alimentation ou des changements hormonaux contribuent à ce teint terne. Une routine de soins régulière peut aider à stabiliser l'état de ta peau.",
     ctaTitle:"Stop au hasard.", ctaBody:"Arrête de gaspiller dans des produits qui ne sont pas faits pour ta peau. Voici ce qu'il te faut vraiment.", ctaBtn:"Découvrir mon plan",
     readEyebrow:"Comment lire ton score", readBody:"Plus le score se rapproche de 100, plus les signes visibles sont limités. Un score plus proche de 0 indique davantage de signes à surveiller, sans constituer un diagnostic.",
-    readLeft:"Signes plus marqués", readRight:"Peau bien équilibrée",
+    readLeft:"Signes plus marqués", readRight:"Peau bien équilibrée", observedTitle:"Ce qu'on observe", observedLocalConcerns:"Tu as signalé : {list}.", observedLocalNone:"Tu n'as signalé aucune préoccupation particulière dans le quiz — c'est plutôt bon signe.", observedLocalHabits:"Habitudes qui peuvent y contribuer : {list}.", observedLocalSkin:"Type de peau indiqué : {skin}.",
     readLevelHigh:"un excellent niveau", readLevelGood:"un bon niveau de départ", readLevelMid:"un niveau à surveiller", readLevelLow:"des signes à surveiller de près",
     wordTitle:"Le mot de Solane", wordTemplate:"Ce type de signe ({concern}) est fréquent, surtout après {since}. Avec une routine adaptée, ta peau peut s'améliorer. N'hésite pas à consulter un dermatologue si besoin.",
     teaserTitle:"Solane Premium, le vrai coup de pouce pour ta peau", teaserSub:"Transforme ton analyse en une routine claire, personnalisée et facile à suivre.",
@@ -1727,6 +1741,8 @@ en: {
     concernsOptions:["Acne","Blackheads","Redness","Dull skin","Wrinkles","Dark spots","Dryness"],
     sinceTitle:"How long have you noticed this?", sinceOptions:["Less than a month","1 to 3 months","3 to 6 months","6 to 12 months","1 to 2 years","2 to 5 years","More than 5 years"],
     goalTitle:"What's your main goal?", goalOptions:["Correct","Stabilise"],
+    habitsTitle:"Do any of these apply to you right now?", habitsSub:"Select everything that applies — this helps us understand the causes better.",
+    habitsOptions:["Not enough sleep","High stress","Sun exposure without protection","Diet high in sugar / processed food","Low water intake","Smoking","Lots of screen time / touching your face","Intense sport without cleansing skin after"],
     photoTitle:"Last step", photoSub:"Take a photo of your face, ideally without make-up and in good natural light."
   },
   res:{
@@ -1743,7 +1759,7 @@ en: {
     detail2:"Since you've noticed this for 6 to 12 months, stress, diet or hormonal changes are likely contributing to this dull complexion. A regular skincare routine can help stabilise your skin.",
     ctaTitle:"Stop guessing.", ctaBody:"Stop wasting money on products that aren't made for your skin. Here's what you actually need.", ctaBtn:"Discover my plan",
     readEyebrow:"How to read your score", readBody:"The closer the score is to 100, the fewer visible signs there are. A score closer to 0 indicates more signs to watch, without being a diagnosis.",
-    readLeft:"More visible signs", readRight:"Well-balanced skin",
+    readLeft:"More visible signs", readRight:"Well-balanced skin", observedTitle:"What we observe", observedLocalConcerns:"You reported: {list}.", observedLocalNone:"You didn't report any particular concern in the quiz — that's a good sign.", observedLocalHabits:"Habits that may be contributing: {list}.", observedLocalSkin:"Skin type you indicated: {skin}.",
     readLevelHigh:"an excellent level", readLevelGood:"a good starting level", readLevelMid:"a level to watch", readLevelLow:"signs to watch closely",
     wordTitle:"A word from Solane", wordTemplate:"It's normal to notice this kind of {concern}, especially after {since}. With the right routine, your skin can improve. Don't hesitate to see a dermatologist if needed.",
     teaserTitle:"Solane Premium, the real boost for your skin", teaserSub:"Turn your analysis into a clear, personalised, easy-to-follow routine.",
@@ -1995,6 +2011,8 @@ de: {
     concernsOptions:["Akne","Mitesser","Rötungen","Fahle Haut","Falten","Flecken","Trockenheit"],
     sinceTitle:"Seit wann beobachtest du das?", sinceOptions:["Weniger als ein Monat","1 bis 3 Monate","3 bis 6 Monate","6 bis 12 Monate","1 bis 2 Jahre","2 bis 5 Jahre","Mehr als 5 Jahre"],
     goalTitle:"Was ist dein Hauptziel?", goalOptions:["Korrigieren","Stabilisieren"],
+    habitsTitle:"Trifft aktuell etwas davon auf dich zu?", habitsSub:"Wähle alles aus, was zutrifft — das hilft uns, die Ursachen besser zu verstehen.",
+    habitsOptions:["Zu wenig Schlaf","Hoher Stress","Sonneneinstrahlung ohne Schutz","Ernährung reich an Zucker / verarbeiteten Lebensmitteln","Geringe Wasseraufnahme","Rauchen","Viel Bildschirmzeit / Gesicht berühren","Intensiver Sport ohne anschließende Hautreinigung"],
     photoTitle:"Letzter Schritt", photoSub:"Mach ein Foto deines Gesichts, idealerweise ungeschminkt und bei gutem Tageslicht."
   },
   res:{
@@ -2011,7 +2029,7 @@ de: {
     detail2:"Da du das seit 6 bis 12 Monaten beobachtest, tragen wahrscheinlich Stress, Ernährung oder hormonelle Veränderungen zu diesem fahlen Teint bei. Eine regelmäßige Pflegeroutine kann helfen, deine Haut zu stabilisieren.",
     ctaTitle:"Schluss mit Zufall.", ctaBody:"Verschwende kein Geld mehr für Produkte, die nicht zu deiner Haut passen. Hier ist, was du wirklich brauchst.", ctaBtn:"Meinen Plan entdecken",
     readEyebrow:"So liest du deinen Score", readBody:"Je näher der Score bei 100 liegt, desto weniger sichtbare Anzeichen gibt es. Ein Score näher bei 0 zeigt mehr zu beobachtende Anzeichen an, ohne eine Diagnose zu sein.",
-    readLeft:"Deutlichere Anzeichen", readRight:"Gut ausgeglichene Haut",
+    readLeft:"Deutlichere Anzeichen", readRight:"Gut ausgeglichene Haut", observedTitle:"Was wir beobachten", observedLocalConcerns:"Du hast angegeben: {list}.", observedLocalNone:"Du hast im Quiz kein besonderes Anliegen angegeben — das ist ein gutes Zeichen.", observedLocalHabits:"Gewohnheiten, die dazu beitragen könnten: {list}.", observedLocalSkin:"Angegebener Hauttyp: {skin}.",
     readLevelHigh:"ein ausgezeichnetes Niveau", readLevelGood:"ein guter Ausgangspunkt", readLevelMid:"ein zu beobachtendes Niveau", readLevelLow:"Anzeichen, die genau beobachtet werden sollten",
     wordTitle:"Das Wort von Solane", wordTemplate:"Es ist normal, diese Art von {concern} zu bemerken, besonders nach {since}. Mit der richtigen Routine kann sich deine Haut verbessern. Zögere nicht, bei Bedarf eine Dermatologin zu konsultieren.",
     teaserTitle:"Solane Premium, der echte Schub für deine Haut", teaserSub:"Verwandle deine Analyse in eine klare, persönliche und leicht umsetzbare Routine.",
@@ -2263,6 +2281,8 @@ it: {
     concernsOptions:["Acne","Punti neri","Rossori","Pelle spenta","Rughe","Macchie","Secchezza"],
     sinceTitle:"Da quanto tempo lo noti?", sinceOptions:["Meno di un mese","Da 1 a 3 mesi","Da 3 a 6 mesi","Da 6 a 12 mesi","Da 1 a 2 anni","Da 2 a 5 anni","Più di 5 anni"],
     goalTitle:"Qual è il tuo obiettivo principale?", goalOptions:["Correggere","Stabilizzare"],
+    habitsTitle:"Una di queste abitudini ti riguarda al momento?", habitsSub:"Seleziona tutto ciò che si applica — ci aiuta a capire meglio le cause.",
+    habitsOptions:["Sonno insufficiente","Stress elevato","Esposizione al sole senza protezione","Alimentazione ricca di zuccheri / cibi processati","Scarso consumo d'acqua","Fumo","Molto tempo sugli schermi / mani sul viso","Sport intenso senza pulizia della pelle dopo"],
     photoTitle:"Ultimo passo", photoSub:"Scatta una foto del tuo viso, idealmente senza trucco e con una buona luce naturale."
   },
   res:{
@@ -2279,7 +2299,7 @@ it: {
     detail2:"Dato che lo noti da 6-12 mesi, è probabile che stress, alimentazione o cambiamenti ormonali contribuiscano a questo incarnato spento. Una routine di cura regolare può aiutare a stabilizzare la tua pelle.",
     ctaTitle:"Basta con il caso.", ctaBody:"Smetti di sprecare soldi in prodotti non adatti alla tua pelle. Ecco cosa ti serve davvero.", ctaBtn:"Scopri il mio piano",
     readEyebrow:"Come leggere il tuo punteggio", readBody:"Più il punteggio si avvicina a 100, più i segni visibili sono limitati. Un punteggio più vicino a 0 indica più segni da monitorare, senza costituire una diagnosi.",
-    readLeft:"Segni più evidenti", readRight:"Pelle ben equilibrata",
+    readLeft:"Segni più evidenti", readRight:"Pelle ben equilibrata", observedTitle:"Cosa osserviamo", observedLocalConcerns:"Hai segnalato: {list}.", observedLocalNone:"Non hai segnalato nessuna preoccupazione particolare nel quiz — è un buon segno.", observedLocalHabits:"Abitudini che potrebbero contribuire: {list}.", observedLocalSkin:"Tipo di pelle indicato: {skin}.",
     readLevelHigh:"un livello eccellente", readLevelGood:"un buon punto di partenza", readLevelMid:"un livello da monitorare", readLevelLow:"segni da monitorare da vicino",
     wordTitle:"La parola di Solane", wordTemplate:"È normale notare questo tipo di {concern}, soprattutto dopo {since}. Con una routine adatta, la tua pelle può migliorare. Non esitare a consultare un dermatologo se necessario.",
     teaserTitle:"Solane Premium, la vera spinta per la tua pelle", teaserSub:"Trasforma la tua analisi in una routine chiara, personalizzata e facile da seguire.",
@@ -2576,6 +2596,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   const CONCERN_KEYS = ['acne','blackheads','redness','dullness','wrinkles','spots','dryness'];
   const SINCE_KEYS = ['lt1','1to3','3to6','6to12','1to2y','2to5y','gt5y'];
   const GOAL_KEYS = ['fix','maintain'];
+  const HABITS_KEYS = ['sleep','stress','sun','diet','water','smoking','screen','sport'];
   let capturedPhotoDataUrl = null;
 
   function onPhotoFileChosen(input){
@@ -2597,6 +2618,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       { key:'concerns', title:d.concernsTitle, sub:d.concernsSub, type:'multi', options:d.concernsOptions },
       { key:'since', title:d.sinceTitle, sub:"", type:'single', options:d.sinceOptions },
       { key:'goal', title:d.goalTitle, sub:"", type:'single', options:d.goalOptions },
+      { key:'habits', title:d.habitsTitle, sub:d.habitsSub, type:'multi', options:d.habitsOptions },
       { key:'photo', title:d.photoTitle, sub:d.photoSub, type:'upload' }
     ];
   }
@@ -2635,6 +2657,27 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       const eff = concernEffects[ck] || {};
       Object.entries(eff).forEach(([k,v])=>{ scores[k] += v - Math.min(durationFactor, Math.abs(v)*0.6); });
     });
+
+    /* Lifestyle habits (self-reported, new "habits" quiz step) nudge the same
+       score indicators as concerns do, but with a flatter, more modest effect
+       since they're ongoing background factors rather than a specific visible
+       sign — they explain likely CAUSES, they don't manufacture new concerns. */
+    const habitIdx = diagAnswers.habits || [];
+    let habitKeys = habitIdx.map(i=>HABITS_KEYS[i]).filter(Boolean);
+    const habitEffects = {
+      sleep:{hydratation:-6, vieillissement:-4},
+      stress:{inflammation:-8, vieillissement:-3},
+      sun:{uv:-15, vieillissement:-6},
+      diet:{imperfections:-6, inflammation:-4},
+      water:{hydratation:-10},
+      smoking:{vieillissement:-10, uv:-5},
+      screen:{imperfections:-5},
+      sport:{imperfections:-4}
+    };
+    habitKeys.forEach(hk=>{
+      const eff = habitEffects[hk] || {};
+      Object.entries(eff).forEach(([k,v])=>{ scores[k] += v; });
+    });
     Object.keys(scores).forEach(k=>{ scores[k] = clampScore(scores[k]); });
 
     const globalScore = Math.round((scores.hydratation+scores.uv+scores.inflammation+scores.vieillissement+scores.imperfections)/5);
@@ -2662,10 +2705,33 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     let sevKey='sevMed', sevScoreRef = primaryConcernKey ? (scores[Object.keys(concernEffects[primaryConcernKey]||{})[0]] ?? globalScore) : globalScore;
     if(sevScoreRef>=75) sevKey='sevLow'; else if(sevScoreRef<55) sevKey='sevHigh'; else sevKey='sevMed';
 
+    /* Local (non-AI) "what we observe" recap — honestly built from the quiz
+       answers, since without the AI vision call this code never actually looks
+       at the photo. Only mentions concerns/habits the person themselves picked;
+       never invents anything they didn't report. Replaced by the AI's own
+       real photo-based "observed" list once the AI report comes back (see
+       normalizeAI), so a free/local preview never overclaims and a paid AI
+       analysis always shows the real thing. */
+    const dSteps = I18N[currentLang].diagSteps;
+    const res0 = I18N[currentLang].res;
+    let observedLocal = [];
+    if(concernKeys.length){
+      const labels = concernIdx.map(i=> dSteps.concernsOptions[i]).filter(Boolean);
+      observedLocal.push((res0.observedLocalConcerns||'{list}').replace('{list}', labels.join(', ')));
+    } else {
+      observedLocal.push(res0.observedLocalNone||'');
+    }
+    if(habitKeys.length){
+      const hLabels = habitIdx.map(i=> dSteps.habitsOptions[i]).filter(Boolean);
+      observedLocal.push((res0.observedLocalHabits||'{list}').replace('{list}', hLabels.join(', ')));
+    }
+    observedLocal.push((res0.observedLocalSkin||'{skin}').replace('{skin}', skinLabel));
+
     return {
       scores, globalScore, bestKey, primaryConcernKey, data, causes, sevKey, sincePhrase,
       goalNote: eng.goalNote[goalKey],
-      bonusProduct: data.bonusProduct
+      bonusProduct: data.bonusProduct,
+      observedLocal
     };
   }
 
@@ -3027,7 +3093,8 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       lifestyle:r.data.lifestyle, mistakes:r.data.mistakes, bonusProduct:r.bonusProduct,
       nutritionPlan:r.data.nutritionPlan,
       routineAMWhy:r.data.routineAMWhy, routinePMWhy:r.data.routinePMWhy,
-      lifestyleWhy:r.data.lifestyleWhy, mistakesWhy:r.data.mistakesWhy
+      lifestyleWhy:r.data.lifestyleWhy, mistakesWhy:r.data.mistakesWhy,
+      observed:r.observedLocal
     };
   }
   function matchLen(arr, len){ return (Array.isArray(arr) && arr.length===len) ? arr : null; }
@@ -3063,6 +3130,11 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
         }
       }
       const useAIEvolution = Array.isArray(json.evolution) && json.evolution.length===3 && !!matchLen(json.evolutionWhy, 3);
+      /* "observed" is the AI's real, photo-grounded recap — only used when it's a
+         proper list of short, non-empty strings; otherwise fall back to the
+         quiz-based local recap rather than show nothing or something malformed. */
+      const useAIObserved = Array.isArray(json.observed) && json.observed.length>0
+        && json.observed.every(s=>typeof s === 'string' && s.trim().length>0);
       return {
         scores: json.scores || fallback.scores,
         globalScore: Number.isFinite(json.globalScore) ? json.globalScore : fallback.globalScore,
@@ -3082,7 +3154,8 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
         lifestyleWhy: useAILifestyle ? aiLifestyleWhy : fallback.lifestyleWhy,
         mistakesWhy: useAIMistakes ? aiMistakesWhy : fallback.mistakesWhy,
         evolution: useAIEvolution ? json.evolution : fallback.evolution,
-        evolutionWhy: useAIEvolution ? json.evolutionWhy : fallback.evolutionWhy
+        evolutionWhy: useAIEvolution ? json.evolutionWhy : fallback.evolutionWhy,
+        observed: useAIObserved ? json.observed : fallback.observed
       };
     }catch(e){ return null; }
   }
@@ -3098,7 +3171,8 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       skin: SKIN_KEYS[diagAnswers.skin!=null ? diagAnswers.skin : 3],
       concerns: (diagAnswers.concerns||[]).map(i=>CONCERN_KEYS[i]).filter(Boolean),
       since: SINCE_KEYS[diagAnswers.since!=null ? diagAnswers.since : 1],
-      goal: GOAL_KEYS[diagAnswers.goal!=null ? diagAnswers.goal : 0]
+      goal: GOAL_KEYS[diagAnswers.goal!=null ? diagAnswers.goal : 0],
+      habits: (diagAnswers.habits||[]).map(i=>HABITS_KEYS[i]).filter(Boolean)
     };
     const ctrl = new AbortController();
     const timeoutId = setTimeout(()=>ctrl.abort(), 25000);
@@ -3136,6 +3210,15 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
        source stays 'local' even though the person already paid — the upsell must
        not keep showing in that case. */
     if(teaser) teaser.style.display = analysisAIAllowed ? 'none' : '';
+
+    /* "Ce qu'on observe" recap — always fully visible, even to non-paying users
+       (it's meant to hook them immediately), never inside the locked wrapper. */
+    const observedList = document.getElementById('observedList');
+    if(observedList){
+      observedList.innerHTML = (r.observed||[]).map(line=>
+        `<li><span class="oc-dot"></span><span>${esc(line)}</span></li>`
+      ).join('');
+    }
 
     document.getElementById('concernName').textContent = r.concernName;
     document.getElementById('concernDesc').textContent = (r.causes||'').split('.')[0] + '.';
