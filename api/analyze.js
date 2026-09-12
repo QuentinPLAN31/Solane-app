@@ -135,8 +135,20 @@ Every field must be genuinely specific to the exact concern(s), skin type and ph
     try {
       parsed = JSON.parse(jsonStr);
     } catch (e) {
-      console.error('Failed to parse AI JSON:', jsonStr.slice(0, 500));
-      return res.status(502).json({ error: 'Could not parse AI JSON response.' });
+      /* Long prose fields (like the "observed" paragraph) sometimes come back
+         with literal raw newlines/tabs inside a JSON string value instead of
+         escaped "\n" — strictly invalid JSON, but trivially fixable: any raw
+         control character (0x00-0x1F) simply becomes a plain space, which
+         never changes the meaning of prose text. Retry once with that fix
+         before giving up. */
+      try {
+        const sanitized = jsonStr.replace(/[\x00-\x1F]+/g, ' ');
+        parsed = JSON.parse(sanitized);
+        console.error('AI JSON needed control-character sanitization to parse (recovered).');
+      } catch (e2) {
+        console.error('Failed to parse AI JSON:', e2.message, '| raw (first 800 chars):', jsonStr.slice(0, 800));
+        return res.status(502).json({ error: 'Could not parse AI JSON response.' });
+      }
     }
 
     if (!parsed.scores) {
