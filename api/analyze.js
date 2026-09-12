@@ -97,7 +97,7 @@ Every field must be genuinely specific to the exact concern(s), skin type and ph
       },
       body: JSON.stringify({
         model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-5',
-        max_tokens: 3200,
+        max_tokens: 4600,
         messages: [
           {
             role: 'user',
