@@ -428,6 +428,10 @@
   .observed-card .oc-head svg{flex:none;}
   .observed-card .oc-head span{font-family:"Fraunces"; font-size:16.5px; color:var(--ink); letter-spacing:-.01em;}
   .observed-card .oc-text{font-size:14.5px; color:var(--ink-soft); line-height:1.7; margin:0;}
+  #sectionDiagnostic, #sectionCauses, #routineTitle2, #productsTitle2, #lifestyleTitle2, #nutritionTitle2, #mistakesTitle2, #evolutionTitle2{ scroll-margin-top:96px; }
+  .overview-item{ cursor:pointer; transition:border-color .15s, background .15s; }
+  .overview-item:hover, .overview-item:focus-visible{ border-color:var(--accent); background:var(--surface-2); }
+  .overview-item:focus-visible{ outline:none; }
 
   .premium-teaser{border:1px solid var(--line); border-radius:20px; padding:34px 30px; margin-bottom:40px; text-align:center; background:radial-gradient(120% 100% at 50% 0%, var(--accent-soft) 0%, transparent 60%), var(--surface);}
   .premium-teaser .crown{width:46px; height:46px; border-radius:50%; margin:0 auto 16px; background:linear-gradient(160deg,#c98a5c,#8a5230); display:flex; align-items:center; justify-content:center; color:#fff;}
@@ -956,7 +960,7 @@
 
       <span class="analysis-badge local" id="analysisBadge" style="margin-bottom:18px;">Aperçu basé sur tes réponses</span>
 
-      <div class="score-ring-wrap">
+      <div class="score-ring-wrap" id="sectionDiagnostic">
         <div class="score-ring">
           <svg viewBox="0 0 160 160">
             <circle class="track" cx="80" cy="80" r="68"></circle>
@@ -1010,14 +1014,14 @@
       </div>
 
       <div class="overview-grid">
-        <div class="overview-item"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3H4v3M17 3h3v3M4 17v3h3M20 17v3h-3"/></svg><span data-i18n="res.o1t">Diagnostic précis par IA</span></div><div class="d" data-i18n="res.o1d">Analyse détaillée de la sévérité et du type d'imperfections détecté.</div></div>
-        <div class="overview-item"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 2h6l1 6-4 3-4-3 1-6Z"/><path d="M8 11l-3 9h14l-3-9"/></svg><span data-i18n="res.o2t">Origines et causes</span></div><div class="d" data-i18n="res.o2d">Compréhension des facteurs déclencheurs de tes imperfections.</div></div>
-        <div class="overview-item"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 16c-1.5-1.5-1.5-4 0-6 1-1.2 2.4-2 3-3.5.6 1.5 2 2.3 3 3.5 1.5 2 1.5 4.5 0 6a3.6 3.6 0 0 1-6 0Z"/><path d="M14 19c-1-1-1-2.6 0-3.8.7-.8 1.6-1.3 2-2.3.4 1 1.3 1.5 2 2.3 1 1.2 1 2.8 0 3.8a2.3 2.3 0 0 1-4 0Z"/></svg><span data-i18n="res.o3t">Routine personnalisée</span></div><div class="d" data-i18n="res.o3d">Les gestes quotidiens adaptés à ton type de peau spécifique.</div></div>
-        <div class="overview-item"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 3h6v3.5c1.8.9 3 2.8 3 5V21H6v-9.5c0-2.2 1.2-4.1 3-5V3Z"/></svg><span data-i18n="res.o4t">Produits recommandés</span></div><div class="d" data-i18n="res.o4d">Une sélection de soins compatibles avec ta peau.</div></div>
-        <div class="overview-item"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s-7-4.5-7-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-7 10-7 10Z"/></svg><span data-i18n="res.o5t">Hygiène de vie</span></div><div class="d" data-i18n="res.o5d">Conseils ciblés pour améliorer l'état de ta peau de l'intérieur.</div></div>
-        <div class="overview-item locked"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3c1.5 2 4 3 4 6.5A4 4 0 0 1 12 14a4 4 0 0 1-4-4.5C8 6 10.5 5 12 3Z"/><path d="M12 14v7"/></svg><span data-i18n="res.o6t">Nutrition & alimentation</span></div><div class="d" data-i18n="res.o6d">Aliments à privilégier et à éviter pour une peau nette.</div></div>
-        <div class="overview-item"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4M12 17h.01M10.3 3.9 2.7 17a2 2 0 0 0 1.7 3h15.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg><span data-i18n="res.o7t">Erreurs fréquentes</span></div><div class="d" data-i18n="res.o7d">Les mauvaises habitudes à éviter pour ne pas aggraver la situation.</div></div>
-        <div class="overview-item full"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 17l5-5 4 4 8-9"/></svg><span data-i18n="res.o8t">Évolution & suivi</span></div><div class="d" data-i18n="res.o8d">Comprendre les phases d'amélioration et le suivi dans le temps.</div></div>
+        <div class="overview-item" onclick="scrollToSection('sectionDiagnostic')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();scrollToSection('sectionDiagnostic');}"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3H4v3M17 3h3v3M4 17v3h3M20 17v3h-3"/></svg><span data-i18n="res.o1t">Diagnostic précis par IA</span></div><div class="d" data-i18n="res.o1d">Analyse détaillée de la sévérité et du type d'imperfections détecté.</div></div>
+        <div class="overview-item" onclick="scrollToSection('sectionCauses')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();scrollToSection('sectionCauses');}"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 2h6l1 6-4 3-4-3 1-6Z"/><path d="M8 11l-3 9h14l-3-9"/></svg><span data-i18n="res.o2t">Origines et causes</span></div><div class="d" data-i18n="res.o2d">Compréhension des facteurs déclencheurs de tes imperfections.</div></div>
+        <div class="overview-item" onclick="scrollToSection('routineTitle2')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();scrollToSection('routineTitle2');}"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 16c-1.5-1.5-1.5-4 0-6 1-1.2 2.4-2 3-3.5.6 1.5 2 2.3 3 3.5 1.5 2 1.5 4.5 0 6a3.6 3.6 0 0 1-6 0Z"/><path d="M14 19c-1-1-1-2.6 0-3.8.7-.8 1.6-1.3 2-2.3.4 1 1.3 1.5 2 2.3 1 1.2 1 2.8 0 3.8a2.3 2.3 0 0 1-4 0Z"/></svg><span data-i18n="res.o3t">Routine personnalisée</span></div><div class="d" data-i18n="res.o3d">Les gestes quotidiens adaptés à ton type de peau spécifique.</div></div>
+        <div class="overview-item" onclick="scrollToSection('productsTitle2')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();scrollToSection('productsTitle2');}"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 3h6v3.5c1.8.9 3 2.8 3 5V21H6v-9.5c0-2.2 1.2-4.1 3-5V3Z"/></svg><span data-i18n="res.o4t">Produits recommandés</span></div><div class="d" data-i18n="res.o4d">Une sélection de soins compatibles avec ta peau.</div></div>
+        <div class="overview-item" onclick="scrollToSection('lifestyleTitle2')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();scrollToSection('lifestyleTitle2');}"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s-7-4.5-7-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.5-7 10-7 10Z"/></svg><span data-i18n="res.o5t">Hygiène de vie</span></div><div class="d" data-i18n="res.o5d">Conseils ciblés pour améliorer l'état de ta peau de l'intérieur.</div></div>
+        <div class="overview-item locked" onclick="scrollToSection('nutritionTitle2')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();scrollToSection('nutritionTitle2');}"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3c1.5 2 4 3 4 6.5A4 4 0 0 1 12 14a4 4 0 0 1-4-4.5C8 6 10.5 5 12 3Z"/><path d="M12 14v7"/></svg><span data-i18n="res.o6t">Nutrition & alimentation</span></div><div class="d" data-i18n="res.o6d">Aliments à privilégier et à éviter pour une peau nette.</div></div>
+        <div class="overview-item" onclick="scrollToSection('mistakesTitle2')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();scrollToSection('mistakesTitle2');}"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4M12 17h.01M10.3 3.9 2.7 17a2 2 0 0 0 1.7 3h15.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg><span data-i18n="res.o7t">Erreurs fréquentes</span></div><div class="d" data-i18n="res.o7d">Les mauvaises habitudes à éviter pour ne pas aggraver la situation.</div></div>
+        <div class="overview-item full" onclick="scrollToSection('evolutionTitle2')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();scrollToSection('evolutionTitle2');}"><div class="t"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 17l5-5 4 4 8-9"/></svg><span data-i18n="res.o8t">Évolution & suivi</span></div><div class="d" data-i18n="res.o8d">Comprendre les phases d'amélioration et le suivi dans le temps.</div></div>
       </div>
 
       <h3 class="section-title" data-i18n="res.noticedTitle">Ce qu'on a remarqué</h3>
@@ -1026,7 +1030,7 @@
         <span class="pill" id="concernPill">Moyen</span>
       </div>
 
-      <div class="detail-panel">
+      <div class="detail-panel" id="sectionCauses">
         <div class="h"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 2h6l1 6-4 3-4-3 1-6Z"/><path d="M8 11l-3 9h14l-3-9"/></svg><span class="t" data-i18n="res.o2t">Origines et causes</span></div>
         <div class="causes-text-wrap" id="causesTextWrap">
           <p id="causesText">Puisque tu observes cela depuis 6 à 12 mois, il est probable que le stress, l'alimentation ou des changements hormonaux contribuent à ce teint terne.</p>
@@ -2532,6 +2536,15 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(navBtn) navBtn.classList.add('on');
     if(id === 'tarifs') renderPricingPage();
     window.scrollTo({top:0, behavior:'instant'});
+  }
+
+  /* Smooth-scrolls to a given results-page section, used by the "overview"
+     cards (Diagnostic, Origines et causes, Routine, Produits, Hygiène de vie,
+     Nutrition, Erreurs, Évolution) so clicking one jumps straight to that
+     part of the report instead of just being a static label. */
+  function scrollToSection(id){
+    const el = document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
   }
 
   /* Someone already on a paid plan (monthly/yearly/lifetime) has no reason to see
