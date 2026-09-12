@@ -2480,7 +2480,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
      preview URL (e.g. solane-xxxxx-yourteam.vercel.app) is a DIFFERENT origin with its
      own separate localStorage, so a session stored there is invisible to a tab open on
      this domain (or vice-versa), which makes the login popup look "stuck". */
-  const CANONICAL_ORIGIN = "https://solane-app.vercel.app";
+  const CANONICAL_ORIGIN = "https://www.solaneskin.com";
   let sb = null;
   try{
     if(SUPABASE_URL.indexOf('REPLACE_WITH') !== 0 && typeof supabase !== 'undefined'){
@@ -4198,7 +4198,6 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     }
     box.innerHTML = `
       <h2>${t('gate.loginTitle')}</h2>
-      <p>${t('gate.loginDesc')}</p>
       ${googleBtnHtml}
       <form class="gate-form" onsubmit="return submitGateLogin(event)">
         <div class="field" style="margin-bottom:0;"><input type="email" id="gateEmail" placeholder="${t('gate.emailPh')}" required></div>
