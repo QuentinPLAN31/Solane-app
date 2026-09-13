@@ -546,6 +546,15 @@
   .field textarea{resize:vertical; min-height:120px;}
   .field input:focus, .field textarea:focus{outline:2px solid var(--accent); outline-offset:1px;}
   .contact-email{text-align:center; margin-top:22px; font-size:13.5px; color:var(--ink-soft);}
+
+  /* ---------- Legal pages (mentions légales / confidentialité / remboursement) ---------- */
+  .legal-shell{max-width:680px; margin:0 auto; padding:56px 0 110px;}
+  .legal-shell h1{font-size:clamp(26px,3.4vw,36px); margin-bottom:6px; color:var(--ink);}
+  .legal-updated{color:var(--ink-faint); font-size:13px; margin-bottom:32px;}
+  .legal-body h2{font-size:18.5px; margin:30px 0 12px; color:var(--ink); font-family:"Fraunces"; letter-spacing:-.01em;}
+  .legal-body h2:first-child{margin-top:0;}
+  .legal-body p{color:var(--ink-soft); font-size:15.5px; line-height:1.75; margin-bottom:14px; font-family:var(--serif-sub);}
+  .legal-body strong{color:var(--ink); font-weight:600;}
   .form-note{ background:var(--good-soft); color:var(--good); border-radius:12px; padding:14px 16px; font-size:13.5px; margin-top:18px; display:none; }
   .form-note.show{display:block;}
 
@@ -1288,7 +1297,17 @@
       </button>
       <div class="form-note" id="contactNote" data-i18n="contact.note">Merci — ton message a bien été envoyé, on revient vers toi rapidement.</div>
     </form>
-    <div class="contact-email">bonjour@solane.app</div>
+    <div class="contact-email">solanesupport@gmail.com</div>
+  </div>
+</section>
+
+<!-- ===================== LEGAL (mentions / confidentialité / remboursement) ===================== -->
+<section class="page" id="page-legal">
+  <div class="wrap legal-shell">
+    <button class="back-link" onclick="showPage('home')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg> <span data-i18n="nav.home">Accueil</span>
+    </button>
+    <div id="legalContent"></div>
   </div>
 </section>
 
@@ -1306,10 +1325,10 @@
       <button onclick="showPage('contact')" data-i18n="nav.contact">Contact</button>
     </div>
     <div class="foot-legal">
-      <a href="#" onclick="return false;" data-i18n="footer.legal1">Mentions légales</a>
-      <a href="#" onclick="return false;" data-i18n="footer.legal2">Politique de confidentialité</a>
-      <a href="#" onclick="return false;" data-i18n="footer.legal3">Politique de remboursement</a>
-      <span>bonjour@solane.app</span>
+      <a href="#" onclick="openLegal('mentions'); return false;" data-i18n="footer.legal1">Mentions légales</a>
+      <a href="#" onclick="openLegal('confidentialite'); return false;" data-i18n="footer.legal2">Politique de confidentialité</a>
+      <a href="#" onclick="openLegal('remboursement'); return false;" data-i18n="footer.legal3">Politique de remboursement</a>
+      <span>solanesupport@gmail.com</span>
     </div>
     <div class="foot-lang">
       <button class="on" data-lang-btn2="fr" onclick="setLang('fr')">Français</button> |
@@ -3643,6 +3662,313 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       <div class="tags">${a.tags.map(tg=>`<span class="blog-tag" style="background:var(--accent-soft); color:var(--accent);">${tg}</span>`).join('')}</div>
       <div class="article-body">${a.body.map(p=>`<p>${p}</p>`).join('')}</div>`;
     if(!silent) showPage('article');
+  }
+
+  /* ---------- Legal pages (mentions légales / confidentialité / remboursement) ----------
+     IMPORTANT — before going live, replace every [bracketed placeholder] below in the
+     "mentions" section with the real, legally-registered identity of the site's
+     publisher (name/company, legal status, SIRET or RCS number, registered address,
+     name of the "directeur de la publication"). French law (LCEN) requires this
+     information to be accurate and complete; it cannot be invented, so it is left as
+     clearly-marked placeholders here. */
+  const LEGAL_CONTENT = {
+    fr: {
+      mentions: { title:"Mentions légales", updated:"Dernière mise à jour : 13 septembre 2026", sections:[
+        {h:"1. Éditeur du site", p:[
+          "Le site Solane, accessible à l'adresse https://www.solaneskin.com, est édité par : <strong>Solane</strong> (nom commercial), micro-entreprise en cours d'immatriculation, dont le siège se situe <strong>59 allée Pierre Satre, 31840 Seilh, France</strong>. Numéro SIRET en cours d'attribution.",
+          "Contact : solanesupport@gmail.com"
+        ]},
+        {h:"2. Directeur de la publication", p:[
+          "L'exploitant de la micro-entreprise Solane."
+        ]},
+        {h:"3. Hébergement", p:[
+          "Le site est hébergé par Vercel Inc. (coordonnées complètes disponibles sur vercel.com/legal). Les comptes, l'historique des analyses et les photos de suivi d'évolution sont stockés par Supabase, prestataire d'hébergement de base de données et d'authentification."
+        ]},
+        {h:"4. Nature du service", p:[
+          "Solane propose une analyse esthétique de la peau assistée par intelligence artificielle, fournie à titre purement informatif et indicatif. Ce service ne constitue en aucun cas un dispositif médical, un diagnostic médical ni un avis dermatologique, et ne remplace pas la consultation d'un professionnel de santé. En cas de doute ou de problème cutané persistant, consultez un dermatologue."
+        ]},
+        {h:"5. Propriété intellectuelle", p:[
+          "L'ensemble des éléments du site (textes, structure, identité visuelle, logo Solane) est protégé par le droit de la propriété intellectuelle. Toute reproduction, même partielle, sans autorisation préalable est interdite."
+        ]},
+        {h:"6. Contact", p:[
+          "Pour toute question relative au site ou à ces mentions légales : solanesupport@gmail.com"
+        ]}
+      ]},
+      confidentialite: { title:"Politique de confidentialité", updated:"Dernière mise à jour : 13 septembre 2026", sections:[
+        {h:"1. Responsable du traitement", p:[
+          "<strong>Solane</strong> (micro-entreprise en cours d'immatriculation) (voir Mentions légales), joignable à solanesupport@gmail.com."
+        ]},
+        {h:"2. Données que nous collectons", p:[
+          "Données de compte : adresse email, mot de passe chiffré, ou connexion via Google.",
+          "Réponses au quiz : type de peau, préoccupations signalées, ancienneté, objectif, habitudes de vie.",
+          "Photo du visage : utilisée pour générer votre analyse. Une miniature compressée est conservée dans votre historique pour l'illustrer ; si vous activez le suivi d'évolution, une photo peut aussi être conservée dans cet espace de votre compte.",
+          "Résultats d'analyse : scores, diagnostic, recommandations, conservés dans votre historique.",
+          "Données d'abonnement et de paiement : plan choisi, statut d'abonnement. Vos coordonnées bancaires ne transitent jamais par nos serveurs : elles sont traitées directement par Stripe."
+        ]},
+        {h:"3. Pourquoi nous les utilisons", p:[
+          "Générer votre analyse et vos recommandations personnalisées ; gérer votre compte, votre historique et votre abonnement ; vous permettre de suivre l'évolution de votre peau dans le temps ; répondre à vos demandes via le formulaire de contact ; assurer la sécurité et le bon fonctionnement du service."
+        ]},
+        {h:"4. Avec qui nous les partageons", p:[
+          "Nous ne vendons ni ne louons vos données. Elles sont transmises, dans la stricte mesure nécessaire, aux prestataires suivants : <strong>Anthropic</strong> (fournisseur du modèle d'IA utilisé pour l'analyse), qui reçoit la photo transmise le temps de générer le résultat ; <strong>Supabase</strong> (base de données, authentification, stockage des photos d'évolution) ; <strong>Stripe</strong> (traitement des paiements et abonnements) ; <strong>Vercel</strong> (hébergement du site et des fonctions serveur).",
+          "Ces prestataires peuvent être situés hors de l'Union européenne (États-Unis) ; le cas échéant, ce transfert s'appuie sur les garanties prévues par ces prestataires (clauses contractuelles types ou équivalent)."
+        ]},
+        {h:"5. Durée de conservation", p:[
+          "Vos données sont conservées tant que votre compte est actif. Vous pouvez supprimer une analyse, une photo d'évolution ou votre compte entier à tout moment depuis votre espace personnel ; en cas de suppression du compte, vos données sont effacées sous un délai raisonnable, sauf obligation légale de conservation contraire."
+        ]},
+        {h:"6. Vos droits", p:[
+          "Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité sur vos données. Vous pouvez les exercer directement depuis votre compte, ou en écrivant à solanesupport@gmail.com. Vous pouvez également introduire une réclamation auprès de la CNIL (cnil.fr)."
+        ]},
+        {h:"7. Cookies et stockage local", p:[
+          "Solane n'utilise aucun cookie publicitaire ni traceur tiers. Le site utilise le stockage local de votre navigateur (localStorage) pour mémoriser votre langue et faciliter votre navigation, ainsi que des cookies techniques nécessaires à l'authentification."
+        ]},
+        {h:"8. Sécurité", p:[
+          "Les échanges avec le site sont chiffrés (HTTPS). L'accès à vos données est protégé par authentification et limité à ce qui est strictement nécessaire au fonctionnement du service."
+        ]}
+      ]},
+      remboursement: { title:"Politique de remboursement", updated:"Dernière mise à jour : 13 septembre 2026", sections:[
+        {h:"1. Délai de remboursement : 48 heures", p:[
+          "Vous pouvez demander le remboursement intégral de votre achat (analyse à l'unité, abonnement 28 jours, abonnement annuel ou accès à vie) dans les <strong>48 heures</strong> suivant la transaction, à la seule condition qu'<strong>aucune analyse IA n'ait été générée</strong> sur le compte concerné depuis cet achat."
+        ]},
+        {h:"2. Pourquoi cette condition", p:[
+          "L'analyse par intelligence artificielle constitue la prestation principale de Solane : dès qu'elle est générée, le service a été rendu et ne peut être « repris ». C'est pourquoi le remboursement n'est possible que si vous n'avez consommé aucune analyse depuis votre achat."
+        ]},
+        {h:"3. Passé ce délai, ou si une analyse a été générée", p:[
+          "Au-delà de 48 heures, ou dès qu'une analyse a été générée (même une seule), l'achat n'est plus remboursable, quel que soit le plan concerné."
+        ]},
+        {h:"4. Comment demander un remboursement", p:[
+          "Écrivez à solanesupport@gmail.com avec l'adresse email de votre compte Solane et la date de l'achat, dans les 48 heures suivant celui-ci. Nous traitons chaque demande sous quelques jours ouvrés et vous confirmons par email."
+        ]},
+        {h:"5. Résiliation d'un abonnement (différent d'un remboursement)", p:[
+          "Vous pouvez annuler votre abonnement à tout moment depuis votre espace personnel (« Gérer mon abonnement »). L'annulation prend effet à la fin de la période en cours (28 jours ou 1 an selon le plan) : vous conservez l'accès jusqu'à cette date, sans remboursement au prorata de la période déjà entamée."
+        ]}
+      ]}
+    },
+    en: {
+      mentions: { title:"Legal notice", updated:"Last updated: September 13, 2026", sections:[
+        {h:"1. Site publisher", p:[
+          "The Solane website, available at https://www.solaneskin.com, is published by: <strong>Solane</strong> (trading name), a French sole-trader business (micro-entreprise) currently being registered, with registered address at <strong>59 allée Pierre Satre, 31840 Seilh, France</strong>. Registration number pending.",
+          "Contact: solanesupport@gmail.com"
+        ]},
+        {h:"2. Publication director", p:[
+          "The operator of the Solane micro-entreprise."
+        ]},
+        {h:"3. Hosting", p:[
+          "The site is hosted by Vercel Inc. (full contact details available at vercel.com/legal). Accounts, analysis history and evolution-tracking photos are stored by Supabase, our database and authentication provider."
+        ]},
+        {h:"4. Nature of the service", p:[
+          "Solane offers an AI-assisted cosmetic skin assessment, provided for informational purposes only. This service is not a medical device, a medical diagnosis, or dermatological advice, and does not replace consulting a healthcare professional. If in doubt or if a skin issue persists, please consult a dermatologist."
+        ]},
+        {h:"5. Intellectual property", p:[
+          "All elements of the site (text, structure, visual identity, the Solane logo) are protected by intellectual property law. Any reproduction, even partial, without prior authorization is prohibited."
+        ]},
+        {h:"6. Contact", p:[
+          "For any question about the site or this legal notice: solanesupport@gmail.com"
+        ]}
+      ]},
+      confidentialite: { title:"Privacy policy", updated:"Last updated: September 13, 2026", sections:[
+        {h:"1. Data controller", p:[
+          "<strong>Solane</strong> (French sole-trader business currently being registered) (see Legal notice), reachable at solanesupport@gmail.com."
+        ]},
+        {h:"2. Data we collect", p:[
+          "Account data: email address, encrypted password, or Google sign-in.",
+          "Quiz answers: skin type, reported concerns, how long you've noticed them, your goal, lifestyle habits.",
+          "Face photo: used to generate your analysis. A compressed thumbnail is kept in your history to illustrate it; if you enable evolution tracking, a photo may also be stored in that section of your account.",
+          "Analysis results: scores, diagnosis, recommendations, kept in your history.",
+          "Subscription and payment data: chosen plan, subscription status. Your card details never pass through our servers — they are processed directly by Stripe."
+        ]},
+        {h:"3. Why we use it", p:[
+          "To generate your analysis and personalized recommendations; to manage your account, history and subscription; to let you track your skin's evolution over time; to answer your requests via the contact form; and to keep the service secure and running properly."
+        ]},
+        {h:"4. Who we share it with", p:[
+          "We do not sell or rent your data. It is shared, strictly as needed, with the following providers: <strong>Anthropic</strong> (the AI provider used for the analysis), which receives the submitted photo for the time needed to generate the result; <strong>Supabase</strong> (database, authentication, storage of evolution photos); <strong>Stripe</strong> (payment and subscription processing); <strong>Vercel</strong> (site and server-function hosting).",
+          "These providers may be located outside the European Union (United States); where applicable, this transfer relies on the safeguards these providers put in place (standard contractual clauses or equivalent)."
+        ]},
+        {h:"5. Retention period", p:[
+          "Your data is kept as long as your account is active. You can delete an analysis, an evolution photo, or your entire account at any time from your personal space; upon account deletion, your data is erased within a reasonable timeframe, unless a legal obligation requires otherwise."
+        ]},
+        {h:"6. Your rights", p:[
+          "Under the GDPR, you have the right to access, rectify, erase, restrict, object to, and port your data. You can exercise these rights directly from your account, or by writing to solanesupport@gmail.com. You may also file a complaint with your national data protection authority."
+        ]},
+        {h:"7. Cookies and local storage", p:[
+          "Solane does not use advertising cookies or third-party trackers. The site uses your browser's local storage (localStorage) to remember your language and ease navigation, along with technical cookies required for authentication."
+        ]},
+        {h:"8. Security", p:[
+          "Exchanges with the site are encrypted (HTTPS). Access to your data is protected by authentication and limited to what is strictly necessary for the service to function."
+        ]}
+      ]},
+      remboursement: { title:"Refund policy", updated:"Last updated: September 13, 2026", sections:[
+        {h:"1. 48-hour refund window", p:[
+          "You can request a full refund of your purchase (single analysis, 28-day subscription, yearly subscription, or lifetime access) within <strong>48 hours</strong> of the transaction, provided that <strong>no AI analysis has been generated</strong> on the account since that purchase."
+        ]},
+        {h:"2. Why this condition applies", p:[
+          "The AI analysis is Solane's core service: once it has been generated, the service has been delivered and cannot be \"taken back\". That's why a refund is only possible if you have not used any analysis since your purchase."
+        ]},
+        {h:"3. After this window, or once an analysis has been generated", p:[
+          "Past 48 hours, or as soon as an analysis has been generated (even a single one), the purchase is no longer refundable, regardless of the plan."
+        ]},
+        {h:"4. How to request a refund", p:[
+          "Write to solanesupport@gmail.com with your Solane account email and the purchase date, within 48 hours of the purchase. We process each request within a few business days and confirm by email."
+        ]},
+        {h:"5. Cancelling a subscription (different from a refund)", p:[
+          "You can cancel your subscription at any time from your personal space (\"Manage my subscription\"). Cancellation takes effect at the end of the current period (28 days or 1 year depending on the plan): you keep access until that date, with no pro-rata refund for the time already used."
+        ]}
+      ]}
+    },
+    de: {
+      mentions: { title:"Impressum", updated:"Zuletzt aktualisiert: 13. September 2026", sections:[
+        {h:"1. Betreiber der Website", p:[
+          "Die Website Solane, erreichbar unter https://www.solaneskin.com, wird betrieben von: <strong>Solane</strong> (Handelsname), ein französisches Einzelunternehmen (micro-entreprise), derzeit in der Anmeldung, mit Sitz in <strong>59 allée Pierre Satre, 31840 Seilh, Frankreich</strong>. Registernummer wird noch vergeben.",
+          "Kontakt: solanesupport@gmail.com"
+        ]},
+        {h:"2. Verantwortlich für den Inhalt", p:[
+          "Der Betreiber der micro-entreprise Solane."
+        ]},
+        {h:"3. Hosting", p:[
+          "Die Website wird von Vercel Inc. gehostet (vollständige Kontaktdaten unter vercel.com/legal). Konten, Analyseverlauf und Fotos zur Verlaufsverfolgung werden von Supabase gespeichert, unserem Anbieter für Datenbank und Authentifizierung."
+        ]},
+        {h:"4. Art der Dienstleistung", p:[
+          "Solane bietet eine KI-gestützte kosmetische Hautanalyse ausschließlich zu Informationszwecken an. Dieser Dienst ist kein Medizinprodukt, keine medizinische Diagnose und keine dermatologische Beratung und ersetzt nicht den Besuch bei einem Facharzt. Bei anhaltenden Hautproblemen wenden Sie sich bitte an eine Hautärztin oder einen Hautarzt."
+        ]},
+        {h:"5. Geistiges Eigentum", p:[
+          "Alle Elemente der Website (Texte, Struktur, visuelle Identität, das Solane-Logo) sind urheberrechtlich geschützt. Jede auch nur teilweise Vervielfältigung ohne vorherige Genehmigung ist untersagt."
+        ]},
+        {h:"6. Kontakt", p:[
+          "Bei Fragen zur Website oder zu diesem Impressum: solanesupport@gmail.com"
+        ]}
+      ]},
+      confidentialite: { title:"Datenschutzerklärung", updated:"Zuletzt aktualisiert: 13. September 2026", sections:[
+        {h:"1. Verantwortlicher für die Datenverarbeitung", p:[
+          "<strong>Solane</strong> (französisches Einzelunternehmen, derzeit in der Anmeldung) (siehe Impressum), erreichbar unter solanesupport@gmail.com."
+        ]},
+        {h:"2. Welche Daten wir erheben", p:[
+          "Kontodaten: E-Mail-Adresse, verschlüsseltes Passwort oder Anmeldung über Google.",
+          "Quiz-Antworten: Hauttyp, gemeldete Anliegen, Zeitraum, Ziel, Lebensgewohnheiten.",
+          "Gesichtsfoto: wird zur Erstellung deiner Analyse verwendet. Ein komprimiertes Vorschaubild wird in deinem Verlauf gespeichert; wenn du die Verlaufsverfolgung aktivierst, kann zusätzlich ein Foto in diesem Bereich deines Kontos gespeichert werden.",
+          "Analyseergebnisse: Werte, Diagnose, Empfehlungen, gespeichert in deinem Verlauf.",
+          "Abonnement- und Zahlungsdaten: gewähltes Paket, Abonnementstatus. Deine Zahlungsdaten laufen niemals über unsere Server — sie werden direkt von Stripe verarbeitet."
+        ]},
+        {h:"3. Warum wir sie verwenden", p:[
+          "Um deine Analyse und persönlichen Empfehlungen zu erstellen; um dein Konto, deinen Verlauf und dein Abonnement zu verwalten; damit du die Entwicklung deiner Haut über die Zeit verfolgen kannst; um deine Anfragen über das Kontaktformular zu beantworten; und um die Sicherheit und den reibungslosen Betrieb des Dienstes zu gewährleisten."
+        ]},
+        {h:"4. Mit wem wir sie teilen", p:[
+          "Wir verkaufen oder vermieten deine Daten nicht. Sie werden, soweit unbedingt erforderlich, an folgende Anbieter weitergegeben: <strong>Anthropic</strong> (Anbieter des für die Analyse verwendeten KI-Modells), der das übermittelte Foto für die Dauer der Ergebniserstellung erhält; <strong>Supabase</strong> (Datenbank, Authentifizierung, Speicherung der Verlaufsfotos); <strong>Stripe</strong> (Zahlungs- und Abonnementabwicklung); <strong>Vercel</strong> (Hosting der Website und der Serverfunktionen).",
+          "Diese Anbieter können sich außerhalb der Europäischen Union befinden (USA); in diesem Fall stützt sich die Übermittlung auf die von diesen Anbietern vorgesehenen Garantien (Standardvertragsklauseln oder Gleichwertiges)."
+        ]},
+        {h:"5. Speicherdauer", p:[
+          "Deine Daten werden so lange gespeichert, wie dein Konto aktiv ist. Du kannst eine Analyse, ein Verlaufsfoto oder dein gesamtes Konto jederzeit über deinen persönlichen Bereich löschen; bei Löschung des Kontos werden deine Daten innerhalb einer angemessenen Frist gelöscht, sofern keine gesetzliche Aufbewahrungspflicht entgegensteht."
+        ]},
+        {h:"6. Deine Rechte", p:[
+          "Gemäß der DSGVO hast du ein Recht auf Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und Datenübertragbarkeit bezüglich deiner Daten. Du kannst diese Rechte direkt über dein Konto ausüben oder an solanesupport@gmail.com schreiben. Du kannst dich auch bei deiner zuständigen Datenschutzbehörde beschweren."
+        ]},
+        {h:"7. Cookies und lokaler Speicher", p:[
+          "Solane verwendet keine Werbe-Cookies oder Tracker von Drittanbietern. Die Website nutzt den lokalen Speicher deines Browsers (localStorage), um deine Sprache zu merken und die Navigation zu erleichtern, sowie technische Cookies, die für die Authentifizierung erforderlich sind."
+        ]},
+        {h:"8. Sicherheit", p:[
+          "Der Datenaustausch mit der Website ist verschlüsselt (HTTPS). Der Zugriff auf deine Daten ist durch Authentifizierung geschützt und auf das für den Betrieb des Dienstes unbedingt Notwendige beschränkt."
+        ]}
+      ]},
+      remboursement: { title:"Rückerstattungsrichtlinie", updated:"Zuletzt aktualisiert: 13. September 2026", sections:[
+        {h:"1. Rückerstattungsfrist: 48 Stunden", p:[
+          "Du kannst innerhalb von <strong>48 Stunden</strong> nach dem Kauf (Einzelanalyse, 28-Tage-Abonnement, Jahresabonnement oder lebenslanger Zugang) eine vollständige Rückerstattung verlangen, sofern seit diesem Kauf <strong>keine KI-Analyse</strong> auf dem betreffenden Konto erstellt wurde."
+        ]},
+        {h:"2. Warum diese Bedingung gilt", p:[
+          "Die KI-gestützte Analyse ist die Hauptleistung von Solane: Sobald sie erstellt wurde, wurde die Leistung erbracht und kann nicht „zurückgenommen“ werden. Deshalb ist eine Rückerstattung nur möglich, wenn seit deinem Kauf keine Analyse verbraucht wurde."
+        ]},
+        {h:"3. Nach Ablauf dieser Frist oder nach einer erstellten Analyse", p:[
+          "Nach Ablauf von 48 Stunden oder sobald eine Analyse erstellt wurde (auch nur eine einzige), ist der Kauf nicht mehr erstattungsfähig, unabhängig vom gewählten Paket."
+        ]},
+        {h:"4. So beantragst du eine Rückerstattung", p:[
+          "Schreibe innerhalb von 48 Stunden nach dem Kauf an solanesupport@gmail.com mit der E-Mail-Adresse deines Solane-Kontos und dem Kaufdatum. Wir bearbeiten jede Anfrage innerhalb weniger Werktage und bestätigen dies per E-Mail."
+        ]},
+        {h:"5. Kündigung eines Abonnements (unterscheidet sich von einer Rückerstattung)", p:[
+          "Du kannst dein Abonnement jederzeit in deinem persönlichen Bereich („Abonnement verwalten“) kündigen. Die Kündigung wird zum Ende des laufenden Zeitraums wirksam (28 Tage oder 1 Jahr, je nach Paket): Du behältst den Zugang bis zu diesem Datum, ohne anteilige Rückerstattung für den bereits genutzten Zeitraum."
+        ]}
+      ]}
+    },
+    it: {
+      mentions: { title:"Note legali", updated:"Ultimo aggiornamento: 13 settembre 2026", sections:[
+        {h:"1. Editore del sito", p:[
+          "Il sito Solane, disponibile all'indirizzo https://www.solaneskin.com, è pubblicato da: <strong>Solane</strong> (nome commerciale), impresa individuale francese (micro-entreprise) in corso di registrazione, con sede in <strong>59 allée Pierre Satre, 31840 Seilh, Francia</strong>. Numero di registrazione in attesa di attribuzione.",
+          "Contatto: solanesupport@gmail.com"
+        ]},
+        {h:"2. Direttore della pubblicazione", p:[
+          "Il titolare della micro-entreprise Solane."
+        ]},
+        {h:"3. Hosting", p:[
+          "Il sito è ospitato da Vercel Inc. (contatti completi disponibili su vercel.com/legal). Gli account, lo storico delle analisi e le foto di monitoraggio dell'evoluzione sono conservati da Supabase, il nostro fornitore di database e autenticazione."
+        ]},
+        {h:"4. Natura del servizio", p:[
+          "Solane offre una valutazione estetica della pelle assistita dall'intelligenza artificiale, fornita a puro scopo informativo. Questo servizio non costituisce in alcun modo un dispositivo medico, una diagnosi medica o un parere dermatologico, e non sostituisce la consulenza di un professionista sanitario. In caso di dubbio o di problema cutaneo persistente, consulta un dermatologo."
+        ]},
+        {h:"5. Proprietà intellettuale", p:[
+          "Tutti gli elementi del sito (testi, struttura, identità visiva, logo Solane) sono protetti dal diritto di proprietà intellettuale. È vietata qualsiasi riproduzione, anche parziale, senza autorizzazione preventiva."
+        ]},
+        {h:"6. Contatto", p:[
+          "Per qualsiasi domanda relativa al sito o a queste note legali: solanesupport@gmail.com"
+        ]}
+      ]},
+      confidentialite: { title:"Informativa sulla privacy", updated:"Ultimo aggiornamento: 13 settembre 2026", sections:[
+        {h:"1. Titolare del trattamento", p:[
+          "<strong>Solane</strong> (impresa individuale francese in corso di registrazione) (vedi Note legali), contattabile a solanesupport@gmail.com."
+        ]},
+        {h:"2. Dati che raccogliamo", p:[
+          "Dati dell'account: indirizzo email, password crittografata, oppure accesso tramite Google.",
+          "Risposte al quiz: tipo di pelle, problematiche segnalate, da quanto tempo, obiettivo, abitudini di vita.",
+          "Foto del viso: utilizzata per generare la tua analisi. Una miniatura compressa viene conservata nel tuo storico per illustrarla; se attivi il monitoraggio dell'evoluzione, una foto può essere conservata anche in quella sezione del tuo account.",
+          "Risultati dell'analisi: punteggi, diagnosi, raccomandazioni, conservati nel tuo storico.",
+          "Dati di abbonamento e pagamento: piano scelto, stato dell'abbonamento. I tuoi dati di pagamento non transitano mai sui nostri server: sono trattati direttamente da Stripe."
+        ]},
+        {h:"3. Perché li utilizziamo", p:[
+          "Per generare la tua analisi e le raccomandazioni personalizzate; per gestire il tuo account, lo storico e l'abbonamento; per permetterti di monitorare l'evoluzione della tua pelle nel tempo; per rispondere alle tue richieste tramite il modulo di contatto; per garantire la sicurezza e il corretto funzionamento del servizio."
+        ]},
+        {h:"4. Con chi li condividiamo", p:[
+          "Non vendiamo né affittiamo i tuoi dati. Vengono trasmessi, nella stretta misura necessaria, ai seguenti fornitori: <strong>Anthropic</strong> (fornitore del modello di IA usato per l'analisi), che riceve la foto inviata per il tempo necessario a generare il risultato; <strong>Supabase</strong> (database, autenticazione, archiviazione delle foto di evoluzione); <strong>Stripe</strong> (elaborazione dei pagamenti e degli abbonamenti); <strong>Vercel</strong> (hosting del sito e delle funzioni server).",
+          "Questi fornitori possono trovarsi al di fuori dell'Unione Europea (Stati Uniti); in tal caso, il trasferimento si basa sulle garanzie previste da tali fornitori (clausole contrattuali standard o equivalenti)."
+        ]},
+        {h:"5. Periodo di conservazione", p:[
+          "I tuoi dati sono conservati finché il tuo account è attivo. Puoi eliminare un'analisi, una foto di evoluzione o l'intero account in qualsiasi momento dalla tua area personale; in caso di eliminazione dell'account, i tuoi dati vengono cancellati entro un termine ragionevole, salvo obbligo legale di conservazione."
+        ]},
+        {h:"6. I tuoi diritti", p:[
+          "In conformità al GDPR, hai diritto di accesso, rettifica, cancellazione, limitazione, opposizione e portabilità dei tuoi dati. Puoi esercitarli direttamente dal tuo account, oppure scrivendo a solanesupport@gmail.com. Puoi anche presentare un reclamo alla tua autorità di protezione dati competente."
+        ]},
+        {h:"7. Cookie e archiviazione locale", p:[
+          "Solane non utilizza cookie pubblicitari né tracciatori di terze parti. Il sito utilizza l'archiviazione locale del tuo browser (localStorage) per ricordare la tua lingua e facilitare la navigazione, oltre a cookie tecnici necessari per l'autenticazione."
+        ]},
+        {h:"8. Sicurezza", p:[
+          "Gli scambi con il sito sono crittografati (HTTPS). L'accesso ai tuoi dati è protetto da autenticazione e limitato a quanto strettamente necessario per il funzionamento del servizio."
+        ]}
+      ]},
+      remboursement: { title:"Politica di rimborso", updated:"Ultimo aggiornamento: 13 settembre 2026", sections:[
+        {h:"1. Termine di rimborso: 48 ore", p:[
+          "Puoi richiedere il rimborso integrale del tuo acquisto (analisi singola, abbonamento a 28 giorni, abbonamento annuale o accesso a vita) entro <strong>48 ore</strong> dalla transazione, a condizione che <strong>non sia stata generata alcuna analisi IA</strong> sull'account in questione da quell'acquisto."
+        ]},
+        {h:"2. Perché questa condizione", p:[
+          "L'analisi tramite intelligenza artificiale costituisce la prestazione principale di Solane: una volta generata, il servizio è stato reso e non può essere «ripreso». Per questo il rimborso è possibile solo se non hai consumato alcuna analisi dal tuo acquisto."
+        ]},
+        {h:"3. Trascorso questo termine, o se un'analisi è stata generata", p:[
+          "Oltre le 48 ore, o non appena viene generata un'analisi (anche una sola), l'acquisto non è più rimborsabile, indipendentemente dal piano."
+        ]},
+        {h:"4. Come richiedere un rimborso", p:[
+          "Scrivi a solanesupport@gmail.com indicando l'indirizzo email del tuo account Solane e la data dell'acquisto, entro 48 ore da quest'ultimo. Elaboriamo ogni richiesta entro pochi giorni lavorativi e confermiamo via email."
+        ]},
+        {h:"5. Disdetta di un abbonamento (diverso da un rimborso)", p:[
+          "Puoi annullare il tuo abbonamento in qualsiasi momento dalla tua area personale («Gestisci il mio abbonamento»). La disdetta ha effetto alla fine del periodo in corso (28 giorni o 1 anno a seconda del piano): mantieni l'accesso fino a quella data, senza rimborso proporzionale per il periodo già utilizzato."
+        ]}
+      ]}
+    }
+  };
+
+  function openLegal(key){
+    const langData = LEGAL_CONTENT[currentLang] || LEGAL_CONTENT.fr;
+    const c = langData[key] || LEGAL_CONTENT.fr[key];
+    if(!c) return;
+    const el = document.getElementById('legalContent');
+    if(!el) return;
+    el.innerHTML = `<h1>${c.title}</h1><p class="legal-updated">${c.updated}</p>` +
+      `<div class="legal-body">` +
+      c.sections.map(s => `<h2>${s.h}</h2>` + s.p.map(p => `<p>${p}</p>`).join('')).join('') +
+      `</div>`;
+    showPage('legal');
   }
 
   /* ---------- Contact ---------- */
