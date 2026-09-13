@@ -12,7 +12,11 @@
 import Stripe from 'stripe';
 
 const PLAN_CONFIG = {
-  monthly: { mode: 'subscription', unit_amount: 990, interval: 'month', name: 'Solane Premium — mensuel' },
+  // Billed every 28 days (not a calendar month) — Stripe's `day` interval
+  // with interval_count lets us do this exactly; the app's own monthly
+  // analysis quota (see MONTHLY_ANALYSIS_QUOTA / getAnalysesThisMonth in
+  // index.html) mirrors this same 28-day rolling window.
+  monthly: { mode: 'subscription', unit_amount: 990, interval: 'day', intervalCount: 28, name: 'Solane Premium — 28 jours' },
   yearly: { mode: 'subscription', unit_amount: 7900, interval: 'year', name: 'Solane Premium — annuel' },
   oneshot: { mode: 'payment', unit_amount: 490, name: "Solane — analyse à l'unité" },
   lifetime: { mode: 'payment', unit_amount: 9900, name: 'Solane Premium à vie' },
@@ -54,7 +58,7 @@ export default async function handler(req, res) {
             currency: 'eur',
             unit_amount: cfg.unit_amount,
             product_data: { name: cfg.name },
-            ...(cfg.mode === 'subscription' ? { recurring: { interval: cfg.interval } } : {}),
+            ...(cfg.mode === 'subscription' ? { recurring: { interval: cfg.interval, ...(cfg.intervalCount ? { interval_count: cfg.intervalCount } : {}) } } : {}),
           },
           quantity: 1,
         },
