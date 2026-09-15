@@ -61,6 +61,7 @@
   .hero{padding:80px 0 96px;}
   .hero-grid{ display:grid; grid-template-columns:1.05fr 1fr; gap:64px; align-items:center; }
   @media (max-width:900px){ .hero-grid{grid-template-columns:1fr;} }
+  @media (max-width:600px){ .hero{padding:32px 0 28px;} }
   .eyebrow{ text-transform:uppercase; letter-spacing:.14em; font-size:11.5px; font-weight:600; color:var(--accent); margin-bottom:18px; display:block; }
   .hero h1{font-size:clamp(40px,5.2vw,60px); line-height:1.05; color:var(--ink);}
   .hero .lede{ font-family:"Fraunces", serif; font-style:italic; font-weight:400; font-size:clamp(23px,2.6vw,30px); color:var(--accent); margin-top:14px; line-height:1.25; text-wrap:balance; }
@@ -73,9 +74,11 @@
   .hero-visual{position:relative;}
   .portrait{ border-radius:0; overflow:visible; aspect-ratio:4/4.3; position:relative; background:var(--bg); }
   .portrait svg,.portrait img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  @media (max-width:600px){ .portrait{aspect-ratio:5/4; border-radius:14px; overflow:hidden;} }
   .stat-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:-52px; position:relative; z-index:2; padding:0 8px; }
-  @media (max-width:520px){ .stat-row{grid-template-columns:1fr; margin-top:16px;} }
+  @media (max-width:520px){ .stat-row{grid-template-columns:repeat(3,1fr); gap:6px; margin-top:14px; padding:0;} }
   .stat-card{ background:var(--surface); border:1px solid var(--line); border-radius:15px; padding:17px 19px; box-shadow:var(--shadow); }
+  @media (max-width:520px){ .stat-card{padding:10px 8px;} .stat-card .lbl{font-size:9.5px; margin-bottom:5px;} .stat-card .num{font-size:17px; gap:2px;} .stat-card .num small{font-size:9px;} .stat-card .badge{font-size:9px; padding:2px 6px;} }
   .stat-card .lbl{display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--ink-faint); margin-bottom:10px;}
   .dot{width:6px;height:6px;border-radius:50%; background:var(--good); box-shadow:0 0 0 3px var(--good-soft);}
   .stat-card .num{font-family:"Fraunces", serif; font-size:29px; font-weight:600; display:flex; align-items:baseline; gap:5px;}
@@ -88,6 +91,29 @@
   .section-head{max-width:640px; margin-bottom:50px;}
   .section-head h2{font-size:clamp(28px,3.4vw,40px); line-height:1.14;}
   .section-head .sub{color:var(--ink-soft); font-size:16px; margin-top:16px; display:block; font-family:var(--serif-sub);}
+  @media (max-width:600px){ .section-head{margin-bottom:26px;} .section-head .sub{margin-top:8px;} }
+
+  /* ---------- Mobile-only homepage section reorder ----------
+     Swaps "why" (cloud photo card) with "ind" (5 score cards), and
+     "steps" (parcours personnalisé, product photo) with "res4" (découvrez
+     ce que solane révèle) — desktop order is untouched. Children of
+     #page-home, in source order: 1 hero, 2 hr, 3 testi, 4 ind, 5 hr,
+     6 why, 7 hr, 8 res4, 9 hr, 10 steps, 11 hr, 12 faq. */
+  @media (max-width:600px){
+    #page-home.active{display:flex; flex-direction:column;}
+    #page-home.active > :nth-child(1){order:0;}
+    #page-home.active > :nth-child(2){order:10;}
+    #page-home.active > :nth-child(3){order:20;}
+    #page-home.active > :nth-child(4){order:50; padding-top:56px;}
+    #page-home.active > :nth-child(5){order:40;}
+    #page-home.active > :nth-child(6){order:30;}
+    #page-home.active > :nth-child(7){order:60;}
+    #page-home.active > :nth-child(8){order:90;}
+    #page-home.active > :nth-child(9){order:80;}
+    #page-home.active > :nth-child(10){order:70;}
+    #page-home.active > :nth-child(11){order:100;}
+    #page-home.active > :nth-child(12){order:110;}
+  }
   .head-row{display:flex; justify-content:space-between; align-items:flex-end; gap:40px; flex-wrap:wrap; margin-bottom:50px;}
   .head-row .sub{max-width:34ch; text-align:right; color:var(--ink-soft); font-size:15.5px; font-family:var(--serif-sub);}
   @media (max-width:760px){ .head-row .sub{text-align:left;} }
@@ -114,6 +140,7 @@
   .testi3-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:40px; margin-bottom:56px;}
   .testi3-grid > div{display:flex; flex-direction:column;}
   @media (max-width:880px){ .testi3-grid{grid-template-columns:1fr;} }
+  @media (max-width:600px){ .testi3-grid{gap:20px; margin-bottom:28px;} .testi3-grid > div:nth-child(3){display:none;} }
   .trust-badge{display:flex; align-items:center; justify-content:center; gap:14px; margin:18px 0 4px;}
   .trust-avatars{display:flex;}
   .trust-avatars span{width:30px; height:30px; border-radius:50%; border:2px solid var(--bg); margin-left:-10px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#fff;}
@@ -133,6 +160,18 @@
   .testi3-foot{display:flex; align-items:center; gap:12px; padding-top:18px; border-top:1px solid var(--line);}
   .testi3-avatar{width:38px;height:38px;border-radius:50%; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex:none;}
   .testi3-foot .name{font-size:14.5px; color:var(--ink-soft);}
+  @media (max-width:600px){
+    .ba-circle{width:64px; height:64px;}
+    .ba-circle.after{margin-left:-10px;}
+    .ba-labels > div{width:64px;}
+    .ba-labels > div.after{width:64px; margin-left:-10px;}
+    .ba-pair{margin-bottom:12px;}
+    .ba-label{font-size:9px; margin-top:5px;}
+    .testi3-quote{font-size:15px; line-height:1.4; margin-bottom:14px;}
+    .testi3-foot{padding-top:12px; gap:9px;}
+    .testi3-avatar{width:30px; height:30px; font-size:12px;}
+    .testi3-foot .name{font-size:13px;}
+  }
   .cta-inline{ background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:38px 42px; display:flex; align-items:center; justify-content:space-between; gap:30px; flex-wrap:wrap; }
   .cta-inline h3{font-size:24px; margin-bottom:8px; color:var(--ink);}
   .cta-inline p{color:var(--ink-soft); font-size:14.5px;}
@@ -140,13 +179,20 @@
   /* Indicators */
   .ind-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:16px;}
   @media (max-width:980px){ .ind-grid{grid-template-columns:repeat(2,1fr);} }
-  @media (max-width:520px){ .ind-grid{grid-template-columns:1fr;} }
+  @media (max-width:520px){ .ind-grid{grid-template-columns:repeat(2,1fr); gap:8px;} }
   .ind-card{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:24px 22px; }
   .ind-card svg{color:var(--accent); margin-bottom:26px;}
   .ind-card.good svg{color:var(--good);}
   .ind-card .lbl{ text-transform:uppercase; letter-spacing:.07em; font-size:11px; color:var(--ink-faint); margin-bottom:10px; }
   .ind-card .num{font-family:"Fraunces"; font-size:30px; font-weight:600; color:var(--ink);}
   .ind-card .num small{font-family:"Work Sans"; font-size:13px; color:var(--ink-faint); font-weight:500;}
+  @media (max-width:520px){
+    .ind-card{padding:14px 12px;}
+    .ind-card svg{width:16px; height:16px; margin-bottom:10px;}
+    .ind-card .lbl{font-size:9px; margin-bottom:5px;}
+    .ind-card .num{font-size:20px;}
+    .ind-card .num small{font-size:10px;}
+  }
   .ind-bar{height:4px; border-radius:2px; background:var(--line); margin-top:14px; overflow:hidden;}
   .ind-bar i{display:block; height:100%; background:var(--accent);}
   .ind-card.good .ind-bar i{background:var(--good);}
@@ -713,18 +759,13 @@
         <span class="eyebrow" data-i18n="hero.eyebrow">Diagnostic cutané par IA</span>
         <h1 data-i18n="hero.h1">Votre peau évolue.</h1>
         <p class="lede" data-i18n="hero.lede">Votre routine devrait suivre le mouvement.</p>
-        <p class="desc" data-i18n="hero.desc">Comprenez ce qui agit vraiment sur votre peau, suivez son évolution et obtenez des résultats visibles grâce à une analyse intelligente et personnalisée.</p>
+        <p class="desc" data-i18n-html="hero.desc">Comprenez ce qui agit vraiment sur votre peau, suivez son évolution et obtenez des résultats visibles grâce à une analyse <span style="color:var(--accent);">intelligente et personnalisée</span>.</p>
         <div class="cta-row">
           <button class="btn btn-primary" onclick="startDiagnostic()">
             <span data-i18n="hero.ctaPrimary">Commencer mon analyse</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
           <button class="btn btn-ghost" onclick="showPage('apropos')" data-i18n="hero.ctaSecondary">Découvrir Solane</button>
-        </div>
-        <div class="feat-row">
-          <div class="feat-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 8V5a1 1 0 0 1 1-1h3M20 8V5a1 1 0 0 1-1-1h-3M4 16v3a1 1 0 0 0 1 1h3M20 16v3a1 1 0 0 1-1 1h-3"/><circle cx="12" cy="12" r="3"/></svg><span data-i18n="hero.feat1">Analyse intelligente</span></div>
-          <div class="feat-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 17l5-5 4 4 8-9"/></svg><span data-i18n="hero.feat2">Suivi de l'évolution</span></div>
-          <div class="feat-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2 4 5v6c0 5 3.4 8.6 8 11 4.6-2.4 8-6 8-11V5l-8-3Z"/></svg><span data-i18n="hero.feat3">Données sécurisées</span></div>
         </div>
       </div>
       <div class="hero-visual">
@@ -1427,7 +1468,7 @@ fr: {
   nav:{ home:"Accueil", diag:"Faire l'analyse", myAnalyses:"Mes analyses", tarifs:"Tarifs", apropos:"À propos", blog:"Blog", contact:"Contact", cta:"Commencer l'analyse" },
   hero:{
     eyebrow:"Diagnostic cutané par IA", h1:"Votre peau évolue.", lede:"Votre routine devrait suivre le mouvement.",
-    desc:"Comprenez ce qui agit vraiment sur votre peau, suivez son évolution et obtenez des résultats visibles grâce à une analyse intelligente et personnalisée.",
+    desc:"Comprenez ce qui agit vraiment sur votre peau, suivez son évolution et obtenez des résultats visibles grâce à une analyse <span style=\"color:var(--accent);\">intelligente et personnalisée</span>.",
     ctaPrimary:"Commencer mon analyse", ctaSecondary:"Découvrir Solane",
     feat1:"Analyse intelligente", feat2:"Suivi de l'évolution", feat3:"Données sécurisées",
     statScore:"Score global", statAge:"Âge de la peau", statGoal:"Objectif score"
@@ -1697,7 +1738,7 @@ en: {
   nav:{ home:"Home", diag:"Take the analysis", myAnalyses:"My analyses", tarifs:"Pricing", apropos:"About", blog:"Blog", contact:"Contact", cta:"Start my analysis" },
   hero:{
     eyebrow:"AI skin diagnosis", h1:"Your skin keeps changing.", lede:"Your routine should keep up.",
-    desc:"Understand what's really affecting your skin, track its evolution, and get visible results with a smart, personalised analysis.",
+    desc:"Understand what's really affecting your skin, track its evolution, and get visible results with a <span style=\"color:var(--accent);\">smart, personalised</span> analysis.",
     ctaPrimary:"Start my analysis", ctaSecondary:"Discover Solane",
     feat1:"Smart analysis", feat2:"Progress tracking", feat3:"Secure data",
     statScore:"Overall score", statAge:"Skin age", statGoal:"Target score"
@@ -1967,7 +2008,7 @@ de: {
   nav:{ home:"Start", diag:"Analyse starten", myAnalyses:"Meine Analysen", tarifs:"Preise", apropos:"Über uns", blog:"Blog", contact:"Kontakt", cta:"Analyse starten" },
   hero:{
     eyebrow:"Hautanalyse mit KI", h1:"Deine Haut verändert sich.", lede:"Deine Routine sollte mithalten.",
-    desc:"Verstehe, was deine Haut wirklich beeinflusst, verfolge ihre Entwicklung und erziele sichtbare Ergebnisse dank einer intelligenten, persönlichen Analyse.",
+    desc:"Verstehe, was deine Haut wirklich beeinflusst, verfolge ihre Entwicklung und erziele sichtbare Ergebnisse dank einer <span style=\"color:var(--accent);\">intelligenten, persönlichen</span> Analyse.",
     ctaPrimary:"Meine Analyse starten", ctaSecondary:"Solane entdecken",
     feat1:"Intelligente Analyse", feat2:"Fortschritt im Blick", feat3:"Sichere Daten",
     statScore:"Gesamtscore", statAge:"Hautalter", statGoal:"Zielwert"
@@ -2237,7 +2278,7 @@ it: {
   nav:{ home:"Home", diag:"Fai l'analisi", myAnalyses:"Le mie analisi", tarifs:"Prezzi", apropos:"Chi siamo", blog:"Blog", contact:"Contatti", cta:"Inizia l'analisi" },
   hero:{
     eyebrow:"Diagnosi della pelle con IA", h1:"La tua pelle cambia sempre.", lede:"La tua routine dovrebbe seguirla.",
-    desc:"Capisci cosa influisce davvero sulla tua pelle, monitora la sua evoluzione e ottieni risultati visibili grazie a un'analisi intelligente e personalizzata.",
+    desc:"Capisci cosa influisce davvero sulla tua pelle, monitora la sua evoluzione e ottieni risultati visibili grazie a un'analisi <span style=\"color:var(--accent);\">intelligente e personalizzata</span>.",
     ctaPrimary:"Inizia la mia analisi", ctaSecondary:"Scopri Solane",
     feat1:"Analisi intelligente", feat2:"Monitoraggio dei progressi", feat3:"Dati protetti",
     statScore:"Punteggio globale", statAge:"Età della pelle", statGoal:"Obiettivo punteggio"
@@ -4128,4 +4169,779 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     stashResumeStateIfGated(plan);
     showToast(t('pricing.stripeRedirecting'));
     try{
-      const res = await fet
+      const res = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ plan, userId: acc.id, email: acc.email, lang: currentLang })
+      });
+      const data = await res.json().catch(()=>({}));
+      if(!res.ok || !data.url){
+        console.error('create-checkout-session failed:', data);
+        showToast(t('pricing.stripeError'));
+        try{ sessionStorage.removeItem(RESUME_KEY); }catch(e){}
+        return;
+      }
+      window.location.href = data.url;
+    }catch(e){
+      console.error('startCheckout failed:', e);
+      showToast(t('pricing.stripeError'));
+      try{ sessionStorage.removeItem(RESUME_KEY); }catch(e){}
+    }
+  }
+  function buyPremium(){ startCheckout(currentBilling==='y' ? 'yearly' : 'monthly'); }
+  function buyOneShot(){ startCheckout('oneshot'); }
+  /* One-time payment (99 €), same 5-analyses-per-month quota as monthly/yearly
+     (enforced centrally in gateCheckAccess via MONTHLY_ANALYSIS_QUOTA), but
+     never expires and nothing to renew or cancel. */
+  function buyLifetime(){ startCheckout('lifetime'); }
+
+  /* Called once on load when the URL says we're back from a successful Stripe
+     Checkout (see success_url in api/create-checkout-session.js). The webhook
+     (api/stripe-webhook.js) is what actually grants the entitlement server-side —
+     this just waits briefly for that to land, then refreshes the UI/resumes the
+     analysis. A short poll (not a fixed delay) because webhook delivery is near-
+     instant but not synchronous with the redirect. */
+  async function handleCheckoutReturn(plan){
+    for(let i=0;i<8;i++){
+      await refreshProfile();
+      const acc = getAccount();
+      const granted = plan==='oneshot' ? (acc.oneshotCredits||0) > 0 : acc.plan===plan;
+      if(granted) break;
+      await new Promise(r=>setTimeout(r, 900));
+    }
+    const successKey = { monthly:'purchaseSuccessMonthly', yearly:'purchaseSuccessYearly', oneshot:'purchaseSuccessOneshot', lifetime:'purchaseSuccessLifetime' }[plan];
+    showToast(t('pricing.' + (successKey || 'purchaseSuccessMonthly')));
+
+    let resume = null;
+    try{
+      const raw = sessionStorage.getItem(RESUME_KEY);
+      if(raw) resume = JSON.parse(raw);
+      sessionStorage.removeItem(RESUME_KEY);
+    }catch(e){}
+    if(resume && resume.plan===plan){
+      diagAnswers = resume.diagAnswers || {};
+      capturedPhotoDataUrl = resume.capturedPhotoDataUrl || null;
+      pendingResultPhoto = resume.pendingResultPhoto || null;
+      pendingGateUnlock = true;
+      document.getElementById('diag-quiz').style.display='none';
+      document.getElementById('diag-ready').style.display='none';
+      document.getElementById('diag-gate').style.display='block';
+      showPage('diag');
+      gateCheckAccess();
+    }
+  }
+  function handleCheckoutCancelReturn(){
+    showToast(t('pricing.purchaseCanceled'));
+    let resume = null;
+    try{
+      const raw = sessionStorage.getItem(RESUME_KEY);
+      if(raw) resume = JSON.parse(raw);
+      sessionStorage.removeItem(RESUME_KEY);
+    }catch(e){}
+    if(resume){
+      diagAnswers = resume.diagAnswers || {};
+      capturedPhotoDataUrl = resume.capturedPhotoDataUrl || null;
+      pendingResultPhoto = resume.pendingResultPhoto || null;
+      pendingGateUnlock = true;
+      document.getElementById('diag-quiz').style.display='none';
+      document.getElementById('diag-ready').style.display='none';
+      document.getElementById('diag-gate').style.display='block';
+      showPage('diag');
+      renderGatePaywall();
+    }
+  }
+  /* Real subscription cancellation now goes through the Stripe billing portal
+     (opened in cancelSubscription(), below) rather than a local-only toggle. */
+  async function openBillingPortal(){
+    const acc = getAccount();
+    if(!sb || !acc.id) return;
+    try{
+      const res = await fetch('/api/create-portal-session', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ userId: acc.id })
+      });
+      const data = await res.json().catch(()=>({}));
+      if(!res.ok || !data.url){ manageNote(t('pricing.portalError'), true); return; }
+      window.location.href = data.url;
+    }catch(e){
+      console.error('openBillingPortal failed:', e);
+      manageNote(t('pricing.portalError'), true);
+    }
+  }
+
+  /* ---------- Account panel ---------- */
+  function openDrawer(){
+    document.getElementById('drawerOverlay').classList.add('show');
+    renderProductsList();
+    renderAccountPanel();
+  }
+  /* "Mes analyses" nav tab — same account panel as the avatar button, just a
+     more discoverable entry point since history is the main reason to open it. */
+  function openMyAnalyses(){ openDrawer(); }
+  function closeDrawer(){ document.getElementById('drawerOverlay').classList.remove('show'); }
+  function drawerTab(which){
+    // Single-panel drawer now (Mes produits tab removed) — kept as a no-op
+    // shim so existing callers (buyPremium/buyOneShot/afterGateLoginSuccess)
+    // don't need to change; it just makes sure the account panel is fresh.
+    renderAccountPanel();
+  }
+  document.getElementById('drawerOverlay').addEventListener('click', e=>{ if(e.target.id==='drawerOverlay') closeDrawer(); });
+
+  function toggleManualAddForm(){
+    const f = document.getElementById('manualAddForm');
+    const showing = f.style.display !== 'none';
+    f.style.display = showing ? 'none' : 'flex';
+    if(!showing){ document.getElementById('manualProdName').value=''; document.getElementById('manualProdBrand').value=''; }
+  }
+  function submitManualProduct(){
+    const name = document.getElementById('manualProdName').value.trim();
+    const brand = document.getElementById('manualProdBrand').value.trim();
+    if(!name) return;
+    const list = getProducts();
+    list.unshift({ id:Date.now(), name, brand, img:null });
+    saveProducts(list);
+    toggleManualAddForm();
+    renderProductsList();
+  }
+  function onDrawerScanChosen(input){
+    const file = input.files && input.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const list = getProducts();
+      list.unshift({ id:Date.now(), name:file.name.replace(/\.[^.]+$/,'') || 'Produit scanné', brand:'', img:e.target.result });
+      saveProducts(list);
+      renderProductsList();
+      input.value = '';
+    };
+    reader.readAsDataURL(file);
+  }
+  function removeProduct(id){
+    saveProducts(getProducts().filter(p=>p.id!==id));
+    renderProductsList();
+  }
+  function renderProductsList(){
+    const listEl = document.getElementById('prodList'), emptyEl = document.getElementById('prodEmpty');
+    if(!listEl) return;
+    const list = getProducts();
+    if(!list.length){ listEl.innerHTML=''; emptyEl.style.display='block'; return; }
+    emptyEl.style.display='none';
+    listEl.innerHTML = list.map(p => `
+      <div class="prod-list-item">
+        ${p.img ? `<img src="${p.img}" alt="">` : `<div class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13.5" r="3.2"/></svg></div>`}
+        <div class="info"><div class="n">${esc(p.name)}</div>${p.brand?`<div class="b">${esc(p.brand)}</div>`:''}</div>
+        <button class="rm" onclick="removeProduct(${p.id})">${t('drawer.removeProduct')}</button>
+      </div>`).join('');
+  }
+  function updateNavAvatar(){
+    const acc = getAccount();
+    const btn = document.getElementById('navAvatarBtn');
+    if(!btn) return;
+    if(acc.loggedIn && acc.picture){
+      btn.innerHTML = `<img src="${acc.picture}" alt="">`;
+    } else {
+      btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.4-4 4.2-6 7.5-6s6.1 2 7.5 6"/></svg>`;
+    }
+  }
+  /* Set right before a logout and for a few seconds after: guards against the
+     onAuthStateChange listener (below) reviving the session from a stale
+     auto-refresh/network response racing behind the explicit logout, and reset
+     the instant a real login flow starts. */
+  let justLoggedOut = false;
+  function purgeLocalSupabaseSession(){
+    /* Belt-and-braces: wipe whatever Supabase itself stored client-side so the
+       next getSession() call can't possibly resurrect the old session, even if
+       the network signOut() call is slow, blocked, or never resolves. */
+    try{
+      Object.keys(localStorage).filter(k => /^sb-.*-auth-token$/.test(k)).forEach(k => localStorage.removeItem(k));
+    }catch(e){ console.error('[Solane] purgeLocalSupabaseSession failed:', e); }
+  }
+  function doLogout(){
+    console.log('[Solane] doLogout() called, sb configured:', !!sb);
+    justLoggedOut = true;
+    setTimeout(()=>{ justLoggedOut = false; }, 8000);
+    /* Close the drawer FIRST, unconditionally, before anything else that could
+       possibly throw — so the click always visibly does something even if a
+       later step fails. Every following step is individually wrapped so one
+       failure can never block the rest (or make the button look "dead"). */
+    try{ closeDrawer(); }catch(e){ console.error('[Solane] closeDrawer failed:', e); }
+    if(sb){
+      currentProfile = null; historyCache = []; evolutionCache = [];
+      purgeLocalSupabaseSession();
+      try{ updateNavAvatar(); }catch(e){ console.error('[Solane] updateNavAvatar failed:', e); }
+      try{ renderAccountPanel(); }catch(e){ console.error('[Solane] renderAccountPanel failed:', e); }
+      /* The actual server-side sign-out runs in the background — the UI above is
+         already updated, so a slow or hanging network call can no longer make the
+         button look like it did nothing. */
+      try{
+        Promise.race([
+          sb.auth.signOut(),
+          new Promise((_,reject)=> setTimeout(()=> reject(new Error('signOut timeout')), 5000))
+        ]).then(()=> console.log('[Solane] Supabase signOut settled OK'))
+          .catch(e => console.error('[Solane] Supabase signOut failed or timed out:', e))
+          .finally(()=>{
+            purgeLocalSupabaseSession();
+            currentProfile = null;
+            try{ updateNavAvatar(); renderAccountPanel(); }catch(e){}
+          });
+      }catch(e){ console.error('[Solane] Supabase signOut call threw:', e); }
+      return;
+    }
+    try{
+      const acc = getAccount();
+      acc.loggedIn = false; acc.email=''; acc.name=''; acc.picture=''; acc.authProvider='';
+      saveAccount(acc);
+      updateNavAvatar();
+      renderAccountPanel();
+    }catch(e){ console.error('[Solane] doLogout (local mode) failed:', e); }
+  }
+  function renderAccountPanel(){
+    const acc = getAccount();
+    const emailEl = document.getElementById('drawerEmail'), pillEl = document.getElementById('drawerStatusPill'),
+          upsellEl = document.getElementById('drawerUpsell'), histEl = document.getElementById('historyContainer'),
+          whoEl = document.getElementById('drawerWho'), nameEl = document.getElementById('drawerName');
+    if(!emailEl) return;
+    emailEl.textContent = (acc.loggedIn && acc.email) ? acc.email : t('res.notLoggedIn');
+    const iconHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.4-4 4.2-6 7.5-6s6.1 2 7.5 6"/></svg>`;
+    if(whoEl){
+      whoEl.innerHTML = (acc.loggedIn && acc.picture)
+        ? `<img src="${acc.picture}" alt="">`
+        : `<div class="ic-fallback">${iconHTML}</div>`;
+      if(acc.loggedIn && acc.name){
+        whoEl.innerHTML += `<div class="name" id="drawerName">${esc(acc.name)}</div>`;
+      }
+    }
+    updateNavAvatar();
+    let planLabel = t('drawer.standard'), hasAccess = false;
+    if(acc.plan==='monthly'){ planLabel = t('drawer.planMonthly'); hasAccess = true; }
+    else if(acc.plan==='yearly'){ planLabel = t('drawer.planYearly'); hasAccess = true; }
+    else if(acc.plan==='lifetime'){ planLabel = t('drawer.planLifetime'); hasAccess = true; }
+    else if((acc.oneshotCredits||0) > 0){ planLabel = t('drawer.planOneshot').replace('{n}', acc.oneshotCredits); hasAccess = true; }
+    const history = getHistory();
+    /* A one-shot credit is consumed the moment its analysis is unlocked, so right
+       after using it acc.oneshotCredits is back to 0 — without this, the analysis
+       that was JUST paid for would look locked again the instant it's saved. Any
+       existing history row means this account paid for at least one analysis at
+       some point, so keep the history panel (and its upsell banner) unlocked. */
+    if(!hasAccess && history.length) hasAccess = true;
+    pillEl.textContent = planLabel;
+    upsellEl.style.display = hasAccess ? 'none' : 'block';
+    const loginBtn = document.getElementById('drawerLoginBtn'), logoutBtn = document.getElementById('drawerLogoutBtn'),
+          manageBtn = document.getElementById('drawerManageBtn');
+    if(loginBtn) loginBtn.style.display = acc.loggedIn ? 'none' : 'flex';
+    if(logoutBtn) logoutBtn.style.display = acc.loggedIn ? 'flex' : 'none';
+    if(manageBtn) manageBtn.style.display = acc.loggedIn ? 'flex' : 'none';
+    if(!hasAccess){
+      histEl.innerHTML = `<div class="drawer-locked">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        <span>${t('drawer.historyLocked')}</span>
+      </div>`;
+    } else if(!history.length){
+      histEl.innerHTML = `<div class="drawer-locked"><span>${t('drawer.historyEmpty')}</span></div>`;
+    } else {
+      histEl.innerHTML = `<div class="history-list">${history.map((h,i)=>{
+        const d = new Date(h.date);
+        const dateStr = isNaN(d) ? '' : d.toLocaleDateString(currentLang);
+        const clickable = !!h.report;
+        return `<div class="history-item${clickable ? ' clickable':''}"${clickable ? ` onclick="viewHistoryEntry(${i})"`:''}>
+          ${h.photoThumb ? `<div class="sc photo" style="background-image:url('${h.photoThumb}')"></div>` : `<div class="sc">${h.globalScore}</div>`}
+          <div class="info"><div class="n">${esc(h.concernName || t('drawer.historyScoreOf'))}</div><div class="d">${dateStr}</div></div>
+          ${clickable ? `<svg class="history-item-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg>` : ''}
+        </div>`;
+      }).join('')}</div>`;
+    }
+  }
+
+  /* ---------- Results access gate (verification / login / paywall) ---------- */
+  /* Google sign-in goes through Supabase Auth (enable the "Google" provider in
+     your Supabase project — Dashboard → Authentication → Providers — and add
+     your Google OAuth Client ID/Secret there; no Google Client ID needs to
+     live in this file). This used to open a popup and poll it, which turned
+     out to be unreliable (popup blockers, third-party-cookie restrictions in
+     private/incognito windows, and Google's own "unverified app" interstitial
+     all made the popup silently fail to complete in some browsers). A plain
+     full-page redirect — the same mechanism already used for Stripe Checkout —
+     has none of those failure modes, so that's what this does now. */
+  function loginWithGoogle(){
+    if(!sb) return;
+    justLoggedOut = false;
+    /* A full-page redirect unloads the whole app just like a Stripe redirect —
+       stash whatever the person was doing so we can resume it once we're back
+       with a confirmed session (see RESUME_KEY / the Init block below). */
+    try{
+      sessionStorage.setItem(RESUME_KEY, JSON.stringify({
+        googleLogin: true, gateLoginContext,
+        diagAnswers, capturedPhotoDataUrl, pendingResultPhoto,
+        lang: currentLang
+      }));
+    }catch(e){ console.error('Could not stash resume state:', e); }
+    sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: CANONICAL_ORIGIN + '/' }
+    });
+  }
+
+  let analysisAIAllowed = false;
+  let pendingResultPhoto = null;
+  function startResultsGate(){
+    pendingResultPhoto = capturedPhotoDataUrl;
+    lastGateStartTime = Date.now();
+    document.getElementById('diag-ready').style.display='none';
+    document.getElementById('diag-gate').style.display='block';
+    renderGateVerifying();
+    setTimeout(renderGateVerified, 1200);
+    setTimeout(gateProceed, 1900);
+  }
+  function renderGateVerifying(){
+    document.getElementById('gateBoxContent').innerHTML = `
+      <div class="gate-spinner"></div>
+      <h2>${t('gate.verifyTitle')}</h2>
+      <p>${t('gate.verifying')}</p>`;
+  }
+  function renderGateVerified(){
+    const box = document.getElementById('gateBoxContent');
+    if(!box) return;
+    box.innerHTML = `
+      <div class="gate-check"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></div>
+      <h2>${t('gate.verifyTitle')}</h2>
+      <p>${t('gate.verified')}</p>`;
+  }
+  function gateProceed(){
+    const acc = getAccount();
+    if(!acc.loggedIn){ renderGateLogin(); return; }
+    gateCheckAccess();
+  }
+  let gateAuthMode = 'login'; /* 'login' | 'signup' | 'reset' */
+  /* The login/signup/reset form (renderGateLogin and friends) is shared between two
+     entry points: unlocking a just-finished analysis (gateBoxId 'gateBoxContent',
+     gateLoginContext 'analysis') and logging in from the account panel with no
+     analysis involved (gateBoxId 'acctLoginBoxContent', gateLoginContext 'account').
+     After a successful login/signup, where we go next depends on gateLoginContext. */
+  let gateBoxId = 'gateBoxContent';
+  let gateLoginContext = 'analysis';
+  function openAccountLogin(){
+    closeDrawer();
+    gateBoxId = 'acctLoginBoxContent';
+    gateLoginContext = 'account';
+    gateAuthMode = 'login';
+    const overlay = document.getElementById('acctLoginOverlay');
+    if(overlay) overlay.classList.add('show');
+    renderGateLogin();
+  }
+  function closeAccountLogin(){
+    const overlay = document.getElementById('acctLoginOverlay');
+    if(overlay) overlay.classList.remove('show');
+    gateBoxId = 'gateBoxContent';
+    gateLoginContext = 'analysis';
+  }
+
+  /* ---------- Manage account: cancel/downgrade subscription, change email/password ---------- */
+  function openAccountManage(){
+    closeDrawer();
+    const overlay = document.getElementById('acctManageOverlay');
+    if(overlay) overlay.classList.add('show');
+    renderAccountManage();
+  }
+  function closeAccountManage(){
+    const overlay = document.getElementById('acctManageOverlay');
+    if(overlay) overlay.classList.remove('show');
+  }
+  function manageNote(msg, isError){
+    const box = document.getElementById('acctManageContent');
+    const el = box ? box.querySelector('#manageNote') : null;
+    if(el){ el.textContent = msg; el.style.color = isError ? 'var(--err, #c0392b)' : 'var(--accent)'; }
+  }
+  function renderAccountManage(){
+    const box = document.getElementById('acctManageContent');
+    if(!box) return;
+    const acc = getAccount();
+    let planLabel = t('manage.noSub');
+    if(acc.plan==='monthly') planLabel = t('drawer.planMonthly');
+    else if(acc.plan==='yearly') planLabel = t('drawer.planYearly');
+    else if(acc.plan==='lifetime') planLabel = t('drawer.planLifetime');
+    else if((acc.oneshotCredits||0) > 0) planLabel = t('drawer.planOneshot').replace('{n}', acc.oneshotCredits);
+    const hasSub = acc.plan==='monthly' || acc.plan==='yearly'; // lifetime is a one-time purchase, nothing recurring to cancel
+    box.innerHTML = `
+      <div class="drawer-acc" style="margin-bottom:16px;">
+        <div class="row"><span>${t('manage.currentPlan')}</span><span class="status-pill">${esc(planLabel)}</span></div>
+        ${hasSub ? `<button type="button" class="btn btn-ghost btn-block" style="margin-top:12px;" onclick="cancelSubscription()">${t('manage.cancelSub')}</button>` : ''}
+      </div>
+      ${sb ? `
+      <h5>${t('manage.changeEmail')}</h5>
+      <form class="gate-form" onsubmit="return submitChangeEmail(event)" style="margin-bottom:18px;">
+        <div class="field" style="margin-bottom:0;"><input type="email" id="manageNewEmail" placeholder="${t('manage.newEmailPh')}" required autocomplete="email"></div>
+        <div class="field" style="margin-bottom:0;"><input type="password" id="manageEmailCurrentPassword" placeholder="${t('manage.currentPasswordPh')}" required autocomplete="current-password"></div>
+        <button type="submit" class="btn btn-primary btn-block">${t('manage.saveEmail')}</button>
+      </form>
+      <h5>${t('manage.changePassword')}</h5>
+      <form class="gate-form" onsubmit="return submitChangePassword(event)">
+        <div class="field" style="margin-bottom:0;"><input type="password" id="managePasswordCurrentPassword" placeholder="${t('manage.currentPasswordPh')}" required autocomplete="current-password"></div>
+        <div class="field" style="margin-bottom:0;"><input type="password" id="manageNewPassword" placeholder="${t('manage.newPasswordPh')}" minlength="6" required autocomplete="new-password"></div>
+        <button type="submit" class="btn btn-primary btn-block">${t('manage.savePassword')}</button>
+      </form>` : ''}
+      <p id="manageNote" style="margin-top:14px; font-size:13px; min-height:18px;"></p>
+    `;
+  }
+  /* Real cancellation happens in Stripe's own billing portal (the subscription
+     stays active until the current period ends, same as Stripe's default) — our
+     stripe-webhook.js syncs the account back to 'free' once Stripe actually ends
+     it, so we don't flip the plan locally here at all. */
+  function cancelSubscription(){ openBillingPortal(); }
+  /* Re-authenticates with the account's current password before a sensitive
+     change (email/password). Accounts that signed up via Google have no
+     password to check, so the current-password step is skipped for them. */
+  async function verifyCurrentPassword(currentPassword){
+    const acc = getAccount();
+    if(acc.authProvider && acc.authProvider !== 'email') return true;
+    if(!currentPassword) return false;
+    const { error } = await sb.auth.signInWithPassword({ email: acc.email, password: currentPassword });
+    return !error;
+  }
+  async function submitChangeEmail(e){
+    e.preventDefault();
+    const box = document.getElementById('acctManageContent');
+    const newEmail = box.querySelector('#manageNewEmail').value.trim();
+    const currentPassword = box.querySelector('#manageEmailCurrentPassword').value;
+    if(!newEmail || !sb) return false;
+    const ok = await verifyCurrentPassword(currentPassword);
+    if(!ok){ manageNote(t('manage.wrongPassword'), true); return false; }
+    const { error } = await sb.auth.updateUser({ email: newEmail });
+    if(error){ manageNote(t('manage.error'), true); return false; }
+    manageNote(t('manage.emailSent'), false);
+    box.querySelector('#manageNewEmail').value = '';
+    box.querySelector('#manageEmailCurrentPassword').value = '';
+    return false;
+  }
+  async function submitChangePassword(e){
+    e.preventDefault();
+    const box = document.getElementById('acctManageContent');
+    const newPassword = box.querySelector('#manageNewPassword').value;
+    const currentPassword = box.querySelector('#managePasswordCurrentPassword').value;
+    if(!newPassword || !sb) return false;
+    const ok = await verifyCurrentPassword(currentPassword);
+    if(!ok){ manageNote(t('manage.wrongPassword'), true); return false; }
+    const { error } = await sb.auth.updateUser({ password: newPassword });
+    if(error){ manageNote(t('manage.error'), true); return false; }
+    manageNote(t('manage.passwordUpdated'), false);
+    box.querySelector('#manageNewPassword').value = '';
+    box.querySelector('#managePasswordCurrentPassword').value = '';
+    return false;
+  }
+  function gateSwitchMode(mode){ gateAuthMode = mode; renderGateLogin(); }
+  function renderGateLogin(){
+    const box = document.getElementById(gateBoxId);
+    if(!box) return;
+    const googleBtnHtml = sb ? `
+      <button type="button" class="btn btn-ghost btn-block gate-google-btn" onclick="loginWithGoogle()">
+        <svg width="18" height="18" viewBox="0 0 48 48" style="vertical-align:-4px;margin-right:8px;"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34 5.1 29.3 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.8-.4-4.5Z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34 5.1 29.3 3 24 3 15.9 3 8.9 7.6 6.3 14.7Z"/><path fill="#4CAF50" d="M24 45c5.2 0 9.9-2 13.4-5.2l-6.2-5.2c-2 1.4-4.6 2.4-7.2 2.4-5.2 0-9.6-3.3-11.3-8l-6.5 5C8.8 40.3 15.8 45 24 45Z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.3-4.1 5.6l6.2 5.2C40.9 36 44 30.5 44 24c0-1.4-.1-2.8-.4-3.5Z"/></svg>
+        ${t('gate.googleBtn')}
+      </button>
+      <div class="gate-or">${t('gate.orEmail')}</div>` : '';
+    if(gateAuthMode === 'reset'){
+      box.innerHTML = `
+        <h2>${t('gate.resetTitle')}</h2>
+        <p>${t('gate.resetDesc')}</p>
+        <form class="gate-form" onsubmit="return requestGatePasswordReset(event)">
+          <div class="field" style="margin-bottom:0;"><input type="email" id="gateEmail" placeholder="${t('gate.emailPh')}" required></div>
+          <button type="submit" class="btn btn-cream btn-block">${t('gate.resetBtn')}</button>
+        </form>
+        <div class="gate-note" id="gateAuthNote"></div>
+        <div class="gate-toggle"><a href="#" onclick="gateSwitchMode('login');return false;">${t('gate.backToLogin')}</a></div>`;
+      return;
+    }
+    if(gateAuthMode === 'signup'){
+      box.innerHTML = `
+        <h2>${t('gate.signupTitle')}</h2>
+        <p>${t('gate.signupDesc')}</p>
+        ${googleBtnHtml}
+        <form class="gate-form" onsubmit="return submitGateSignup(event)">
+          <div class="field" style="margin-bottom:0;"><input type="text" id="gateName" placeholder="${t('gate.nameLoginPh')}"></div>
+          <div class="field" style="margin-bottom:0;"><input type="email" id="gateEmail" placeholder="${t('gate.emailPh')}" required></div>
+          <div class="field" style="margin-bottom:0;"><input type="password" id="gatePassword" placeholder="${t('gate.passwordPh')}" required minlength="6"></div>
+          <button type="submit" class="btn btn-cream btn-block">${t('gate.signupBtn')}</button>
+        </form>
+        <div class="gate-note" id="gateAuthNote"></div>
+        <div class="gate-toggle"><a href="#" onclick="gateSwitchMode('login');return false;">${t('gate.toggleToLogin')}</a></div>`;
+      return;
+    }
+    box.innerHTML = `
+      <h2>${t('gate.loginTitle')}</h2>
+      ${googleBtnHtml}
+      <form class="gate-form" onsubmit="return submitGateLogin(event)">
+        <div class="field" style="margin-bottom:0;"><input type="email" id="gateEmail" placeholder="${t('gate.emailPh')}" required></div>
+        <div class="field" style="margin-bottom:0;"><input type="password" id="gatePassword" placeholder="${t('gate.passwordPh')}" required></div>
+        <button type="submit" class="btn btn-cream btn-block">${t('gate.loginBtn')}</button>
+      </form>
+      <div class="gate-note" id="gateAuthNote"></div>
+      <div class="gate-toggle">
+        <a href="#" onclick="gateSwitchMode('reset');return false;">${t('gate.forgotPassword')}</a>
+        &nbsp;·&nbsp;
+        <a href="#" onclick="gateSwitchMode('signup');return false;">${t('gate.toggleToSignup')}</a>
+      </div>
+      <div class="gate-note">${t('gate.loginNote')}</div>`;
+  }
+  function gateAuthNote(msg){
+    /* Scoped to the currently active gate box — two copies of this form can exist in
+       the DOM at once (the analysis unlock box and the account-panel login overlay),
+       both using the same inner id, so a plain getElementById could hit the wrong one. */
+    const box = document.getElementById(gateBoxId);
+    const el = box ? box.querySelector('#gateAuthNote') : null;
+    if(el) el.textContent = msg;
+  }
+  /* After a successful login/signup: unlock the just-finished analysis when that's
+     why the form was opened, or just close the account-login overlay and refresh
+     the account panel when the person opened it straight from "Mon compte". */
+  function afterGateLoginSuccess(){
+    if(gateLoginContext === 'account'){
+      closeAccountLogin();
+      openDrawer();
+      drawerTab('compte');
+      return;
+    }
+    gateCheckAccess();
+  }
+  async function submitGateLogin(e){
+    e.preventDefault();
+    const box = document.getElementById(gateBoxId);
+    const email = box.querySelector('#gateEmail').value.trim();
+    const password = box.querySelector('#gatePassword').value;
+    if(!email) return false;
+    if(sb){
+      justLoggedOut = false;
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      if(error){ gateAuthNote(t('gate.authError')); return false; }
+      await refreshProfile();
+      afterGateLoginSuccess();
+      return false;
+    }
+    const acc = getAccount();
+    acc.loggedIn = true; acc.email = email;
+    saveAccount(acc);
+    afterGateLoginSuccess();
+    return false;
+  }
+  async function submitGateSignup(e){
+    e.preventDefault();
+    const box = document.getElementById(gateBoxId);
+    const name = box.querySelector('#gateName').value.trim();
+    const email = box.querySelector('#gateEmail').value.trim();
+    const password = box.querySelector('#gatePassword').value;
+    if(!email || !password) return false;
+    if(sb){
+      justLoggedOut = false;
+      const { data, error } = await sb.auth.signUp({ email, password, options:{ data:{ full_name:name } } });
+      if(error){ gateAuthNote(t('gate.authError')); return false; }
+      if(data && data.session){ await refreshProfile(); afterGateLoginSuccess(); return false; }
+      gateAuthNote(t('gate.signupSent'));
+      return false;
+    }
+    const acc = getAccount();
+    acc.loggedIn = true; acc.email = email; acc.name = name;
+    saveAccount(acc);
+    afterGateLoginSuccess();
+    return false;
+  }
+  async function requestGatePasswordReset(e){
+    e.preventDefault();
+    const box = document.getElementById(gateBoxId);
+    const email = box.querySelector('#gateEmail').value.trim();
+    if(!email || !sb) return false;
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: CANONICAL_ORIGIN + '/' });
+    gateAuthNote(error ? t('gate.authError') : t('gate.resetSent'));
+    return false;
+  }
+  /* Every paid recurring-ish plan (monthly/yearly/lifetime) is capped at
+     MONTHLY_ANALYSIS_QUOTA full AI analyses per rolling 28-day billing
+     period — matching the Stripe subscription's actual 28-day billing cycle
+     (see create-checkout-session.js) rather than a calendar month, so the
+     quota resets exactly when the customer is billed again, not on the 1st.
+     A one-shot ("ponctuel") purchase is still capped at exactly 1 use via
+     oneshotCredits instead. */
+  const MONTHLY_ANALYSIS_QUOTA = 10;
+  const BILLING_PERIOD_DAYS = 28;
+  function getAnalysesThisMonth(){
+    const now = Date.now();
+    const periodStart = now - (BILLING_PERIOD_DAYS * 24 * 60 * 60 * 1000);
+    return getHistory().filter(h => {
+      if(h.source !== 'ai') return false;
+      /* The AI call now also runs for free-preview (unpaid) analyses — see
+         renderResults — so only entries that were actually UNLOCKED (paid
+         access at the time) count against the quota. Otherwise someone's
+         free curiosity clicks before ever subscribing would eat into their
+         quota the moment they upgrade. */
+      if(h.unlocked === false) return false;
+      const d = new Date(h.date).getTime();
+      return !isNaN(d) && d >= periodStart && d <= now;
+    }).length;
+  }
+  function gateCheckAccess(){
+    const acc = getAccount();
+    if(acc.plan==='monthly' || acc.plan==='yearly' || acc.plan==='lifetime'){
+      if(getAnalysesThisMonth() >= MONTHLY_ANALYSIS_QUOTA){ renderGateQuotaReached(); return; }
+      analysisAIAllowed = true;
+      grantResultsAccess();
+      return;
+    }
+    if((acc.oneshotCredits||0) > 0){
+      acc.oneshotCredits -= 1;
+      saveAccount(acc);
+      analysisAIAllowed = true;
+      grantResultsAccess();
+      return;
+    }
+    /* No paid access: don't stop on a separate paywall screen — show the
+       analysis right away. Every premium section already renders with only
+       its first item visible and the rest marked .locked-item (blurred via
+       CSS as long as #lockedResultsWrap doesn't have .unlocked — see
+       applyReportToDOM), and the in-page upsell card (#premiumTeaser) is
+       the paywall itself, right there in the results. */
+    analysisAIAllowed = false;
+    grantResultsAccess();
+  }
+  function renderGatePaywall(){
+    const box = document.getElementById('gateBoxContent');
+    if(!box) return;
+    pendingGateUnlock = true;
+    box.innerHTML = `
+      <div class="sparkle-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2Z"/></svg></div>
+      <h2>${t('gate.paywallTitle')}</h2>
+      <p>${t('gate.paywallDesc')}</p>
+      <div class="gate-paywall-actions">
+        <button class="btn btn-cream btn-block" onclick="goToPricingFromGate()">${t('gate.goPremium')}</button>
+        <button class="btn btn-ghost btn-block" onclick="buyOneShot()">${t('gate.goOneShot')}</button>
+        <button class="btn btn-ghost btn-block" onclick="continueFreePreview()">${t('gate.continueFree')}</button>
+      </div>
+      <div class="gate-note">${t('gate.freeNote')}</div>`;
+  }
+  function renderGateQuotaReached(){
+    const box = document.getElementById('gateBoxContent');
+    if(!box) return;
+    box.innerHTML = `
+      <div class="sparkle-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+      <h2>${t('gate.quotaTitle')}</h2>
+      <p>${t('gate.quotaDesc')}</p>
+      <div class="gate-paywall-actions">
+        <button class="btn btn-ghost btn-block" onclick="showPage('home')">${t('gate.backHome')}</button>
+      </div>`;
+  }
+  /* Set while an already-computed analysis is sitting behind the paywall — lets
+     buyPremium()/buyOneShot() know to jump straight back into that analysis once
+     the (simulated) purchase completes, instead of stranding the person on the
+     pricing page and forcing them to redo the whole quiz. */
+  let pendingGateUnlock = false;
+  function goToPricingFromGate(){
+    pendingGateUnlock = true;
+    showPage('tarifs');
+  }
+  function continueFreePreview(){
+    pendingGateUnlock = false;
+    analysisAIAllowed = false;
+    grantResultsAccess();
+  }
+  function grantResultsAccess(){
+    pendingGateUnlock = false;
+    document.getElementById('diag-gate').style.display='none';
+    showPage('diag');
+    showResults();
+  }
+
+  /* Reopens a saved history entry exactly as it was, without recomputing anything
+     or touching the current in-progress quiz state. */
+  async function viewHistoryEntry(idx){
+    const history = getHistory();
+    const h = history[idx];
+    if(!h || !h.report) return;
+    lastReport = h.report;
+    lastReportSource = h.source || 'local';
+    /* Switch the "current analysis" context to this one so evolution photos
+       shown/added from here belong to THIS analysis, not whichever was open
+       before (each analysis keeps its own separate photo comparison). */
+    currentHistoryId = h.id || null;
+    evolutionCache = []; // avoid a flash of the previous analysis's photos before the refresh below
+    /* An entry keeps its own saved access level (h.unlocked) UNLESS the account
+       now has an active subscription (monthly/yearly/lifetime) — someone who
+       subscribes after doing a free-preview analysis expects that old analysis
+       to unlock too, not stay blurred forever. A one-shot ("ponctuel") credit
+       is different: it's spent on one specific NEW analysis, so it does NOT
+       retroactively unlock older free-preview entries. h.unlocked defaults to
+       true for entries saved before this field existed (back then everyone had
+       already paid to see results at all). */
+    analysisAIAllowed = h.unlocked !== false || hasEvolutionTrackingAccess();
+    closeDrawer();
+    document.getElementById('diag-quiz').style.display='none';
+    document.getElementById('diag-ready').style.display='none';
+    document.getElementById('diag-gate').style.display='none';
+    document.getElementById('diag-results').style.display='block';
+    showPage('diag');
+    applyReportToDOM(lastReport, lastReportSource);
+    if(sb) await refreshEvolutionPhotos();
+    else renderEvolutionPhotos();
+  }
+
+  /* ---------- Init ---------- */
+  /* This is a single-page app with no real hash routing — a stray trailing "#"
+     in the address bar (e.g. left over from an old link with href="#") never
+     gets a chance to clear itself since there's no page reload. Strip it once
+     on load so the URL stays clean. */
+  if(window.location.hash === '#' || window.location.hash === ''){
+    if(window.location.href.endsWith('#')){
+      window.history.replaceState({}, '', window.location.href.slice(0, -1));
+    }
+  }
+  applyI18n();
+  updateNavAvatar();
+  if(sb){
+    refreshProfile().then(()=>{
+      /* Returning from Stripe Checkout (success_url/cancel_url both point back
+         here with these query params) — handle it once, then scrub the URL so
+         a refresh doesn't replay it. */
+      const params = new URLSearchParams(window.location.search);
+      const checkout = params.get('checkout');
+      if(checkout === 'success'){
+        const plan = params.get('plan');
+        window.history.replaceState({}, '', window.location.pathname);
+        if(plan) handleCheckoutReturn(plan);
+      } else if(checkout === 'cancel'){
+        window.history.replaceState({}, '', window.location.pathname);
+        handleCheckoutCancelReturn();
+      } else {
+        /* Returning from a full-page Google OAuth redirect (see loginWithGoogle) —
+           resume whatever the person was doing (unlocking a just-finished analysis,
+           or just logging in from the account panel) now that the session is back. */
+        let googleResume = null;
+        try{
+          const raw = sessionStorage.getItem(RESUME_KEY);
+          if(raw){ const parsed = JSON.parse(raw); if(parsed && parsed.googleLogin) googleResume = parsed; }
+        }catch(e){}
+        if(googleResume){
+          try{ sessionStorage.removeItem(RESUME_KEY); }catch(e){}
+          if(getAccount().loggedIn){
+            diagAnswers = googleResume.diagAnswers || diagAnswers;
+            capturedPhotoDataUrl = googleResume.capturedPhotoDataUrl || capturedPhotoDataUrl;
+            pendingResultPhoto = googleResume.pendingResultPhoto || pendingResultPhoto;
+            gateLoginContext = googleResume.gateLoginContext || 'analysis';
+            if(gateLoginContext === 'analysis'){
+              pendingGateUnlock = true;
+              document.getElementById('diag-quiz').style.display='none';
+              document.getElementById('diag-ready').style.display='none';
+              document.getElementById('diag-gate').style.display='block';
+              showPage('diag');
+            }
+            afterGateLoginSuccess();
+          }
+        }
+      }
+    });
+    sb.auth.onAuthStateChange((event)=>{
+      console.log('[Solane] onAuthStateChange:', event, 'justLoggedOut:', justLoggedOut);
+      if(justLoggedOut && event !== 'SIGNED_OUT'){
+        /* Something (an auto-refresh, a stale network response) is trying to
+           re-establish a session moments after an explicit, user-initiated
+           logout — ignore it rather than silently logging the person back in. */
+        return;
+      }
+      refreshProfile();
+    });
+  }
+</script>
