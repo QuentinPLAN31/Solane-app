@@ -30,18 +30,21 @@
 
   /* ---------- Nav ---------- */
   header.site{ position:sticky; top:0; z-index:40; background:color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
-  .navrow{ display:flex; align-items:center; justify-content:space-between; padding:20px 0; }
+  .navrow{ display:flex; align-items:center; justify-content:space-between; padding-top:20px; padding-bottom:20px; }
   .brand{ font-family:"Fraunces", serif; font-size:22px; font-weight:600; display:flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer; color:var(--ink); }
   nav.links{display:flex; gap:30px; font-size:15px;}
   nav.links button{ color:var(--ink-soft); transition:color .15s; background:none; border:none; cursor:pointer; font-size:15px; padding:0; }
   nav.links button:hover, nav.links button.on{color:var(--ink);}
   .nav-end{display:flex; align-items:center; gap:13px;}
+  .nav-cta .cta-short{display:none;}
   .nav-right{display:flex; align-items:center; gap:13px; position:relative;}
   @media (max-width:600px){
-    .navrow{display:grid; grid-template-columns:1fr auto 1fr; grid-template-rows:1fr; align-items:center; padding:14px 0;}
+    .navrow{display:grid; grid-template-columns:1fr auto 1fr; grid-template-rows:1fr; align-items:center; padding-top:14px; padding-bottom:14px;}
     .navrow > .brand{grid-column:2; grid-row:1; justify-self:center;}
     .navrow > .nav-end{display:contents;}
-    .nav-cta{grid-column:1; grid-row:1; justify-self:start; padding:8px 13px; font-size:11.5px;}
+    .nav-cta{grid-column:1; grid-row:1; justify-self:start; padding:8px 14px; font-size:12px;}
+    .nav-cta .cta-full{display:none;}
+    .nav-cta .cta-short{display:inline;}
     .navrow > .nav-end > .nav-right{grid-column:3; grid-row:1; justify-self:end;}
   }
   .lang-wrap{position:relative;}
@@ -115,7 +118,7 @@
   .feat-item svg{color:var(--accent);}
 
   .hero-visual{position:relative; grid-area:hvisual;}
-  @media (max-width:600px){ .hero-visual{grid-area:stack; z-index:1;} }
+  @media (max-width:600px){ .hero-visual{grid-area:stack; z-index:1; margin-right:-20px; width:calc(100% + 20px);} }
   .portrait{ border-radius:0; overflow:visible; aspect-ratio:4/4.3; position:relative; background:var(--bg); }
   .portrait svg,.portrait img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
   .portrait-img-mobile{display:none;}
@@ -125,7 +128,7 @@
        space at top-left for the text, and the back of the head is cropped
        off past the right edge. Pre-cropped rather than CSS object-position,
        for a pixel-exact result regardless of device. */
-    .portrait{aspect-ratio:3/4; border-radius:16px; overflow:hidden;}
+    .portrait{aspect-ratio:3/4; border-radius:16px 0 0 16px; overflow:hidden;}
     .portrait-img-desktop{display:none;}
     .portrait-img-mobile{display:block; object-position:center;}
   }
@@ -802,7 +805,7 @@
       <button onclick="showPage('contact')" data-nav="contact" data-i18n="nav.contact">Contact</button>
     </nav>
     <div class="nav-end">
-      <button class="btn btn-primary btn-sm nav-cta" onclick="startDiagnostic()" data-i18n="nav.cta">Commencer l'analyse</button>
+      <button class="btn btn-primary btn-sm nav-cta" onclick="startDiagnostic()"><span class="cta-full" data-i18n="nav.cta">Commencer l'analyse</span><span class="cta-short" data-i18n="nav.ctaShort">Analyse</span></button>
       <div class="nav-right">
         <div class="lang-wrap">
           <button class="lang" id="langBtn" onclick="toggleLangMenu()">FR</button>
@@ -1545,7 +1548,7 @@
 const I18N = {
 fr: {
   meta:{ title:"Solane" },
-  nav:{ home:"Accueil", diag:"Faire l'analyse", myAnalyses:"Mes analyses", tarifs:"Tarifs", apropos:"À propos", blog:"Blog", contact:"Contact", cta:"Commencer l'analyse" },
+  nav:{ home:"Accueil", diag:"Faire l'analyse", myAnalyses:"Mes analyses", tarifs:"Tarifs", apropos:"À propos", blog:"Blog", contact:"Contact", cta:"Commencer l'analyse", ctaShort:"Analyse" },
   hero:{
     eyebrow:"Diagnostic cutané instantané", h1:"Une photo. Un diagnostic clair sur votre peau.", lede:"Voici comment ça fonctionne, en toute simplicité.", badge:"Résultat en 2 minutes", s1:"Envoyez une photo", s2:"Recevez votre diagnostic", s3:"Suivez votre routine", step1:"Envoyez une photo", step2:"Analyse IA en 2 min", step3:"Routine sur mesure",
     desc:"Comprenez ce qui agit vraiment sur votre peau, suivez son évolution et obtenez des résultats visibles grâce à une analyse <span style=\"color:var(--accent);\">intelligente et personnalisée</span>.",
@@ -1815,7 +1818,7 @@ fr: {
 
 en: {
   meta:{ title:"Solane" },
-  nav:{ home:"Home", diag:"Take the analysis", myAnalyses:"My analyses", tarifs:"Pricing", apropos:"About", blog:"Blog", contact:"Contact", cta:"Start my analysis" },
+  nav:{ home:"Home", diag:"Take the analysis", myAnalyses:"My analyses", tarifs:"Pricing", apropos:"About", blog:"Blog", contact:"Contact", cta:"Start my analysis", ctaShort:"Analysis" },
   hero:{
     eyebrow:"Instant skin diagnosis", h1:"One photo. A clear diagnosis for your skin.", lede:"Here's how it works, in three simple steps.", badge:"Results in 2 minutes", s1:"Upload a photo", s2:"Get your diagnosis", s3:"Follow your routine", step1:"Upload a photo", step2:"AI analysis in 2 min", step3:"Tailored routine",
     desc:"Understand what's really affecting your skin, track its evolution, and get visible results with a <span style=\"color:var(--accent);\">smart, personalised</span> analysis.",
@@ -2085,7 +2088,7 @@ en: {
 
 de: {
   meta:{ title:"Solane" },
-  nav:{ home:"Start", diag:"Analyse starten", myAnalyses:"Meine Analysen", tarifs:"Preise", apropos:"Über uns", blog:"Blog", contact:"Kontakt", cta:"Analyse starten" },
+  nav:{ home:"Start", diag:"Analyse starten", myAnalyses:"Meine Analysen", tarifs:"Preise", apropos:"Über uns", blog:"Blog", contact:"Kontakt", cta:"Analyse starten", ctaShort:"Analyse" },
   hero:{
     eyebrow:"Sofortige Hautdiagnose", h1:"Ein Foto. Eine klare Diagnose für deine Haut.", lede:"So einfach funktioniert es.", badge:"Ergebnis in 2 Minuten", s1:"Foto hochladen", s2:"Diagnose erhalten", s3:"Routine befolgen", step1:"Foto hochladen", step2:"KI-Analyse in 2 Min.", step3:"Individuelle Routine",
     desc:"Verstehe, was deine Haut wirklich beeinflusst, verfolge ihre Entwicklung und erziele sichtbare Ergebnisse dank einer <span style=\"color:var(--accent);\">intelligenten, persönlichen</span> Analyse.",
@@ -2355,7 +2358,7 @@ de: {
 
 it: {
   meta:{ title:"Solane" },
-  nav:{ home:"Home", diag:"Fai l'analisi", myAnalyses:"Le mie analisi", tarifs:"Prezzi", apropos:"Chi siamo", blog:"Blog", contact:"Contatti", cta:"Inizia l'analisi" },
+  nav:{ home:"Home", diag:"Fai l'analisi", myAnalyses:"Le mie analisi", tarifs:"Prezzi", apropos:"Chi siamo", blog:"Blog", contact:"Contatti", cta:"Inizia l'analisi", ctaShort:"Analisi" },
   hero:{
     eyebrow:"Diagnosi della pelle istantanea", h1:"Una foto. Una diagnosi chiara per la tua pelle.", lede:"Ecco come funziona, in tutta semplicità.", badge:"Risultato in 2 minuti", s1:"Carica una foto", s2:"Ricevi la tua diagnosi", s3:"Segui la tua routine", step1:"Carica una foto", step2:"Analisi IA in 2 min", step3:"Routine su misura",
     desc:"Capisci cosa influisce davvero sulla tua pelle, monitora la sua evoluzione e ottieni risultati visibili grazie a un'analisi <span style=\"color:var(--accent);\">intelligente e personalizzata</span>.",
