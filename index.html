@@ -90,8 +90,9 @@
     /* Mobile: hero-top (eyebrow/h1/badge) overlays directly on top of the
        photo via a shared grid-area, instead of taking its own vertical
        space and instead of the photo being cropped short to make room. */
-    .hero{padding:0 0 28px;}
-    .hero-grid{grid-template-areas:"stack" "hbottom"; gap:34px;}
+    .hero{padding:0 0 18px;}
+    .hero-grid{grid-template-areas:"stack" "hbottom"; gap:0;}
+    .hero-bottom{display:none;}
     .hero-top{
       grid-area:stack; align-self:start; justify-self:start; z-index:2; position:relative;
       width:76%; margin-top:56px; padding:0;
@@ -104,11 +105,9 @@
       font-size:12px; letter-spacing:.01em; padding:7px 12px; border-radius:20px;
       box-shadow:0 4px 14px rgba(0,0,0,.35);
     }
-    .hero .lede{font-size:16px; margin-top:0;}
+    .hero .lede{display:none;}
     .hero .desc{display:none;}
-    .cta-row{margin-top:26px;}
-    .hero-bottom-primary{display:none;}
-    .hero-bottom .cta-row .btn-ghost{width:100%; justify-content:center;}
+    .hero-bottom .cta-row{display:none;}
   }
   .cta-row{display:flex; gap:16px; margin-top:34px; flex-wrap:wrap;}
   .feat-row{display:flex; gap:36px; margin-top:42px; flex-wrap:wrap;}
@@ -178,8 +177,8 @@
     #page-home.active > :nth-child(6){order:30;}
     #page-home.active > :nth-child(7){order:60;}
     #page-home.active > :nth-child(8){order:90;}
-    #page-home.active > :nth-child(9){order:3;}
-    #page-home.active > :nth-child(10){order:5;}
+    #page-home.active > :nth-child(9){order:3; display:none;}
+    #page-home.active > :nth-child(10){order:5; padding-top:34px;}
     #page-home.active > :nth-child(11){order:100;}
     #page-home.active > :nth-child(12){order:110;}
   }
@@ -268,6 +267,8 @@
 
   .steps-grid{display:grid; grid-template-columns:.95fr 1fr; gap:64px; align-items:center;}
   @media (max-width:900px){ .steps-grid{grid-template-columns:1fr;} }
+  .steps-h2{font-size:clamp(24px,3vw,32px); line-height:1.28; margin-bottom:28px;}
+  @media (max-width:600px){ .steps-h2{font-size:23px; line-height:1.32; margin-bottom:24px; color:var(--accent);} }
   .step{display:flex; gap:20px; padding:26px 0; border-top:1px solid var(--line);}
   .step:last-of-type{border-bottom:1px solid var(--line);}
   .step .n{font-family:"Fraunces"; color:var(--accent); font-size:16px; padding-top:2px;}
@@ -987,7 +988,7 @@
   <section class="block">
     <div class="wrap steps-grid">
       <div>
-        <h2 style="margin-bottom:6px;" data-i18n="steps.h2">Un parcours personnalisé. Un accompagnement qui s'ajuste.</h2>
+        <h2 class="steps-h2" data-i18n="steps.h2">Un parcours personnalisé. Un accompagnement qui s'ajuste.</h2>
         <div class="step"><div class="n">01</div><div><h4 data-i18n="steps.s1t">Répondez à quelques questions</h4><p data-i18n="steps.s1d">Votre mode de vie, vos habitudes et vos objectifs.</p></div></div>
         <div class="step"><div class="n">02</div><div><h4 data-i18n="steps.s2t">Prenez vos photos</h4><p data-i18n="steps.s2d">Une analyse visuelle complète en quelques secondes.</p></div></div>
         <div class="step"><div class="n">03</div><div><h4 data-i18n="steps.s3t">Recevez votre plan</h4><p data-i18n="steps.s3d">Un score sur 100, l'âge estimé de votre peau, vos principales priorités et une routine de produits adaptée (matin et soir), prête à suivre dès aujourd'hui.</p></div></div>
