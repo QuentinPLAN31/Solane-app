@@ -1152,6 +1152,18 @@
   #page-home.active > hr:nth-child(2){margin:0 20px!important;}
   #page-home.active > :nth-child(7){padding-bottom:44px!important;}
   #page-home.active > :nth-child(3){padding-top:48px!important;}
+  @media (max-width:600px){
+    .portrait{aspect-ratio:3/4.9;}
+    .hero-top{margin-top:76px;}
+    .hero h1{font-size:clamp(36px,11.4vw,48px); line-height:1.07;}
+    .hero-badge{margin-top:22px;}
+    .hero-form{bottom:calc(11% - 10px)!important; padding:16px!important; gap:12px!important;}
+    .hero-form .hero-fields{gap:12px;}
+  }
+  html{max-width:100%; overflow-x:hidden; overscroll-behavior-x:none; touch-action:pan-y pinch-zoom; -webkit-text-size-adjust:100%;}
+  body{max-width:100%; overflow-x:clip; overscroll-behavior-x:none; touch-action:pan-y pinch-zoom;}
+  .fan{touch-action:pan-y;}
+  .fan-head h2{font-size:clamp(32px,8.75vw,42px);}
 </style>
 
 <div class="splash" id="splash"><div class="splash-mark">Solane</div></div>
