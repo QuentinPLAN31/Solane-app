@@ -1,0 +1,19 @@
+name: Publier un article
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/build_articles.py
+      - name: Commit si nouveau contenu
+        run: |
+          git config user.name "solane-bot"
+          git config user.email "bot@solaneskin.com"
+          git add -A
+          git diff --cached --quiet || (git commit -m "Publication automatique des articles" && git push)
