@@ -1207,6 +1207,18 @@
     #page-home.active > :nth-child(8){order:100; display:none;}
     #page-home.active > :nth-child(9){order:110;}
   }
+  /* Image 15 % plus sombre */
+  .portrait-img-desktop,.portrait-img-mobile{filter:brightness(.85);}
+  /* Mobile : premier écran grossi (x1,2 ; titre x1,1 ; pastille « 2 minutes » inchangée) */
+  @media (max-width:600px){
+    .hero h1{font-size:clamp(33px,10.56vw,48px)!important;}
+    .navrow .brand{font-size:26.4px;} .navrow .brand svg{width:32px; height:32px;}
+    .navrow .nav-cta{padding:9.6px 16.8px!important; font-size:14.4px!important;}
+    .navrow .lang,.navrow .avatar{width:41px; height:41px;} .navrow .lang{font-size:13px;} .navrow .avatar svg{width:24px; height:24px;}
+    .hero-form .hero-cloud-cta{height:58px!important; font-size:17.4px!important;}
+    .hero-mini-steps b{width:26px!important; height:26px!important; font-size:13px!important;}
+    .hero-mini-steps i{font-size:13.8px!important;}
+  }
 </style>
 
 <div class="splash" id="splash"><div class="splash-mark">Solane</div></div>
