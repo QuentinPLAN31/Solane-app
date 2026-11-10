@@ -3146,8 +3146,12 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     const file = input.files && input.files[0];
     if(!file) return;
     const reader = new FileReader();
-    reader.onload = e => {
-      capturedPhotoDataUrl = e.target.result;
+    reader.onload = async e => {
+      let url = e.target.result;
+      /* Photo de téléphone brute = plusieurs Mo : on la réduit pour tenir dans sessionStorage
+         (sinon la reprise après connexion échoue en silence et on retombe sur l'accueil). */
+      try{ url = await compressImageDataUrl(url, 1280, 0.82); }catch(err){}
+      capturedPhotoDataUrl = url;
       renderDiag();
     };
     reader.readAsDataURL(file);
@@ -4679,14 +4683,18 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
      just enough of that state to sessionStorage before leaving, and restore + resume
      it automatically once we're back with a confirmed payment (see RESUME_KEY below). */
   const RESUME_KEY = 'solaneResumeAnalysis';
+  /* Sauvegarde l'état avant une redirection (Google / Stripe). La photo n'est stockée qu'une fois
+     (pendingResultPhoto est la même) et, si le quota est dépassé, on réessaie sans la photo. */
+  function stashResume(obj){
+    const o = Object.assign({}, obj);
+    if(o.pendingResultPhoto && o.pendingResultPhoto === o.capturedPhotoDataUrl) o.pendingResultPhoto = null;
+    try{ sessionStorage.setItem(RESUME_KEY, JSON.stringify(o)); return true; }catch(e){}
+    try{ o.capturedPhotoDataUrl = null; o.pendingResultPhoto = null; o.photoLost = true; sessionStorage.setItem(RESUME_KEY, JSON.stringify(o)); return true; }catch(e){ console.error('Could not stash resume state:', e); }
+    return false;
+  }
   function stashResumeStateIfGated(plan){
     if(!pendingGateUnlock) return;
-    try{
-      sessionStorage.setItem(RESUME_KEY, JSON.stringify({
-        plan, diagAnswers, capturedPhotoDataUrl, pendingResultPhoto,
-        lang: currentLang
-      }));
-    }catch(e){ console.error('Could not stash resume state:', e); }
+    stashResume({ plan, diagAnswers, capturedPhotoDataUrl, pendingResultPhoto, lang: currentLang });
   }
   async function startCheckout(plan){
     const acc = getAccount();
@@ -4754,7 +4762,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(resume && resume.plan===plan){
       diagAnswers = resume.diagAnswers || {};
       capturedPhotoDataUrl = resume.capturedPhotoDataUrl || null;
-      pendingResultPhoto = resume.pendingResultPhoto || null;
+      pendingResultPhoto = resume.pendingResultPhoto || resume.capturedPhotoDataUrl || null;
       pendingGateUnlock = true;
       document.getElementById('diag-quiz').style.display='none';
       document.getElementById('diag-ready').style.display='none';
@@ -4774,7 +4782,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(resume){
       diagAnswers = resume.diagAnswers || {};
       capturedPhotoDataUrl = resume.capturedPhotoDataUrl || null;
-      pendingResultPhoto = resume.pendingResultPhoto || null;
+      pendingResultPhoto = resume.pendingResultPhoto || resume.capturedPhotoDataUrl || null;
       pendingGateUnlock = true;
       document.getElementById('diag-quiz').style.display='none';
       document.getElementById('diag-ready').style.display='none';
@@ -5002,13 +5010,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     /* A full-page redirect unloads the whole app just like a Stripe redirect —
        stash whatever the person was doing so we can resume it once we're back
        with a confirmed session (see RESUME_KEY / the Init block below). */
-    try{
-      sessionStorage.setItem(RESUME_KEY, JSON.stringify({
-        googleLogin: true, gateLoginContext,
-        diagAnswers, capturedPhotoDataUrl, pendingResultPhoto,
-        lang: currentLang
-      }));
-    }catch(e){ console.error('Could not stash resume state:', e); }
+    stashResume({ googleLogin: true, gateLoginContext, diagAnswers, capturedPhotoDataUrl, pendingResultPhoto, lang: currentLang });
     sb.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: CANONICAL_ORIGIN + '/' }
@@ -5452,7 +5454,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
           if(getAccount().loggedIn){
             diagAnswers = googleResume.diagAnswers || diagAnswers;
             capturedPhotoDataUrl = googleResume.capturedPhotoDataUrl || capturedPhotoDataUrl;
-            pendingResultPhoto = googleResume.pendingResultPhoto || pendingResultPhoto;
+            pendingResultPhoto = googleResume.pendingResultPhoto || googleResume.capturedPhotoDataUrl || pendingResultPhoto;
             gateLoginContext = googleResume.gateLoginContext || 'analysis';
             if(gateLoginContext === 'analysis'){
               pendingGateUnlock = true;
