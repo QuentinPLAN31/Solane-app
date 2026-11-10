@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/a", "destination": "/" },
+    { "source": "/m", "destination": "/" },
+    { "source": "/e", "destination": "/" },
+    { "source": "/s", "destination": "/" }
+  ]
+}
