@@ -1219,6 +1219,18 @@
     .hero-mini-steps b{width:26px!important; height:26px!important; font-size:13px!important;}
     .hero-mini-steps i{font-size:13.8px!important;}
   }
+  /* Desktop : même présentation que le mobile (pas de carte, un bouton + 3 étapes) */
+  @media (min-width:601px){
+    .hero-form{background:none!important; border:0!important; box-shadow:none!important; -webkit-backdrop-filter:none!important; backdrop-filter:none!important; padding:0!important; width:72%!important; bottom:17%!important; gap:16px!important; align-items:center;}
+    .hero-form .hero-fields{display:none!important;}
+    .hero-form .hero-cloud-cta{height:54px!important; font-size:16px!important; border-radius:999px!important; width:80%!important; box-shadow:0 14px 34px -8px rgba(207,132,82,.7), inset 0 1px 0 rgba(255,255,255,.5)!important;}
+    .hero-mini-steps{display:flex; justify-content:space-between; gap:12px; width:100%;}
+    .hero-mini-steps span{flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; text-align:center;}
+    .hero-mini-steps b{width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-size:13px; font-weight:600; color:#fff; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.3);}
+    .hero-mini-steps i{font-style:normal; font-size:13.5px; line-height:1.25; color:rgba(255,255,255,.9); text-shadow:0 1px 6px rgba(0,0,0,.7);}
+    .portrait.leaf-bg::after{background:linear-gradient(to bottom,rgba(10,10,8,.15),rgba(10,10,8,.25) 55%,rgba(10,10,8,.6))!important;}
+    .navrow .nav-cta{background:transparent!important; color:#fff!important; border:1px solid rgba(255,255,255,.35)!important; box-shadow:none!important;}
+  }
 </style>
 
 <div class="splash" id="splash"><div class="splash-mark">Solane</div></div>
@@ -4759,7 +4771,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       if(raw) resume = JSON.parse(raw);
       sessionStorage.removeItem(RESUME_KEY);
     }catch(e){}
-    if(resume && resume.plan===plan){
+    if(resume && resume.plan===plan && !resume.photoLost && (resume.capturedPhotoDataUrl || resume.pendingResultPhoto)){
       diagAnswers = resume.diagAnswers || {};
       capturedPhotoDataUrl = resume.capturedPhotoDataUrl || null;
       pendingResultPhoto = resume.pendingResultPhoto || resume.capturedPhotoDataUrl || null;
@@ -4769,6 +4781,10 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       document.getElementById('diag-gate').style.display='block';
       showPage('diag');
       gateCheckAccess();
+    } else {
+      /* Pas d'analyse à reprendre (achat depuis la page Tarifs, ou photo perdue) :
+         on envoie directement la personne sur l'analyse au lieu de la laisser sur l'accueil. */
+      startDiagnostic();
     }
   }
   function handleCheckoutCancelReturn(){
