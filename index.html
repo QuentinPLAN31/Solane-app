@@ -4601,6 +4601,55 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   /* Re-reads the logged-in user's session + profile row from Supabase and refreshes
      the local cache + UI. Called on page load and on every auth state change (login,
      logout, token refresh, OAuth redirect return). */
+  /* ---------- Programme créateurs : lien ?via= / code créateur ---------- */
+  const VIA_KEY = 'solane_via';
+  function normVia(s){ s = String(s||'').trim().toLowerCase(); return /^[a-z0-9_-]{2,40}$/.test(s) ? s : null; }
+  function getStoredVia(){
+    try{ const v = JSON.parse(localStorage.getItem(VIA_KEY)||'null'); if(v && v.code && Date.now()-v.ts < 30*86400000) return v; }catch(e){}
+    return null;
+  }
+  function setStoredVia(obj){ try{ localStorage.setItem(VIA_KEY, JSON.stringify(obj)); }catch(e){} }
+  function clearStoredVia(){ try{ localStorage.removeItem(VIA_KEY); }catch(e){} }
+  (function captureVia(){
+    try{
+      const p = new URLSearchParams(location.search), code = normVia(p.get('via'));
+      if(!code) return;
+      const old = getStoredVia();
+      const rec = { code, ts: Date.now(), done: false, clicked: !!(old && old.code === code && old.clicked) };
+      if(!rec.clicked){
+        rec.clicked = true;
+        fetch('/api/creators?a=click', { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({ code }) }).catch(()=>{});
+      }
+      setStoredVia(rec);
+      p.delete('via');
+      const qs = p.toString();
+      history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
+    }catch(e){}
+  })();
+  function onCreatorCodeInput(el){
+    const code = normVia(el.value);
+    if(code){ setStoredVia({ code, ts: Date.now(), done: false, clicked: true }); }
+    else if(!el.value.trim()){ clearStoredVia(); }
+  }
+  async function attributeCreatorIfPending(){
+    try{
+      if(!sb) return;
+      const v = getStoredVia(); if(!v || v.done) return;
+      const { data:{ session } } = await sb.auth.getSession(); if(!session) return;
+      const r = await fetch('/api/creators?a=attribute', {
+        method:'POST',
+        headers:{ 'content-type':'application/json', authorization:'Bearer ' + session.access_token },
+        body: JSON.stringify({ code: v.code })
+      });
+      if(r.status !== 202 && r.status < 500 && r.status !== 401){ v.done = true; setStoredVia(v); }
+    }catch(e){}
+  }
+  function creatorCodeFieldHtml(){
+    const v = getStoredVia();
+    const L = { fr:'Code créateur (facultatif)', en:'Creator code (optional)', de:'Creator-Code (optional)', it:'Codice creator (facoltativo)' }[currentLang] || 'Code créateur (facultatif)';
+    return `<div class="field" style="margin-bottom:10px;"><input type="text" id="gateCreatorCode" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="40" style="text-transform:uppercase;" placeholder="${L}" value="${v ? v.code.toUpperCase() : ''}" oninput="onCreatorCodeInput(this)"></div>`;
+  }
+
   async function refreshProfile(){
     if(!sb) return;
     try{
@@ -4617,6 +4666,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       };
       updateNavAvatar();
       renderAccountPanel();
+      attributeCreatorIfPending();
       await refreshHistory();
       await refreshEvolutionPhotos();
     }catch(e){ console.error('Supabase refreshProfile failed:', e); }
@@ -5205,6 +5255,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       box.innerHTML = `
         <h2>${t('gate.signupTitle')}</h2>
         <p>${t('gate.signupDesc')}</p>
+        ${creatorCodeFieldHtml()}
         ${googleBtnHtml}
         <form class="gate-form" onsubmit="return submitGateSignup(event)">
           <div class="field" style="margin-bottom:0;"><input type="text" id="gateName" placeholder="${t('gate.nameLoginPh')}"></div>
