@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 
 /* ===== RÉGLAGES (à ajuster ici uniquement) ===== */
-export const COMMISSION_CENTS = { oneshot: 50, monthly: 150, yearly: 300, lifetime: 800 }; // montants par défaut, à valider
+export const COMMISSION_CENTS = { oneshot: 50, premium: 150, lifetime: 800 }; // montants par défaut, à valider (premium = mensuel ou annuel)
 export const TIERS = [[30, 1.5], [10, 1.25], [0, 1.0]]; // [nb de clients payants du mois, multiplicateur]
 export const SIGNUP_WINDOW_DAYS = 2;    // un compte ne peut être rattaché que s'il a moins de 2 jours
 export const BASE_URL = process.env.FRONTEND_BASE_URL || 'https://www.solaneskin.com';
@@ -77,7 +77,7 @@ export function multiplierFor(n) { for (const [min, mult] of TIERS) if (n >= min
 export async function creatorMonth(creator, month) {
   const { start, end, label } = monthRange(month);
   const rows = await db('GET', `profiles?creator_id=eq.${creator.id}&creator_attributed_at=gte.${start.toISOString()}&creator_attributed_at=lt.${end.toISOString()}&select=plan,oneshot_credits`);
-  const kind = (r) => ['monthly', 'yearly', 'lifetime'].includes(r.plan) ? r.plan : ((r.oneshot_credits || 0) > 0 ? 'oneshot' : null);
+  const kind = (r) => ['monthly', 'yearly'].includes(r.plan) ? 'premium' : r.plan === 'lifetime' ? 'lifetime' : ((r.oneshot_credits || 0) > 0 ? 'oneshot' : null);
   const payers = rows.map(kind).filter(Boolean);
   const byProduct = {}; payers.forEach(p => { byProduct[p] = (byProduct[p] || 0) + 1; });
   const mult = multiplierFor(payers.length);
