@@ -1,0 +1,52 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Espace créateur Solane</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&family=Work+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#171310;--surface:#1e1914;--surface2:#2a231c;--ink:#f5efe4;--soft:#c3b9a8;--faint:#8f8574;--line:#392f24;--accent:#c9743f;--good:#7a9b6e}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Work Sans",system-ui,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:24px 16px 64px}h1,h2{font-family:Fraunces,Georgia,serif;font-weight:500;margin:0}
+h1{font-size:clamp(28px,6vw,38px)}h2{font-size:20px;margin:32px 0 12px}.sub{color:var(--soft);margin:6px 0 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--line)}.row:first-child{border-top:0}
+.lab{color:var(--faint);font-size:13px}.val{font-weight:600;word-break:break-all}.code{font-family:Fraunces,serif;font-size:28px;letter-spacing:.08em}
+button,select{font:inherit;color:var(--ink);background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:8px 14px;cursor:pointer}
+button:hover{border-color:var(--accent)}button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}@media(min-width:620px){.grid{grid-template-columns:repeat(4,1fr)}}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}.kpi b{display:block;font-size:24px;font-variant-numeric:tabular-nums}.kpi span{color:var(--faint);font-size:13px}
+.big{border-color:var(--accent)}.good{color:var(--good)}.note{color:var(--faint);font-size:13px;margin-top:24px}#err{display:none;margin-top:40px}
+</style></head><body><div class="w">
+<div id="err" class="card"><h1>Lien invalide</h1><p class="sub">Vérifie que tu as bien copié le lien complet reçu de Solane.</p></div>
+<div id="app" style="display:none">
+<h1 id="hi"></h1><p class="sub">Ton espace de suivi Solane. Les chiffres se mettent à jour en direct.</p>
+<h2>Tes liens</h2><div class="card" id="links"></div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h2>Statistiques</h2><select id="month" aria-label="Mois"></select></div>
+<div class="grid" id="kpis"></div>
+<div class="card" style="margin-top:16px" id="detail"></div>
+<p class="note" id="note"></p></div></div>
+<script>
+const P=new URLSearchParams(location.search),C=P.get('c')||'',K=P.get('k')||'';
+const eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'});
+const PN={oneshot:'Analyse à l’unité',monthly:'Premium mensuel',yearly:'Premium annuel',lifetime:'Accès à vie'};
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+function copy(b,t){navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>{const o=b.textContent;b.textContent='Copié';setTimeout(()=>b.textContent=o,1200)})}
+async function load(m){
+  const r=await fetch('/api/creators?a=stats&c='+encodeURIComponent(C)+'&k='+encodeURIComponent(K)+(m?'&month='+m:''));
+  if(!r.ok){document.getElementById('err').style.display='block';return}
+  const d=await r.json();document.getElementById('app').style.display='block';
+  document.getElementById('hi').textContent='Salut '+d.creator.name;
+  const L=d.links;
+  document.getElementById('links').innerHTML=[['Lien court',L.short],['Lien complet',L.full]].map(([a,b])=>`<div class="row"><div><div class="lab">${a}</div><div class="val">${esc(b)}</div></div><button data-c="${esc(b)}">Copier</button></div>`).join('')+
+   `<div class="row"><div><div class="lab">Code créateur (à dire si tu n’as pas de lien en bio)</div><div class="code">${esc(L.code)}</div></div><button data-c="${esc(L.code)}">Copier</button></div>
+    <p class="sub" style="font-size:14px">Phrase type : « Fais ton analyse de peau gratuite sur solaneskin.com et inscris-toi avec le code ${esc(L.code)}. »</p>`;
+  document.querySelectorAll('#links button').forEach(b=>b.onclick=()=>copy(b,b.dataset.c));
+  const sel=document.getElementById('month');
+  if(!sel.options.length){const n=new Date();for(let i=0;i<12;i++){const x=new Date(Date.UTC(n.getUTCFullYear(),n.getUTCMonth()-i,1));const v=x.getUTCFullYear()+'-'+String(x.getUTCMonth()+1).padStart(2,'0');sel.add(new Option(x.toLocaleDateString('fr-FR',{month:'long',year:'numeric',timeZone:'UTC'}),v))}sel.onchange=()=>load(sel.value)}
+  sel.value=d.month;
+  const k=(v,l)=>`<div class="kpi"><b>${v}</b><span>${l}</span></div>`;
+  document.getElementById('kpis').innerHTML=k(d.clicks,'clics (total)')+k(d.signups,'inscrits ce mois')+k(d.payers,'clients payants')+k(eur(d.total_cents),'gains du mois');
+  const bp=Object.entries(d.by_product).map(([p,n])=>`<div class="row"><span>${PN[p]||p}</span><span class="val">${n}</span></div>`).join('')||'<div class="row"><span class="lab">Aucun client payant ce mois-ci</span></div>';
+  const gr=Object.entries(d.grid).map(([p,c])=>`<div class="row"><span>${PN[p]||p}</span><span class="val">${eur(c)}</span></div>`).join('');
+  document.getElementById('detail').innerHTML=`<div class="lab">Détail du mois${d.bonus_pct?` · bonus +${d.bonus_pct} % appliqué`:''}</div>${bp}<div class="lab" style="margin-top:14px">Grille de commissions (une fois par client)</div>${gr}`+(d.tiers.length?`<div class="lab" style="margin-top:14px">Bonus : ${d.tiers.map(t=>`+${t.bonus_pct} % à partir de ${t.from} clients payants dans le mois`).join(' · ')}</div>`:'');
+  document.getElementById('note').textContent='Un inscrit est rattaché à ton lien ou à ton code. Les gains sont versés chaque mois par virement. Garde cette page pour toi : elle est privée.';
+}
+if(!C||!K)document.getElementById('err').style.display='block';else load();
+</script></body></html>
