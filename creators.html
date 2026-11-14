@@ -25,7 +25,7 @@ button:hover{border-color:var(--accent)}button:focus-visible,select:focus-visibl
 <script>
 const P=new URLSearchParams(location.search),C=P.get('c')||'',K=P.get('k')||'';
 const eur=c=>(c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'});
-const PN={oneshot:'Analyse à l’unité',monthly:'Premium mensuel',yearly:'Premium annuel',lifetime:'Accès à vie'};
+const PN={oneshot:'Analyse à l’unité',premium:'Premium (mensuel ou annuel)',lifetime:'Premium à vie'};
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 function copy(b,t){navigator.clipboard&&navigator.clipboard.writeText(t).then(()=>{const o=b.textContent;b.textContent='Copié';setTimeout(()=>b.textContent=o,1200)})}
 async function load(m){
