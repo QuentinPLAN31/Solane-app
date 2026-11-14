@@ -1,8 +1,12 @@
 {
+  "redirects": [
+    { "source": "/c/:slug", "destination": "/?via=:slug", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/a", "destination": "/" },
     { "source": "/m", "destination": "/" },
     { "source": "/e", "destination": "/" },
-    { "source": "/s", "destination": "/" }
+    { "source": "/s", "destination": "/" },
+    { "source": "/createur", "destination": "/createur.html" }
   ]
 }
