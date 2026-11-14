@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /createur
+Disallow: /c/
 
 Sitemap: https://www.solaneskin.com/sitemap.xml
