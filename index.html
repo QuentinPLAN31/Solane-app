@@ -1231,6 +1231,31 @@
     .portrait.leaf-bg::after{background:linear-gradient(to bottom,rgba(10,10,8,.15),rgba(10,10,8,.25) 55%,rgba(10,10,8,.6))!important;}
     .navrow .nav-cta{background:transparent!important; color:#fff!important; border:1px solid rgba(255,255,255,.35)!important; box-shadow:none!important;}
   }
+  /* ---- Validation animation (replaces loading screens) ---- */
+  #diag-validating{ display:none; text-align:center; padding:40px 8px 24px; }
+  .val-photo{ position:relative; width:150px; height:150px; margin:0 auto 26px; }
+  .val-photo .ph{ position:absolute; inset:10px; border-radius:50%; overflow:hidden; background:var(--surface-2); }
+  .val-photo .ph img, .val-photo .ph svg{ width:100%; height:100%; object-fit:cover; display:block; }
+  .val-photo svg.ring{ position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); }
+  .val-photo svg.ring circle{ fill:none; stroke-width:4; }
+  .val-photo svg.ring .bg{ stroke:var(--line); }
+  .val-photo svg.ring .fg{ stroke:var(--accent); stroke-linecap:round; stroke-dasharray:440; stroke-dashoffset:440; }
+  #diag-validating.run .val-photo svg.ring .fg{ animation: valRing 2.2s cubic-bezier(.5,0,.2,1) forwards; }
+  @keyframes valRing{ to{ stroke-dashoffset:0; } }
+  .val-photo .scanline{ position:absolute; left:10px; right:10px; height:2px; top:10px; background:linear-gradient(90deg,transparent,var(--accent),transparent); opacity:0; border-radius:2px; }
+  #diag-validating.run .val-photo .scanline{ animation: valScan 1.6s ease-in-out .1s 1 forwards; }
+  @keyframes valScan{ 0%{opacity:0; top:14px} 15%{opacity:1} 85%{opacity:1} 100%{opacity:0; top:136px} }
+  .val-list{ list-style:none; margin:0 auto; padding:0; max-width:300px; text-align:left; display:grid; gap:12px; }
+  .val-list li{ display:flex; align-items:center; gap:12px; font-size:15px; color:var(--ink-faint); opacity:.35; transform:translateY(6px); transition:all .4s ease; }
+  .val-list li .dot{ width:22px; height:22px; border-radius:50%; border:1.5px solid var(--line); display:grid; place-items:center; flex:none; transition:all .3s ease; }
+  .val-list li .dot svg{ opacity:0; transform:scale(.4); transition:all .3s ease .05s; }
+  .val-list li.on{ opacity:1; transform:none; color:var(--ink); }
+  .val-list li.on .dot{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+  .val-list li.on .dot svg{ opacity:1; transform:none; }
+  @media (prefers-reduced-motion: reduce){
+    #diag-validating.run .val-photo svg.ring .fg, #diag-validating.run .val-photo .scanline{ animation-duration:.01s; }
+    .val-list li, .val-list li .dot, .val-list li .dot svg{ transition:none; }
+  }
 </style>
 
 <div class="splash" id="splash"><div class="splash-mark">Solane</div></div>
@@ -1443,6 +1468,19 @@
         </div>
       </div>
       <div class="diag-q" id="diagBody"></div>
+    </div>
+
+    <div id="diag-validating">
+      <div class="val-photo">
+        <div class="ph" id="valPhotoInner"></div>
+        <svg class="ring" viewBox="0 0 150 150"><circle class="bg" cx="75" cy="75" r="70"/><circle class="fg" cx="75" cy="75" r="70"/></svg>
+        <div class="scanline"></div>
+      </div>
+      <ul class="val-list" id="valList">
+        <li><span class="dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2"><path d="M4 12l5 5L20 6"/></svg></span><span data-i18n="val.l1">Réponses enregistrées</span></li>
+        <li><span class="dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2"><path d="M4 12l5 5L20 6"/></svg></span><span data-i18n="val.l2">Photo analysée</span></li>
+        <li><span class="dot"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2"><path d="M4 12l5 5L20 6"/></svg></span><span data-i18n="val.l3">Routine personnalisée prête</span></li>
+      </ul>
     </div>
 
     <div id="diag-analyzing" style="display:none;">
@@ -1686,7 +1724,7 @@
         <span style="background:#6f4a36;">I</span>
         <span style="background:#e0a56f;">+</span>
       </div>
-      <span class="txt" data-i18n-html="pricing.trustBadge">Rejoins les <b>14 300</b> utilisateurs déjà inscrits</span>
+      <span class="txt" data-i18n-html="pricing.trustBadge">Paiement sécurisé par Stripe</span>
     </div>
     <div class="already-sub-card" id="alreadySubCard" style="display:none;">
       <div class="price-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12l5 5L20 6"/></svg></div>
@@ -2008,7 +2046,7 @@ fr: {
     t2name:"Inès, 29 ans", t2tag:"Peau sensible", t2quote:"L'analyse m'a rassurée et aidée à arrêter de multiplier les produits sans raison.",
     readyTitle:"Ton analyse est prête !", readyBody:"Découvre ton score de peau, ta routine personnalisée et les produits recommandés par notre IA.",
     seeResults:"Voir mon analyse", backHome:"Retour",
-    stepLabel:"Étape {n} sur {total}", takePhoto:"Prendre une photo", orGallery:"ou choisis dans ta galerie", retake:"Reprendre", skipPhoto:"Passer cette étape", validatePhoto:"Valider",
+    stepLabel:"Étape {n} sur {total}", takePhoto:"Prendre une photo", orGallery:"ou choisis dans ta galerie", retake:"Reprendre", skipPhoto:"Passer cette étape", validatePhoto:"Valider mes réponses",
     next:"Suivant", selected:"préoccupation sélectionnée", selectedPlural:"préoccupations sélectionnées"
   },
   diagSteps:{
@@ -2046,7 +2084,7 @@ fr: {
   },
   pricing:{
     back:"Retour", h1:"Choisis ton plan", sub:"Abonnement Premium pour transformer ta peau.",
-    trustBadge:"Rejoins les <b>14 300</b> utilisateurs déjà inscrits",
+    trustBadge:"Paiement sécurisé par Stripe",
     monthly:"Mensuel", yearly:"Annuel", popular:"Le plus populaire",
     plan:"Premium", planSub:"Pour celles qui veulent des résultats durables",
     perMonth:"28 jours", billedMonthly:"Facturé tous les 28 jours", billedYearly:"Facturé 79 € par an", save:"Économise 39,80 € (33%)",
@@ -2075,6 +2113,7 @@ fr: {
     purchaseCanceled:"Paiement annulé, aucun montant n'a été débité.",
     portalError:"Impossible d'ouvrir la gestion de l'abonnement pour le moment."
   },
+  val:{l1:"Réponses enregistrées", l2:"Photo analysée", l3:"Routine personnalisée prête"},
   about:{id:"Solane est une application française d'analyse de peau par photo, accessible sur solaneskin.com et sur TikTok (@solaneskin.com).",
     eyebrow:"Notre approche", h1:"Une peau, ça s'écoute plus qu'on ne la corrige.",
     p:"Solane part d'un constat simple : la plupart des routines sont pensées pour une peau figée dans le temps, alors que la vôtre change chaque semaine. Nous avons voulu un outil capable de suivre ce mouvement plutôt que de l'ignorer — une lecture honnête, mise à jour aussi souvent que nécessaire, plutôt qu'un diagnostic unique vite oublié.",
@@ -2278,7 +2317,7 @@ en: {
     t2name:"Inès, 29", t2tag:"Sensitive skin", t2quote:"The analysis reassured me and helped me stop piling on products for no reason.",
     readyTitle:"Your analysis is ready!", readyBody:"Discover your skin score, your personalised routine and the products recommended by our AI.",
     seeResults:"See my analysis", backHome:"Back",
-    stepLabel:"Step {n} of {total}", takePhoto:"Take a photo", orGallery:"or choose from your gallery", retake:"Retake", skipPhoto:"Skip this step", validatePhoto:"Confirm",
+    stepLabel:"Step {n} of {total}", takePhoto:"Take a photo", orGallery:"or choose from your gallery", retake:"Retake", skipPhoto:"Skip this step", validatePhoto:"Confirm my answers",
     next:"Next", selected:"concern selected", selectedPlural:"concerns selected"
   },
   diagSteps:{
@@ -2316,7 +2355,7 @@ en: {
   },
   pricing:{
     back:"Back", h1:"Choose your plan", sub:"A Premium subscription to transform your skin.",
-    trustBadge:"Join <b>14,300</b> users already on board",
+    trustBadge:"Secure payment by Stripe",
     monthly:"Monthly", yearly:"Yearly", popular:"Most popular",
     plan:"Premium", planSub:"For those who want lasting results",
     perMonth:"28 days", billedMonthly:"Billed every 28 days", billedYearly:"Billed €79 per year", save:"Save €39.80 (33%)",
@@ -2345,6 +2384,7 @@ en: {
     purchaseCanceled:"Payment canceled, nothing was charged.",
     portalError:"Could not open subscription management right now."
   },
+  val:{l1:"Answers saved", l2:"Photo analysed", l3:"Personalised routine ready"},
   about:{id:"Solane is a French skin analysis app: upload a photo and get a clear diagnosis and a personalised routine, at solaneskin.com and on TikTok (@solaneskin.com).",
     eyebrow:"Our approach", h1:"Skin needs listening to more than correcting.",
     p:"Solane starts from a simple observation: most routines are designed for skin that stays the same over time, while yours changes every week. We wanted a tool able to follow that movement rather than ignore it — an honest read, updated as often as needed, rather than a single diagnosis quickly forgotten.",
@@ -2548,7 +2588,7 @@ de: {
     t2name:"Inès, 29", t2tag:"Empfindliche Haut", t2quote:"Die Analyse hat mich beruhigt und mir geholfen, nicht mehr grundlos Produkte anzuhäufen.",
     readyTitle:"Deine Analyse ist fertig!", readyBody:"Entdecke deinen Hautscore, deine persönliche Routine und die von unserer KI empfohlenen Produkte.",
     seeResults:"Meine Analyse ansehen", backHome:"Zurück",
-    stepLabel:"Schritt {n} von {total}", takePhoto:"Foto aufnehmen", orGallery:"oder aus der Galerie wählen", retake:"Erneut aufnehmen", skipPhoto:"Diesen Schritt überspringen", validatePhoto:"Bestätigen",
+    stepLabel:"Schritt {n} von {total}", takePhoto:"Foto aufnehmen", orGallery:"oder aus der Galerie wählen", retake:"Erneut aufnehmen", skipPhoto:"Diesen Schritt überspringen", validatePhoto:"Meine Antworten bestätigen",
     next:"Weiter", selected:"Anliegen ausgewählt", selectedPlural:"Anliegen ausgewählt"
   },
   diagSteps:{
@@ -2586,7 +2626,7 @@ de: {
   },
   pricing:{
     back:"Zurück", h1:"Wähle deinen Plan", sub:"Premium-Abo, um deine Haut zu verändern.",
-    trustBadge:"Schließe dich <b>14.300</b> Nutzerinnen und Nutzern an",
+    trustBadge:"Sichere Zahlung über Stripe",
     monthly:"Monatlich", yearly:"Jährlich", popular:"Am beliebtesten",
     plan:"Premium", planSub:"Für alle, die dauerhafte Ergebnisse wollen",
     perMonth:"28 Tage", billedMonthly:"Alle 28 Tage abgerechnet", billedYearly:"79 € jährlich abgerechnet", save:"Spare 39,80 € (33%)",
@@ -2615,6 +2655,7 @@ de: {
     purchaseCanceled:"Zahlung abgebrochen, es wurde nichts berechnet.",
     portalError:"Die Abo-Verwaltung konnte gerade nicht geöffnet werden."
   },
+  val:{l1:"Antworten gespeichert", l2:"Foto analysiert", l3:"Persönliche Routine bereit"},
   about:{id:"Solane is a French skin analysis app: upload a photo and get a clear diagnosis and a personalised routine, at solaneskin.com and on TikTok (@solaneskin.com).",
     eyebrow:"Unser Ansatz", h1:"Haut sollte man eher zuhören als sie zu korrigieren.",
     p:"Solane basiert auf einer einfachen Beobachtung: Die meisten Routinen sind für eine Haut gedacht, die sich nicht verändert — dabei verändert sich deine jede Woche. Wir wollten ein Werkzeug, das diese Bewegung verfolgt, statt sie zu ignorieren — eine ehrliche Einschätzung, so oft aktualisiert wie nötig, statt einer einmaligen Diagnose, die schnell vergessen wird.",
@@ -2818,7 +2859,7 @@ it: {
     t2name:"Inès, 29 anni", t2tag:"Pelle sensibile", t2quote:"L'analisi mi ha rassicurata e mi ha aiutata a smettere di accumulare prodotti senza motivo.",
     readyTitle:"La tua analisi è pronta!", readyBody:"Scopri il tuo punteggio della pelle, la tua routine personalizzata e i prodotti raccomandati dalla nostra IA.",
     seeResults:"Vedi la mia analisi", backHome:"Indietro",
-    stepLabel:"Passo {n} di {total}", takePhoto:"Scatta una foto", orGallery:"o scegli dalla tua galleria", retake:"Rifai la foto", skipPhoto:"Salta questo passaggio", validatePhoto:"Conferma",
+    stepLabel:"Passo {n} di {total}", takePhoto:"Scatta una foto", orGallery:"o scegli dalla tua galleria", retake:"Rifai la foto", skipPhoto:"Salta questo passaggio", validatePhoto:"Conferma le mie risposte",
     next:"Avanti", selected:"preoccupazione selezionata", selectedPlural:"preoccupazioni selezionate"
   },
   diagSteps:{
@@ -2856,7 +2897,7 @@ it: {
   },
   pricing:{
     back:"Indietro", h1:"Scegli il tuo piano", sub:"Abbonamento Premium per trasformare la tua pelle.",
-    trustBadge:"Unisciti a <b>14.300</b> utenti già iscritti",
+    trustBadge:"Pagamento sicuro con Stripe",
     monthly:"Mensile", yearly:"Annuale", popular:"Il più scelto",
     plan:"Premium", planSub:"Per chi vuole risultati duraturi",
     perMonth:"28 giorni", billedMonthly:"Fatturato ogni 28 giorni", billedYearly:"Fatturato 79 € all'anno", save:"Risparmia 39,80 € (33%)",
@@ -2885,6 +2926,7 @@ it: {
     purchaseCanceled:"Pagamento annullato, nessun importo addebitato.",
     portalError:"Impossibile aprire la gestione dell'abbonamento al momento."
   },
+  val:{l1:"Risposte salvate", l2:"Foto analizzata", l3:"Routine personalizzata pronta"},
   about:{id:"Solane is a French skin analysis app: upload a photo and get a clear diagnosis and a personalised routine, at solaneskin.com and on TikTok (@solaneskin.com).",
     eyebrow:"Il nostro approccio", h1:"La pelle va ascoltata più che corretta.",
     p:"Solane nasce da un'osservazione semplice: la maggior parte delle routine è pensata per una pelle che resta uguale nel tempo, mentre la tua cambia ogni settimana. Abbiamo voluto uno strumento capace di seguire questo movimento invece di ignorarlo — una lettura onesta, aggiornata tutte le volte che serve, invece di una diagnosi unica presto dimenticata.",
@@ -3354,6 +3396,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       showPage('diag');
       document.getElementById('diag-quiz').style.display='block';
       document.getElementById('diag-analyzing').style.display='none';
+      document.getElementById('diag-validating').style.display='none';
       document.getElementById('diag-ready').style.display='none';
       document.getElementById('diag-gate').style.display='none';
       document.getElementById('diag-results').style.display='none';
@@ -3440,15 +3483,22 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   }
   function runAnalysis(){
     document.getElementById('diag-quiz').style.display='none';
-    document.getElementById('diag-analyzing').style.display='block';
-    injectCapturedPhoto('scanAvatarInner');
-    injectCapturedPhoto('readyAvatarInner');
-    document.getElementById('readyPill').classList.remove('show');
-    setTimeout(()=>{ document.getElementById('readyPill').classList.add('show'); }, 2600);
-    setTimeout(()=>{
-      document.getElementById('diag-analyzing').style.display='none';
-      document.getElementById('diag-ready').style.display='block';
-    }, 3400);
+    injectCapturedPhoto('valPhotoInner');
+    const box = document.getElementById('diag-validating');
+    const items = box.querySelectorAll('#valList li');
+    items.forEach(li=>li.classList.remove('on'));
+    box.classList.remove('run'); void box.offsetWidth;
+    box.style.display='block';
+    box.classList.add('run');
+    window.scrollTo({ top:0, behavior:'smooth' });
+    [450, 1050, 1650].forEach((ms,i)=> setTimeout(()=>{ if(items[i]) items[i].classList.add('on'); }, ms));
+    setTimeout(()=>{ box.style.display='none'; box.classList.remove('run'); afterValidate(); }, 2350);
+  }
+  /* No intermediate "ready" / "verifying" screens: validate -> short animation -> results. */
+  function afterValidate(){
+    pendingResultPhoto = capturedPhotoDataUrl;
+    lastGateStartTime = Date.now();
+    gateProceed();
   }
   function showResults(){
     document.getElementById('diag-ready').style.display='none';
@@ -4758,6 +4808,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     if(!pendingGateUnlock) return;
     stashResume({ plan, diagAnswers, capturedPhotoDataUrl, pendingResultPhoto, lang: currentLang });
   }
+  let pendingCheckoutPlan = null;
   async function startCheckout(plan){
     const acc = getAccount();
     if(!sb){
@@ -4766,7 +4817,10 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       return;
     }
     if(!acc.loggedIn || !acc.id){
-      openDrawer(); drawerTab('compte'); showToast(t('gate.loginNote'));
+      pendingCheckoutPlan = plan;
+      openAccountLogin();
+      gateAuthMode = 'signup';
+      renderGateLogin();
       return;
     }
     stashResumeStateIfGated(plan);
@@ -5076,7 +5130,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
     /* A full-page redirect unloads the whole app just like a Stripe redirect —
        stash whatever the person was doing so we can resume it once we're back
        with a confirmed session (see RESUME_KEY / the Init block below). */
-    stashResume({ googleLogin: true, gateLoginContext, diagAnswers, capturedPhotoDataUrl, pendingResultPhoto, lang: currentLang });
+    stashResume({ googleLogin: true, checkoutPlan: pendingCheckoutPlan, gateLoginContext, diagAnswers, capturedPhotoDataUrl, pendingResultPhoto, lang: currentLang });
     sb.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: CANONICAL_ORIGIN + '/' }
@@ -5108,9 +5162,26 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
       <h2>${t('gate.verifyTitle')}</h2>
       <p>${t('gate.verified')}</p>`;
   }
+  /* One free analysis per device without an account; the account is only
+     requested when buying or once the free one has been used. */
+  const GUEST_FREE_KEY = 'solane_guest_free';
+  function guestFreeUsed(){ try{ return localStorage.getItem(GUEST_FREE_KEY) === '1'; }catch(e){ return false; } }
+  function markGuestFreeUsed(){ try{ localStorage.setItem(GUEST_FREE_KEY, '1'); }catch(e){} }
   function gateProceed(){
     const acc = getAccount();
-    if(!acc.loggedIn){ renderGateLogin(); return; }
+    if(!acc.loggedIn){
+      if(!guestFreeUsed()){
+        markGuestFreeUsed();
+        analysisAIAllowed = false;
+        grantResultsAccess();
+        return;
+      }
+      pendingGateUnlock = true;
+      document.getElementById('diag-gate').style.display='block';
+      gateAuthMode = 'signup';
+      renderGateLogin();
+      return;
+    }
     gateCheckAccess();
   }
   let gateAuthMode = 'login'; /* 'login' | 'signup' | 'reset' */
@@ -5297,6 +5368,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
   function afterGateLoginSuccess(){
     if(gateLoginContext === 'account'){
       closeAccountLogin();
+      if(pendingCheckoutPlan){ const p = pendingCheckoutPlan; pendingCheckoutPlan = null; startCheckout(p); return; }
       openDrawer();
       drawerTab('compte');
       return;
@@ -5523,6 +5595,7 @@ for (const _l of Object.keys(DIAG_ENGINE)) { I18N[_l].engine = DIAG_ENGINE[_l][0
             capturedPhotoDataUrl = googleResume.capturedPhotoDataUrl || capturedPhotoDataUrl;
             pendingResultPhoto = googleResume.pendingResultPhoto || googleResume.capturedPhotoDataUrl || pendingResultPhoto;
             gateLoginContext = googleResume.gateLoginContext || 'analysis';
+            if(googleResume.checkoutPlan){ pendingCheckoutPlan = googleResume.checkoutPlan; gateLoginContext = 'account'; }
             if(gateLoginContext === 'analysis'){
               pendingGateUnlock = true;
               document.getElementById('diag-quiz').style.display='none';
